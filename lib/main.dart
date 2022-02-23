@@ -1,112 +1,232 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'package:comp1640_web/login_page.dart';
+import 'package:comp1640_web/constant/route/routeString.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:url_strategy/url_strategy.dart';
+import 'constant/route/route_navigate.dart';
+import 'constant/route/routes.dart';
 
 void main() {
+  setPathUrlStrategy();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo ok',
+      title: 'Comp1640',
+      debugShowCheckedModeBanner: false,
+      navigatorKey: CoreRoutes.instance.navigatorKey,
+      onGenerateRoute: RouteConfiguration.onGenerateRoute,
+      initialRoute: HomePage.route,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Myhomepage(),
     );
   }
 }
 
-class Myhomepage extends StatefulWidget {
-  const Myhomepage({Key? key}) : super(key: key);
+class Path {
+  const Path(this.pattern, this.builder);
 
-  @override
-  _MyhomepageState createState() => _MyhomepageState();
+  /// A RegEx string for route matching.
+  final String pattern;
+
+  /// The builder for the associated pattern route. The first argument is the
+  /// [BuildContext] and the second argument is a RegEx match if it is
+  /// included inside of the pattern.
+  final Widget Function(BuildContext, String) builder;
 }
 
-class _MyhomepageState extends State<Myhomepage> {
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
+class RouteConfiguration {
+  /// List of [Path] to for route matching. When a named route is pushed with
+  /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]
+  /// in the list below. As soon as there is a match, the associated builder
+  /// will be returned. This means that the paths higher up in the list will
+  /// take priority.
+  static List<Path> paths = [
+    Path(
+      r'^' + ArticlePage.baseRoute + r'/([\w-]+)$',
+          (context, match) => Article.getArticlePage(match),
+    ),
+    Path(
+      r'^' + OverviewPage.route,
+          (context, match) => OverviewPage(),
+    ),
+    Path(
+      r'^' + HomePage.route,
+          (context, match) => HomePage(),
+    ),
+  ];
+
+  /// The route generator callback used when the app is navigated to a named
+  /// route. Set it on the [MaterialApp.onGenerateRoute] or
+  /// [WidgetsApp.onGenerateRoute] to make use of the [paths] for route
+  /// matching.
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    for (Path path in paths) {
+      final regExpPattern = RegExp(path.pattern);
+      if (regExpPattern.hasMatch(settings.name)) {
+        final firstMatch = regExpPattern.firstMatch(settings.name);
+        final match = (firstMatch.groupCount == 1) ? firstMatch.group(1) : null;
+        return MaterialPageRoute<void>(
+          builder: (context) => path.builder(context, match),
+          settings: settings,
+        );
+      }
+    }
+
+    // If no match was found, we let [WidgetsApp.onUnknownRoute] handle it.
+    return null;
+  }
+}
+
+// In a real application this would probably be some kind of database interface.
+const List<Article> articles = [
+  Article(
+    title: 'A very interesting article',
+    slug: 'a-very-interesting-article',
+  ),
+  Article(
+    title: 'Newsworthy news',
+    slug: 'newsworthy-news',
+  ),
+  Article(
+    title: 'RegEx is cool',
+    slug: 'regex-is-cool',
+  ),
+];
+
+class Article {
+  const Article({this.title, this.slug});
+
+  final String title;
+  final String slug;
+
+  static Widget getArticlePage(String slug) {
+    for (Article article in articles) {
+      if (article.slug == slug) {
+        return ArticlePage(article: article);
+      }
+    }
+    return UnknownArticle();
+  }
+}
+
+class ArticlePage extends StatelessWidget {
+  const ArticlePage({Key key, this.article}) : super(key: key);
+
+  static const String baseRoute = '/article';
+  static String Function(String slug) routeFromSlug =
+      (String slug) => baseRoute + '/$slug';
+
+  final Article article;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SafeArea(
-        child: Center(
-            child: Column(
+      appBar: AppBar(
+        title: Text(article.title),
+      ),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.email)),
+            Text(article.title),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Go back!'),
             ),
-            SizedBox(
-              height: 15,
-            ),
-            TextFormField(
-              controller: passController,
-              obscureText: true,
-              decoration: InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.password)),
-            ),
-            SizedBox(
-              height: 45,
-            ),
-            OutlinedButton.icon(
-                onPressed: () {
-                  login;
-                },
-                icon: Icon(
-                  Icons.login,
-                  size: 18,
-                ),
-                label: Text("Login")),
           ],
-        )),
+        ),
       ),
-    ));
+    );
   }
+}
 
-  Future<void> login() async {
-    if (passController.text.isNotEmpty && emailController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse("http://reqres.in/api/login"),
-          body: ({
-            'email': emailController.text,
-            'password': passController.text,
-          }));
-      if (response.statusCode == 200) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login()));
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("sai rồi bro")));
-      }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("sai rồi bro")));
-    }
+class UnknownArticle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Unknown article'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Unknown article'),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Go back!'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class OverviewPage extends StatelessWidget {
+  static const String route = '/overview';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Overview Page'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (Article article in articles)
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    ArticlePage.routeFromSlug(article.slug),
+                  );
+                },
+                child: Text(article.title),
+              ),
+            RaisedButton(
+              onPressed: () {
+                // Navigate back to the home screen by popping the current route
+                // off the stack.
+                Navigator.pop(context);
+              },
+              child: Text('Go back!'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  static const String route = '/';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home Page'),
+      ),
+      body: Center(
+        child: RaisedButton(
+          child: Text('Overview page'),
+          onPressed: () {
+            // Navigate to the overview page using a named route.
+            Navigator.pushNamed(context, OverviewPage.route);
+          },
+        ),
+      ),
+    );
   }
 }
