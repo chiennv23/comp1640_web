@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 ///// Custom transition Fade navigation.
 Route createFadeRouteWidget({Widget pageNavigate, int timeMilliseconds}) {
   return PageRouteBuilder(
@@ -58,21 +57,26 @@ class CoreRoutes {
 
   // Material RouteString
   Future<dynamic> navigateToRouteString(String routeName,
-      {Object arguments}) async =>
+          {Object arguments}) async =>
       navigatorKey.currentState.pushNamed(routeName, arguments: arguments);
 
   Future<dynamic> navigateAndRemove(String routeName,
-      {Object arguments}) async =>
+          {Object arguments}) async =>
       navigatorKey.currentState.pushNamedAndRemoveUntil(
         routeName,
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
         arguments: arguments,
       );
 
   Future<dynamic> navigateAndReplaceRouteString(String routeName,
-      {Object arguments}) async =>
+          {Object arguments}) async =>
       navigatorKey.currentState
           .pushReplacementNamed(routeName, arguments: arguments);
+
+  Future<dynamic> navigateAndRemoveRouteString(String routeName,
+          {Object arguments}) async =>
+      navigatorKey.currentState
+          .pushNamedAndRemoveUntil(routeName, (route) => false);
 
   dynamic pop({dynamic result}) => navigatorKey.currentState.pop(result);
 
@@ -81,34 +85,34 @@ class CoreRoutes {
 
   // Material Routes
   Future<dynamic> navigateAndRemoveRoutes(
-      route,
-      ) async =>
+    route,
+  ) async =>
       navigatorKey.currentState.pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => route),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
 
   Future<dynamic> navigatorPushRoutes(
-      route,
-      ) async =>
+    route,
+  ) async =>
       navigatorKey.currentState.push(
         MaterialPageRoute(builder: (context) => route),
       );
 
   Future<dynamic> navigatorPushReplacementRoutes(
-      route,
-      ) async =>
+    route,
+  ) async =>
       navigatorKey.currentState.pushReplacement(
         MaterialPageRoute(builder: (context) => route),
       );
 
   // Fade Routes
   Future<dynamic> navigateAndRemoveFade(route,
-      {int timeMillisecond = 350}) async =>
+          {int timeMillisecond = 350}) async =>
       navigatorKey.currentState.pushAndRemoveUntil(
         createFadeRouteWidget(
             pageNavigate: route, timeMilliseconds: timeMillisecond),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
 
   Future<dynamic> navigatorPushFade(route, {int timeMillisecond = 350}) async =>
@@ -116,26 +120,26 @@ class CoreRoutes {
           pageNavigate: route, timeMilliseconds: timeMillisecond));
 
   Future<dynamic> navigatorPushReplacementFade(route,
-      {int timeMillisecond = 350}) async =>
+          {int timeMillisecond = 350}) async =>
       navigatorKey.currentState.pushReplacement(createFadeRouteWidget(
           pageNavigate: route, timeMilliseconds: timeMillisecond));
 
   // Slide Routes
   Future<dynamic> navigateAndRemoveDownToUp(route,
-      {int timeMillisecond = 350}) async =>
+          {int timeMillisecond = 350}) async =>
       navigatorKey.currentState.pushAndRemoveUntil(
         createDownToUpRouteWidget(
             pageNavigate: route, timeMilliseconds: timeMillisecond),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
 
   Future<dynamic> navigatorPushDownToUp(route,
-      {int timeMillisecond = 350}) async =>
+          {int timeMillisecond = 350}) async =>
       navigatorKey.currentState.push(createDownToUpRouteWidget(
           pageNavigate: route, timeMilliseconds: timeMillisecond));
 
   Future<dynamic> navigatorPushReplacementDownToUp(route,
-      {int timeMillisecond = 350}) async =>
+          {int timeMillisecond = 350}) async =>
       navigatorKey.currentState.pushReplacement(createDownToUpRouteWidget(
           pageNavigate: route, timeMilliseconds: timeMillisecond));
 }

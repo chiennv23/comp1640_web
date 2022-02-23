@@ -14,9 +14,9 @@ class Routes extends CoreRoutes {
         return MaterialPageRoute(
           builder: (context) => const Login(),
         );
-      case RouteNames.DASHBOARD:
+      case RouteNames.HOME:
         return MaterialPageRoute(
-          builder: (context) => const DashBoard(),
+          builder: (context) => const Home(),
         );
 
       default:

@@ -1,4 +1,6 @@
 import 'package:comp1640_web/constant/route/routeString.dart';
+import 'package:comp1640_web/modules/login/views/login.dart';
+import 'package:comp1640_web/welcomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'constant/route/route_navigate.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: CoreRoutes.instance.navigatorKey,
       onGenerateRoute: RouteConfiguration.onGenerateRoute,
-      initialRoute: HomePage.route,
+      initialRoute: Login.route,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -48,15 +50,19 @@ class RouteConfiguration {
   static List<Path> paths = [
     Path(
       r'^' + ArticlePage.baseRoute + r'/([\w-]+)$',
-          (context, match) => Article.getArticlePage(match),
+      (context, match) => Article.getArticlePage(match),
     ),
     Path(
       r'^' + OverviewPage.route,
-          (context, match) => OverviewPage(),
+      (context, match) => OverviewPage(),
     ),
     Path(
-      r'^' + HomePage.route,
-          (context, match) => HomePage(),
+      r'^' + RouteNames.LOGIN,
+      (context, match) => Login(),
+    ),
+    Path(
+      r'^' + RouteNames.HOME,
+      (context, match) => Home(),
     ),
   ];
 
@@ -209,24 +215,24 @@ class OverviewPage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  static const String route = '/';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text('Overview page'),
-          onPressed: () {
-            // Navigate to the overview page using a named route.
-            Navigator.pushNamed(context, OverviewPage.route);
-          },
-        ),
-      ),
-    );
-  }
-}
+// class HomePage extends StatelessWidget {
+//   static const String route = '/';
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Home Page'),
+//       ),
+//       body: Center(
+//         child: RaisedButton(
+//           child: Text('Overview page'),
+//           onPressed: () {
+//             // Navigate to the overview page using a named route.
+//             Navigator.pushNamed(context, OverviewPage.route);
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
