@@ -1,13 +1,27 @@
 import 'package:comp1640_web/constant/route/routeString.dart';
+import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/login/views/login.dart';
 import 'package:comp1640_web/welcomepage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'constant/route/route_navigate.dart';
 import 'constant/route/routes.dart';
+import 'helpers/menu_controller.dart';
+import 'helpers/page_404.dart';
+import 'layout.dart';
 
-void main() {
+void main() async {
   setPathUrlStrategy();
+  Get.put(MenuController());
+  Get.put(CoreRoutes);
+  await SharedPreferencesHelper.instance.init();
   runApp(const MyApp());
 }
 
@@ -16,6 +30,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return GetMaterialApp(
+      initialRoute: loginPageRoute,
+      unknownRoute: GetPage(
+          name: '/not-found',
+          page: () => PageNotFound(),
+          transition: Transition.fadeIn),
+      getPages: [
+        GetPage(
+            name: rootRoute,
+            page: () {
+              return SiteLayout();
+            }),
+        GetPage(name: loginPageRoute, page: () => const Login()),
+      ],
+      debugShowCheckedModeBanner: false,
+      title: 'Comp1640',
+      theme: ThemeData(
+        scaffoldBackgroundColor: lightColor,
+        textTheme: GoogleFonts.mulishTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.black),
+        pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        }),
+        primarySwatch: Colors.blue,
+      ),
+      // home: AuthenticationPage(),
+    );
     return MaterialApp(
       title: 'Comp1640',
       debugShowCheckedModeBanner: false,
@@ -23,68 +65,15 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: RouteConfiguration.onGenerateRoute,
       initialRoute: Login.route,
       theme: ThemeData(
+        textTheme: GoogleFonts.mulishTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.black),
+        pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        }),
         primarySwatch: Colors.blue,
       ),
     );
-  }
-}
-
-class Path {
-  const Path(this.pattern, this.builder);
-
-  /// A RegEx string for route matching.
-  final String pattern;
-
-  /// The builder for the associated pattern route. The first argument is the
-  /// [BuildContext] and the second argument is a RegEx match if it is
-  /// included inside of the pattern.
-  final Widget Function(BuildContext, String) builder;
-}
-
-class RouteConfiguration {
-  /// List of [Path] to for route matching. When a named route is pushed with
-  /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]
-  /// in the list below. As soon as there is a match, the associated builder
-  /// will be returned. This means that the paths higher up in the list will
-  /// take priority.
-  static List<Path> paths = [
-    Path(
-      r'^' + ArticlePage.baseRoute + r'/([\w-]+)$',
-      (context, match) => Article.getArticlePage(match),
-    ),
-    Path(
-      r'^' + OverviewPage.route,
-      (context, match) => OverviewPage(),
-    ),
-    Path(
-      r'^' + RouteNames.LOGIN,
-      (context, match) => Login(),
-    ),
-    Path(
-      r'^' + RouteNames.HOME,
-      (context, match) => Home(),
-    ),
-  ];
-
-  /// The route generator callback used when the app is navigated to a named
-  /// route. Set it on the [MaterialApp.onGenerateRoute] or
-  /// [WidgetsApp.onGenerateRoute] to make use of the [paths] for route
-  /// matching.
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    for (Path path in paths) {
-      final regExpPattern = RegExp(path.pattern);
-      if (regExpPattern.hasMatch(settings.name)) {
-        final firstMatch = regExpPattern.firstMatch(settings.name);
-        final match = (firstMatch.groupCount == 1) ? firstMatch.group(1) : null;
-        return MaterialPageRoute<void>(
-          builder: (context) => path.builder(context, match),
-          settings: settings,
-        );
-      }
-    }
-
-    // If no match was found, we let [WidgetsApp.onUnknownRoute] handle it.
-    return null;
   }
 }
 

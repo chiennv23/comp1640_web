@@ -1,7 +1,7 @@
-import 'package:comp1640_web/components/custom_text.dart';
-import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/login/controlls/login_controller.dart';
+import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -78,7 +78,14 @@ class _LoginState extends State<Login> {
               ),
               InkWell(
                 onTap: () {
-                  print(111);
+                  print(1111);
+                  setState(() {
+                    SharedPreferencesHelper.instance
+                        .setString(key: 'UserName', val: emailController.text);
+                  });
+                  var us = SharedPreferencesHelper.instance
+                      .getString(key: 'UserName');
+                  print(us);
                   LoginController.login(
                       emailController.text, passController.text, context);
 

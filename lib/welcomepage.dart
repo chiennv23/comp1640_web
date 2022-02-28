@@ -1,7 +1,9 @@
 import 'package:comp1640_web/constant/route/routeString.dart';
 import 'package:comp1640_web/constant/route/route_navigate.dart';
-import 'package:comp1640_web/modules/login/views/login.dart';
+import 'package:comp1640_web/constant/style.dart';
 import 'package:flutter/material.dart';
+
+import 'constant/route/routes.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -14,6 +16,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightColor,
       body: SafeArea(
           child: Center(
               child: Column(
@@ -23,16 +26,6 @@ class _HomeState extends State<Home> {
           SizedBox(
             height: 50,
           ),
-          OutlinedButton.icon(
-              onPressed: () {
-                CoreRoutes.instance
-                    .navigateAndRemoveRouteString(RouteNames.LOGIN);
-              },
-              icon: Icon(
-                Icons.exit_to_app,
-                size: 18,
-              ),
-              label: Text("Logout ")),
         ],
       ))),
     );
