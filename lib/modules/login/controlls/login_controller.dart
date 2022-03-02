@@ -7,7 +7,7 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:http/http.dart' as http;
 
 class LoginController {
-  static String nameUser = '';
+
   static Future<void> login(
       String userName, String password, BuildContext context) async {
     // CoreRoutes.instance.navigateToRouteString(homePageRoute);
@@ -23,7 +23,7 @@ class LoginController {
     if (response.statusCode == 200) {
       CoreRoutes.instance.navigateToRouteString(homePageRoute);
     } else {
-      snackBarMessage('sai rồi bro');
+      // snackBarMessage('sai rồi bro');
     }
   }
 }

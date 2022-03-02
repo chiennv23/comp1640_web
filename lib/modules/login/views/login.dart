@@ -38,7 +38,8 @@ class _LoginState extends State<Login> {
               const SizedBox(
                 height: 25,
               ),
-              TextField(
+              TextFormField(
+                controller: emailController,
                 decoration: InputDecoration(
                     labelText: "Email",
                     hintText: "abc@domain.com",
@@ -48,8 +49,9 @@ class _LoginState extends State<Login> {
               const SizedBox(
                 height: 15,
               ),
-              TextField(
+              TextFormField(
                 obscureText: true,
+                controller: passController,
                 decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "123",
@@ -83,12 +85,8 @@ class _LoginState extends State<Login> {
                     SharedPreferencesHelper.instance
                         .setString(key: 'UserName', val: emailController.text);
                   });
-                  var us = SharedPreferencesHelper.instance
-                      .getString(key: 'UserName');
-                  print(us);
                   LoginController.login(
                       emailController.text, passController.text, context);
-
                   // snackBarMessage('Hãy nhập User hoặc Password còn thiếu');
                 },
                 child: Container(

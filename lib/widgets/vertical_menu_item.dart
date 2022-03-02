@@ -40,28 +40,26 @@ class VertticalMenuItem extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (!menuController.isActive(itemName))
-                            Flexible(
-                                child: CustomText(
-                              text: itemName,
-                              color: menuController.isHovering(itemName)
-                                  ? Colors.white
-                                  : greyColor,
-                            ))
-                          else
-                            Flexible(
-                                child: CustomText(
-                              text: itemName,
-                              color: Colors.white,
-                              size: 18,
-                              weight: FontWeight.bold,
-                            ))
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!menuController.isActive(itemName))
+                          Flexible(
+                              child: CustomText(
+                            text: itemName,
+                            color: menuController.isHovering(itemName)
+                                ? Colors.white
+                                : greyColor,
+                          ))
+                        else
+                          Flexible(
+                              child: CustomText(
+                            text: itemName,
+                            color: Colors.white,
+                            size: 18,
+                            weight: FontWeight.bold,
+                          ))
+                      ],
                     ),
                   ),
                 ],
