@@ -45,20 +45,10 @@ Route createDownToUpRouteWidget({Widget pageNavigate, int timeMilliseconds}) {
 
 class CoreRoutes extends GetxController {
   // CoreRoutes.instance + Navigator..
-  static CoreRoutes instanceGet = Get.find();
+  static CoreRoutes instance = Get.find();
 
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  factory CoreRoutes() => _instance;
-
-  CoreRoutes._internal();
-
-  static final CoreRoutes _instance = CoreRoutes._internal();
-
-  static CoreRoutes get instance => _instance;
-
-  String currentRoutes = '';
 
   // Material RouteString
   Future<dynamic> navigateToRouteString(String routeName,

@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {
-  static const String route = '/';
-
   const Login({Key key}) : super(key: key);
 
   @override
@@ -18,13 +16,15 @@ class _LoginState extends State<Login> {
   var emailController = TextEditingController();
   var passController = TextEditingController();
 
+  bool rememberMe = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Container(
-          constraints: BoxConstraints(maxWidth: 400),
-          padding: EdgeInsets.all(24),
+          constraints: const BoxConstraints(maxWidth: 400),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
                 controller: emailController,
                 decoration: InputDecoration(
                     labelText: "Email",
-                    hintText: "abc@domain.com",
+                    hintText: "abc@feedback.com",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20))),
               ),
@@ -66,13 +66,20 @@ class _LoginState extends State<Login> {
                 children: [
                   Row(
                     children: [
-                      Checkbox(value: true, onChanged: (value) {}),
+                      Checkbox(
+                          value: rememberMe,
+                          onChanged: (value) {
+                            setState(() {
+                              rememberMe = value;
+                              SharedPreferencesHelper.instance
+                                  .setBool(key: 'rememberMe', val: value);
+                            });
+                          }),
                       const CustomText(
                         text: "Remeber Me",
                       ),
                     ],
                   ),
-                  CustomText(text: "Forgot password?", color: active)
                 ],
               ),
               const SizedBox(
@@ -84,6 +91,8 @@ class _LoginState extends State<Login> {
                   setState(() {
                     SharedPreferencesHelper.instance
                         .setString(key: 'UserName', val: emailController.text);
+                    SharedPreferencesHelper.instance
+                        .setBool(key: 'rememberMe', val: rememberMe);
                   });
                   LoginController.login(
                       emailController.text, passController.text, context);

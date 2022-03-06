@@ -3,8 +3,10 @@ import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:comp1640_web/widgets/side_menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
@@ -19,9 +21,9 @@ class SideMenu extends StatelessWidget {
       decoration: BoxDecoration(color: spaceColor, boxShadow: [
         BoxShadow(
           color: greyColor.withOpacity(0.1),
-          spreadRadius: 5,
-          blurRadius: 4,
-          offset: Offset(0, 3), // changes position of shadow
+          spreadRadius: 2,
+          blurRadius: 3,
+          offset: const Offset(0, 3), // changes position of shadow
         ),
       ]),
       child: ListView(
@@ -43,9 +45,11 @@ class SideMenu extends StatelessWidget {
                       ),
                     ),
                     const Flexible(
-                      child: Text(
-                        "Category",
-                        style: TextStyle(color: darkColor),
+                      child: CustomText(
+                        text: "Category",
+                        color: darkColor,
+                        size: 20,
+                        weight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(width: _width / 48),
@@ -66,8 +70,8 @@ class SideMenu extends StatelessWidget {
                     itemName: item.name,
                     onTap: () {
                       if (item.route == loginPageRoute) {
-                        Get.offAllNamed(loginPageRoute);
                         menuController.changeActiveItemTo(homeDisplayName);
+                        Get.offAllNamed(loginPageRoute);
                       }
                       if (!menuController.isActive(item.name)) {
                         menuController.changeActiveItemTo(item.name);

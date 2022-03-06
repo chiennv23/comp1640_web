@@ -4,11 +4,11 @@ import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:http/http.dart' as http;
 
 class PostController {
-  static String url = '$urlApi/posts';
+  static String url = '$urlApi/threads';
 
-  static Future<BasicResponse<List<PostsItem>>> getAllPost() async {
-    final response =
-        await BaseDA.getList(url, (json) => PostsItem.fromJsonToList(json));
-    return response;
-  }
+  // static Future<BasicResponse<List<ThreadsItem>>> getAllPost() async {
+  //   final response =
+  //       await BaseDA.getList(url, (json) => ThreadsItem.fromJsonToList(json));
+  //   return response;
+  // }
 }
