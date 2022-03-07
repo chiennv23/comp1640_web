@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class PostController {
   static String url = '$urlApi/threads';
 
-  // static Future<BasicResponse<List<ThreadsItem>>> getAllPost() async {
+  // static Future<BasicResponse<List<ThreadItem>>> getAllPost() async {
   //   final response =
   //       await BaseDA.getList(url, (json) => ThreadsItem.fromJsonToList(json));
   //   return response;

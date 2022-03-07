@@ -3,6 +3,7 @@ import 'package:comp1640_web/widgets/side_menu.dart';
 import 'package:comp1640_web/widgets/top_nav.dart';
 import 'package:flutter/material.dart';
 
+import 'constant/style.dart';
 import 'helpers/local_navigator.dart';
 import 'helpers/reponsive_pages.dart';
 
@@ -13,6 +14,7 @@ class SiteLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      backgroundColor: primaryColor,
       extendBodyBehindAppBar: true,
       appBar: topNavigationBar(context, scaffoldKey),
       drawer: const Drawer(

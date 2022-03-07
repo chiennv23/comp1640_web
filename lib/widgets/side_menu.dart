@@ -22,7 +22,7 @@ class SideMenu extends StatelessWidget {
         BoxShadow(
           color: greyColor.withOpacity(0.1),
           spreadRadius: 2,
-          blurRadius: 3,
+          blurRadius: 2,
           offset: const Offset(0, 3), // changes position of shadow
         ),
       ]),

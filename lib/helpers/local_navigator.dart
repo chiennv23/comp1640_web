@@ -3,8 +3,7 @@ import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:flutter/cupertino.dart';
 
 
-Navigator localNavigator() => Navigator(
-      key: CoreRoutes.instance.navigatorKey,
+Navigator localNavigator() => const Navigator(
       onGenerateRoute: generateRoute,
       initialRoute: rootRoute,
     );

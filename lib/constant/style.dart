@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+Color primaryColor = const Color(0xFF8587E5).withOpacity(0.3);
+Color primaryColor2 = const Color(0xFF8587E5);
 Color active = const Color(0xFF3C19C0);
 Color textColor = Colors.black87;
 Color spaceColor = Colors.white;
