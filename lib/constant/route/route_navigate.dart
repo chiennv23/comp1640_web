@@ -4,6 +4,18 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
+class NavigationController extends GetxController{
+  static NavigationController instance = Get.find();
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+  Future<dynamic> navigateTo(String routeName){
+    return navigatorKey.currentState.pushNamed(routeName);
+  }
+
+  goBack() => navigatorKey.currentState.pop();
+
+}
+
 ///// Custom transition Fade navigation.
 Route createFadeRouteWidget({Widget pageNavigate, int timeMilliseconds}) {
   return PageRouteBuilder(

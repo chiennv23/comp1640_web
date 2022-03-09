@@ -14,17 +14,9 @@ class LargeScreen extends StatelessWidget {
         const Expanded(child: SideMenu()),
         Expanded(
             flex: 5,
-            child: Column(
-              children: [
-                Container(
-                  height: 65,
-                  decoration: BoxDecoration(
-                      color: lightColor,
-                      border: Border(bottom: BorderSide(color: greyColor.withOpacity(0.1)))),
-                ),
-                Expanded(child: localNavigator()),
-              ],
-            ))
+            child: Container(
+                padding: const EdgeInsets.only(left: 35, right: 35.0),
+                child: localNavigator()))
       ],
     );
   }

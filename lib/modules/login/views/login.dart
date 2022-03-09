@@ -371,6 +371,9 @@ class _LoginState extends State<Login>
                   isLoading = true;
                 });
                 if (!formGlobalKey2.currentState.validate()) {
+                  setState(() {
+                    isLoading = false;
+                  });
                   return;
                 }
                 print(1111);

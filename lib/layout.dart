@@ -14,7 +14,7 @@ class SiteLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: primaryColor,
+      backgroundColor: primaryColor.withOpacity(.1),
       extendBodyBehindAppBar: true,
       appBar: topNavigationBar(context, scaffoldKey),
       drawer: const Drawer(

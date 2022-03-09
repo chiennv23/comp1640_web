@@ -23,6 +23,9 @@ void main() async {
   runApp(const MyApp());
 }
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class MyApp extends StatefulWidget {
   const MyApp({Key key}) : super(key: key);
 
@@ -44,38 +47,33 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        initialRoute: checkRemember ? rootRoute : loginPageRoute,
-        navigatorKey: CoreRoutes.instance.navigatorKey,
-        defaultTransition: Transition.fade,
-        unknownRoute: GetPage(
-        name: '/not-found',
-        page: ()
-    =>
-        PageNotFound()
-    ,
-    transition: Transition.fadeIn),
-    getPages: [
-    GetPage(
-    name: rootRoute,
-    page: () {
-    return SiteLayout();
-    }),
-    GetPage(name: loginPageRoute, page: () => const Login()),
-    ],
-    debugShowCheckedModeBanner: false,
-    title: 'Feedback System',
-    theme: ThemeData(
-    scaffoldBackgroundColor: lightColor,
-    textTheme: GoogleFonts.mulishTextTheme(Theme.of(context).textTheme)
-        .apply(bodyColor: Colors.black),
-    pageTransitionsTheme: const PageTransitionsTheme(builders: {
-    TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
-    TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-    })
-    ,
-    )
-    ,
-    // home: AuthenticationPage(),
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
+      initialRoute: checkRemember ? rootRoute : loginPageRoute,
+      defaultTransition: Transition.fade,
+      unknownRoute: GetPage(
+          name: '/not-found',
+          page: () => PageNotFound(),
+          transition: Transition.fadeIn),
+      getPages: [
+        GetPage(
+            name: rootRoute,
+            page: () {
+              return SiteLayout();
+            }),
+        GetPage(name: loginPageRoute, page: () => const Login()),
+      ],
+      debugShowCheckedModeBanner: false,
+      title: 'Feedback System',
+      theme: ThemeData(
+        scaffoldBackgroundColor: lightColor,
+        textTheme: GoogleFonts.mulishTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.black),
+        pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        }),
+      ),
+      // home: AuthenticationPage(),
     );
   }
 }

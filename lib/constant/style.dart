@@ -8,3 +8,4 @@ Color spaceColor = Colors.white;
 const darkColor = Color(0xFF363740);
 Color lightColor = Colors.white10;
 Color greyColor = Colors.grey;
+Color redColor = Colors.red;

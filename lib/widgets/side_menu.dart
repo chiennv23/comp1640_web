@@ -18,14 +18,17 @@ class SideMenu extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width;
 
     return Container(
-      decoration: BoxDecoration(color: spaceColor, boxShadow: [
-        BoxShadow(
-          color: greyColor.withOpacity(0.1),
-          spreadRadius: 2,
-          blurRadius: 2,
-          offset: const Offset(0, 3), // changes position of shadow
-        ),
-      ]),
+      decoration: BoxDecoration(
+          color: spaceColor,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: greyColor.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 2,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ]),
       child: ListView(
         children: [
           if (ResponsiveWidget.isSmallScreen(context))
@@ -65,12 +68,15 @@ class SideMenu extends StatelessWidget {
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: sideMenuItemRoutes
+            children: checkRoleShowCategory('admin')
                 .map((item) => SideMenuItem(
                     itemName: item.name,
                     onTap: () {
                       if (item.route == loginPageRoute) {
-                        menuController.changeActiveItemTo(homeDisplayName);
+                        menuController.changeActiveItemTo(
+                            checkRoleShowCategory('admin')[0].name);
+                        print(checkRoleShowCategory('admin')[0].name);
+                        MenuController().onReady();
                         Get.offAllNamed(loginPageRoute);
                       }
                       if (!menuController.isActive(item.name)) {

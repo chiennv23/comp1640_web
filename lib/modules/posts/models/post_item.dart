@@ -1,4 +1,4 @@
-import 'package:comp1640_web/modules/posts/models/thread_item.dart';
+import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 
 class PostItem {
   ThreadItem thread;

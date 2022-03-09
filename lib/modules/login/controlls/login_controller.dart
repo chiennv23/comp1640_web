@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
@@ -23,6 +22,7 @@ class LoginController {
         },
         (json) => BasicResponse.fromJson(json));
     if (response.code == 200) {
+      // await getCsrfToken();
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName.split('@')[0]);
       print('response.statusCode ' + response.code.toString());
@@ -34,11 +34,20 @@ class LoginController {
           title: 'Welcome to Feedback System, $userName',
           backGroundColor: Colors.green);
     } else {
-      snackBarMessage(
-          title: 'Incorrect password or email. Try again!',
-          backGroundColor: Colors.red);
+      snackBarMessageError(response.message);
     }
     return response;
+  }
+
+  static Future<BasicResponse> getCsrfToken() async {
+    var res = await BaseDA.get(urlCSRF, (json) => BasicResponse.fromJson(json));
+    if (res.code == 200) {
+      SharedPreferencesHelper.instance.setString(key: 'csrf', val: res.data);
+      print('csrf_token ${res.data}');
+    } else {
+      snackBarMessageError(res.message);
+    }
+    return res;
   }
 
   static Future<BasicResponse> signUp(
@@ -57,6 +66,7 @@ class LoginController {
         (json) => BasicResponse.fromJson(json));
     print('response.mess ' + response.message);
     if (response.code == 200) {
+      // await getCsrfToken();
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName);
       print('response.statusCode ' + response.code.toString());
@@ -67,7 +77,7 @@ class LoginController {
           title: 'Welcome to Feedback System, $userName',
           backGroundColor: Colors.green);
     } else {
-      snackBarMessage(title: response.message, backGroundColor: Colors.red);
+      snackBarMessageError(response.message);
     }
     return response;
   }

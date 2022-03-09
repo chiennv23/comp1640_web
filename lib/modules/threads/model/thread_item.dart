@@ -27,8 +27,14 @@ class ThreadItem {
     updatedAt = json['updatedAt'];
   }
 
+  static List<ThreadItem> fromJsonToList(Object json) {
+    var list = json as List;
+
+    return list.map((c) => ThreadItem.fromJson(c)).toList();
+  }
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  <String, dynamic>{};
     data['topic'] = topic;
     data['description'] = description;
     data['creator'] = creator;

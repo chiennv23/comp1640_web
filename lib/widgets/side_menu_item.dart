@@ -1,6 +1,8 @@
+import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:flutter/material.dart';
-
-import 'horizontal_menu_item.dart';
+import 'package:get/get.dart';
+import 'custom_text.dart';
 
 class SideMenuItem extends StatelessWidget {
   final String itemName;
@@ -11,9 +13,52 @@ class SideMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HorizontalMenuItem(
-      itemName: itemName,
-      onTap: onTap,
-    );
+    double _width = MediaQuery.of(context).size.width;
+
+    return InkWell(
+        onTap: onTap,
+        onHover: (value) {
+          value
+              ? menuController.onHover(itemName)
+              : menuController.onHover("not hovering");
+        },
+        child: Obx(() => Container(
+              color: menuController.isHovering(itemName)
+                  ? greyColor.withOpacity(.1)
+                  : Colors.transparent,
+              child: Row(
+                children: [
+                  Visibility(
+                    visible: menuController.isHovering(itemName) ||
+                        menuController.isActive(itemName),
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: Container(
+                      width: 6,
+                      height: 40,
+                      color: darkColor,
+                    ),
+                  ),
+                  SizedBox(width: _width / 88),
+                  if (!menuController.isActive(itemName))
+                    Flexible(
+                        child: CustomText(
+                      text: itemName,
+                      color: menuController.isHovering(itemName)
+                          ? darkColor
+                          : greyColor,
+                    ))
+                  else
+                    Flexible(
+                        child: CustomText(
+                      text: itemName,
+                      color: darkColor,
+                      size: 18,
+                      weight: FontWeight.bold,
+                    ))
+                ],
+              ),
+            )));
   }
 }

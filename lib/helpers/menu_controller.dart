@@ -6,10 +6,11 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 MenuController menuController = MenuController.instance;
+NavigationController navigationController = NavigationController.instance;
 
 class MenuController extends GetxController {
   static MenuController instance = Get.find();
-  var activeItem = ''.obs;
+  var activeItem = checkRoleShowCategory('admin')[0].name.obs;
 
   var hoverItem = "".obs;
 
