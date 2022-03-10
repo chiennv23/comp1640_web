@@ -19,7 +19,7 @@ class ThreadManage extends StatefulWidget {
 class _ThreadManageState extends State<ThreadManage> {
   @override
   Widget build(BuildContext context) {
-    final threadController = Get.put(ThreadController());
+    ThreadController threadController = Get.find();
 
     return Column(
       children: [
@@ -234,6 +234,7 @@ class _ThreadManageState extends State<ThreadManage> {
   void showView(item) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => Dialog(
         child: ThreadView(item),
       ),

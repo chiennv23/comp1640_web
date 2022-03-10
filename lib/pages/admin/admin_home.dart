@@ -1,5 +1,9 @@
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/overview_cards_small.dart';
+import 'package:comp1640_web/pages/admin/widgets/thread_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/thread_section_small.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,14 +39,17 @@ class _AdminHomeState extends State<AdminHome> {
         Expanded(
             child: ListView(
           children: [
-            CustomText(
-              text: 'Dashboard',
-            ),
-            CustomText(
-              text: 'show chart in here !',
-            ),
+            if (ResponsiveWidget.isLargeScreen(context) ||
+                ResponsiveWidget.isMediumScreen(context))
+              OverviewCardsLargeScreen()
+            else
+              OverviewCardsSmallScreen(),
+            if (!ResponsiveWidget.isSmallScreen(context))
+              RevenueSectionLarge()
+            else
+              RevenueSectionSmall(),
           ],
-        )),
+        ))
       ],
     );
   }

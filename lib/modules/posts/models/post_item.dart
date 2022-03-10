@@ -1,10 +1,10 @@
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 
 class PostItem {
-  ThreadItem thread;
+  String thread;
   String title;
   String content;
-  String author;
+  Author author;
   String slug;
   String category;
   String createdAt;
@@ -12,25 +12,25 @@ class PostItem {
 
   PostItem(
       {this.thread,
-        this.title,
-        this.content,
-        this.author,
-        this.slug,
-        this.category,
-        this.createdAt,
-        this.updatedAt});
+      this.title,
+      this.content,
+      this.author,
+      this.slug,
+      this.category,
+      this.createdAt,
+      this.updatedAt});
 
   PostItem.fromJson(Map<String, dynamic> json) {
-    thread =
-    json['thread'] != null ?  ThreadItem.fromJson(json['thread']) : null;
+    thread = json['thread'];
     title = json['title'];
     content = json['content'];
-    author = json['author'];
+    author = json['author'] != null ? Author.fromJson(json['author']) : null;
     slug = json['slug'];
     category = json['category'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
+
   static List<PostItem> fromJsonToList(Object json) {
     var list = json as List;
 
@@ -39,12 +39,12 @@ class PostItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (thread != null) {
-      data['thread'] = thread.toJson();
-    }
+    data['thread'] = thread;
     data['title'] = title;
     data['content'] = content;
-    data['author'] = author;
+    if (author != null) {
+      data['author'] = author.toJson();
+    }
     data['slug'] = slug;
     data['category'] = category;
     data['createdAt'] = createdAt;
@@ -53,3 +53,24 @@ class PostItem {
   }
 }
 
+class Author {
+  String sId;
+  String email;
+  String username;
+
+  Author({this.sId, this.email, this.username});
+
+  Author.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    email = json['email'];
+    username = json['username'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['email'] = email;
+    data['username'] = username;
+    return data;
+  }
+}

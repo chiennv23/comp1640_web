@@ -1,9 +1,13 @@
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
+import 'package:comp1640_web/helpers/menu_controller.dart';
+import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
+import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -13,50 +17,75 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<PostItem> listPost = [];
   int like = 10;
   int disLike = 2;
 
   @override
-  void initState() {
-    // getListPost();
-    super.initState();
-  }
-
-  getListPost() async {
-    // var data = await PostController.getAllPost();
-    // setState(() {
-    //   listPost = data.data.first.posts;
-    // });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    PostController postController = Get.put(PostController());
+    ThreadController threadController = Get.find();
+
     return Scaffold(
-      body: SafeArea(child: Text('lalala')),
+      backgroundColor: lightColor,
+      body: Obx(
+        () => Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                    margin: EdgeInsets.only(
+                        top: ResponsiveWidget.isSmallScreen(context) ? 56 : 15),
+                    child: CustomText(
+                      text: menuController.activeItem.value == 'Log Out'
+                          ? ''
+                          : menuController.activeItem.value,
+                      size: 24,
+                      weight: FontWeight.bold,
+                    )),
+              ],
+            ),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                    const EdgeInsets.only(top: 24, right: 24),
+                    child: CustomText(
+                      text:
+                          "Posts in Thread: ${threadController.ThreadList.first.topic}",
+                      size: 20,
+                      weight: FontWeight.bold,
+                      color: greyColor,
+                    ),
+                  ),
+                  Flexible(
+                    child: Center(
+                      child: postController.isLoading.value
+                          ? const CircularProgressIndicator()
+                          : ListView.builder(
+                              padding:
+                                  const EdgeInsets.only(top: 16, right: 24),
+                              itemCount: postController.postList.length,
+                              itemBuilder: (context, index) {
+                                final item = postController.postList[index];
+                                return postCard(
+                                    title: item.title,
+                                    author: item.author.username,
+                                    content: item.content,
+                                    createDate:
+                                        DatetimeConvert.dMy_hm(item.updatedAt));
+                                return Text(item.title);
+                              }),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
-    // return Scaffold(
-    //   backgroundColor: lightColor,
-    //   body: SafeArea(
-    //     child: Center(
-    //       child: listPost.isEmpty
-    //           ? CircularProgressIndicator()
-    //           : ListView.builder(
-    //           padding: EdgeInsets.all(24),
-    //           itemCount: listPost.length,
-    //           itemBuilder: (context, index) {
-    //             final item = listPost[index];
-    //             return postCard(
-    //                 title: item.title,
-    //                 author:
-    //                 '${item.author.username} (${item.author.email})',
-    //                 content: item.content,
-    //                 createDate: DatetimeConvert.dMy_hm(item.updatedAt));
-    //             return Text(item.title);
-    //           }),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget postCard(

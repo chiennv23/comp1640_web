@@ -3,6 +3,7 @@ import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:comp1640_web/widgets/side_menu_item.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class SideMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
+    var nameRole = SharedPreferencesHelper.instance.getString(key: 'UserName');
 
     return Container(
       decoration: BoxDecoration(
@@ -68,15 +70,15 @@ class SideMenu extends StatelessWidget {
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: checkRoleShowCategory('admin')
+            children: checkRoleShowCategory(nameRole)
                 .map((item) => SideMenuItem(
                     itemName: item.name,
                     onTap: () {
                       if (item.route == loginPageRoute) {
+                        print('logout');
                         menuController.changeActiveItemTo(
-                            checkRoleShowCategory('admin')[0].name);
-                        print(checkRoleShowCategory('admin')[0].name);
-                        MenuController().onReady();
+                            checkRoleShowCategory(nameRole)[0].name);
+                        print(checkRoleShowCategory(nameRole)[0].name);
                         Get.offAllNamed(loginPageRoute);
                       }
                       if (!menuController.isActive(item.name)) {

@@ -4,6 +4,7 @@ import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget ThreadView(ThreadItem item) => Container(
       width: 500,
@@ -78,7 +79,7 @@ Widget ThreadView(ThreadItem item) => Container(
             trailing: Text(DatetimeConvert.dMy_hm(item.updatedAt)),
           ),
           Container(
-            padding:const EdgeInsets.symmetric(vertical: 10,horizontal: 5),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
@@ -94,6 +95,9 @@ Widget ThreadView(ThreadItem item) => Container(
                         color: primaryColor2,
                       )),
                 ),
+                const SizedBox(
+                  width: 15,
+                ),
                 Tooltip(
                   message: 'Delete',
                   child: IconButton(
@@ -104,6 +108,29 @@ Widget ThreadView(ThreadItem item) => Container(
                         Icons.delete_rounded,
                         color: primaryColor2,
                       )),
+                ),
+                const SizedBox(
+                  width: 25,
+                ),
+                Material(
+                  color: primaryColor2,
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(10.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      child: const CustomText(
+                        text: "Cancel",
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

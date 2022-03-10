@@ -1,8 +1,8 @@
-
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/baseResponse/base_response.dart';
 import 'package:comp1640_web/constant/route/routes.dart';
+import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +10,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class LoginController {
+  //TODO chưa thay đổi được khi reload web
+  static String name = 'admin';
+
   static Future<BasicResponse> signIn(
     String userName,
     String password,
@@ -26,7 +29,11 @@ class LoginController {
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName.split('@')[0]);
       print('response.statusCode ' + response.code.toString());
-      print('response.mess ' + response.message);
+      name = SharedPreferencesHelper.instance.getString(key: 'UserName');
+      menuController.changeActiveItemTo(
+          checkRoleShowCategory(name)[0].name);
+      MenuController.instance.update();
+      print(name);
       Get.offAllNamed(
         rootRoute,
       );
