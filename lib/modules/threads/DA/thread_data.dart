@@ -6,6 +6,9 @@ class ThreadData {
   static Future<BasicResponse<List<ThreadItem>>> getAllThreads() async {
     final response = await BaseDA.getList(
         urlGetAllThread, (json) => ThreadItem.fromJsonToList(json));
+    if (response.code == 200) {
+      print('List Threads done...${response.data.length}');
+    }
     return response;
   }
 }

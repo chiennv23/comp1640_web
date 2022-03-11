@@ -6,7 +6,9 @@ import 'package:charts_flutter/flutter.dart' as charts;
 
 class ThreadController extends GetxController {
   RxBool isLoading = true.obs;
-  final _threadList = [].obs;
+  final _threadList = <ThreadItem>[].obs;
+  var threadSelected = ''.obs;
+  var slugSelected = ''.obs;
 
   @override
   void onInit() {
@@ -54,5 +56,10 @@ class ThreadController extends GetxController {
       allPost += leg;
     }
     return allPost;
+  }
+
+  threadChangeChoose({String thread = '', String slug}) {
+    threadSelected.value = thread;
+    slugSelected.value = slug;
   }
 }

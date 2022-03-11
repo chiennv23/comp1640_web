@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import 'bar_chart.dart';
 
-class RevenueSectionSmall extends StatelessWidget {
-  ThreadController threadController = Get.put(ThreadController());
+class ThreadSectionSmall extends StatelessWidget {
+  ThreadController threadController = Get.find();
 
   @override
   Widget build(BuildContext context) {

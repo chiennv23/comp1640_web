@@ -45,9 +45,9 @@ class _AdminHomeState extends State<AdminHome> {
             else
               OverviewCardsSmallScreen(),
             if (!ResponsiveWidget.isSmallScreen(context))
-              RevenueSectionLarge()
+              ThreadSectionLarge()
             else
-              RevenueSectionSmall(),
+              ThreadSectionSmall(),
           ],
         ))
       ],

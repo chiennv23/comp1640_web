@@ -42,27 +42,50 @@ class _ThreadManageState extends State<ThreadManage> {
         Flexible(
           child: ListView(
             children: [
-              FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: 0.08, //means 80% of app width
-                child: Material(
-                  color: active,
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: InkWell(
-                    onTap: () {},
+              Row(
+                children: [
+                  Material(
+                    color: primaryColor2,
                     borderRadius: BorderRadius.circular(8.0),
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      child: const CustomText(
-                        text: "Add New",
-                        color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        threadController.onInit();
+                      },
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: const CustomText(
+                          text: "Refresh table",
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Material(
+                    color: active,
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: InkWell(
+                      onTap: () {},
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: const CustomText(
+                          text: "Add New",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Container(
                 decoration: BoxDecoration(

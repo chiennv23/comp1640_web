@@ -8,7 +8,7 @@ class PostController extends GetxController {
   ThreadController threadController = Get.find();
 
   RxBool isLoading = true.obs;
-  final _postList = [].obs;
+  final _postList = <PostItem>[].obs;
 
   @override
   void onInit() {
@@ -20,9 +20,12 @@ class PostController extends GetxController {
     try {
       isLoading(true);
       final data = await PostData.getAllPostByThread(
-          threadController.ThreadList.first.slug);
-
-      _postList.assignAll(data?.data);
+          threadController.slugSelected.value ?? '');
+      if (data.code == 200) {
+        _postList.assignAll(data?.data);
+      } else {
+        _postList.assignAll(PostData.dataHashCode);
+      }
     } finally {
       isLoading(false);
     }
@@ -30,5 +33,23 @@ class PostController extends GetxController {
 
   List<PostItem> get postList {
     return [..._postList];
+  }
+
+  chooseLike(String title) {
+    var listLike =
+        _postList.firstWhere((element) => element.title == title).upvotes;
+    listLike.add('like');
+    print(listLike.length);
+    update();
+  }
+
+  chooseDisLike(String title) {
+    var listLike =
+        _postList.firstWhere((element) => element.title == title).downvotes;
+    if (listLike.isNotEmpty) {
+      listLike.removeLast();
+    }
+    print(listLike.length);
+    update();
   }
 }

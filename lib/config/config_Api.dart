@@ -51,7 +51,7 @@ String urlGetPostBySlug({String threadSlug, String postSlug}) {
 }
 
 // create a post
-String urlCreateNewPost({String threadSlug}) {
+String urlCreateNewPost(String threadSlug) {
   return '$urlApi/threads/$threadSlug/posts/create';
 }
 

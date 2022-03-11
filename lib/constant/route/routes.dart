@@ -1,7 +1,7 @@
 import 'package:comp1640_web/helpers/page_404.dart';
 import 'package:comp1640_web/pages/admin/admin_home.dart';
 import 'package:comp1640_web/pages/admin/thread_manage.dart';
-import 'package:comp1640_web/pages/welcomepage.dart';
+import 'package:comp1640_web/pages/staff/post_page.dart';
 import 'package:flutter/material.dart';
 
 const rootRoute = '/welcome-to-system';

@@ -3,7 +3,7 @@ import 'package:comp1640_web/modules/posts/models/post_item.dart';
 
 class CommentItem {
   PostItem post;
-  UserItem author;
+  Author author;
   String title;
   String content;
   String slug;
@@ -16,7 +16,7 @@ class CommentItem {
 
   CommentItem.fromJson(Map<String, dynamic> json) {
     post = json['post'] != null ?  PostItem.fromJson(json['post']) : null;
-    author = json['author'] != null ?  UserItem.fromJson(json['author']) : null;
+    author = json['author'] != null ?  Author.fromJson(json['author']) : null;
     title = json['title'];
     content = json['content'];
     slug = json['slug'];
