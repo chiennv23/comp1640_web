@@ -4,6 +4,7 @@ import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/threads/view/thread_create.dart';
 import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/modules/threads/view/thread_view.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
@@ -73,7 +74,7 @@ class _ThreadManageState extends State<ThreadManage> {
                     color: active,
                     borderRadius: BorderRadius.circular(8.0),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: showCreate,
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
                         padding: const EdgeInsets.all(10.0),
@@ -217,9 +218,7 @@ class _ThreadManageState extends State<ThreadManage> {
                                           child: Tooltip(
                                             message: 'Edit',
                                             child: IconButton(
-                                                onPressed: () {
-                                                  print('edit');
-                                                },
+                                                onPressed: () => showEdit(item),
                                                 icon: Icon(
                                                   Icons.edit_rounded,
                                                   color: primaryColor2,
@@ -272,16 +271,23 @@ class _ThreadManageState extends State<ThreadManage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: deleteDialog(deleteOnTap: () {
-          threadController.deleteThread(item.slug);
-          threadController.update();
-          snackBarMessage(
-              title: 'Delete successful!', backGroundColor: Colors.green);
-          Get.back();
-        }),
+        child: deleteDialog(
+          deleteOnTap: () {
+            threadController.deleteThread(item.slug);
+          },
+        ),
       ),
     );
-    // Get.dialog(ThreadView());
+  }
+
+  void showCreate() {
+    Get.dialog(ThreadCreate());
+  }
+
+  void showEdit(item) {
+    Get.dialog(ThreadCreate(
+      item: item,
+    ));
   }
 
   DataRow dataRowLoading() => DataRow(cells: [

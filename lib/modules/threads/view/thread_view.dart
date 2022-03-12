@@ -4,6 +4,7 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
+import 'package:comp1640_web/modules/threads/view/thread_create.dart';
 import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,9 @@ Widget ThreadView(ThreadItem item) => Container(
                   message: 'Edit',
                   child: IconButton(
                       onPressed: () {
-                        print('edit');
+                        Get.dialog(ThreadCreate(
+                          item: item,
+                        ));
                       },
                       icon: Icon(
                         Icons.edit_rounded,
@@ -112,11 +115,6 @@ Widget ThreadView(ThreadItem item) => Container(
                               width: 300,
                               child: deleteDialog(deleteOnTap: () {
                                 threadController.deleteThread(item.slug);
-                                threadController.update();
-                                snackBarMessage(
-                                    title: 'Delete successful!',
-                                    backGroundColor: Colors.green);
-                                Get.back();
                                 Get.back();
                               }),
                             ),

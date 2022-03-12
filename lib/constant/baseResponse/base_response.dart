@@ -32,15 +32,39 @@ class BaseDA {
           await http.post(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
         print('fail!');
+        print(response.statusCode.toString());
+        if (response.statusCode == 401) {
+          print('fail authen.');
+          var rs = await postRefreshToken();
+          if (rs.statusCode == 200) {
+            token =
+                SharedPreferencesHelper.instance.getString(key: 'accessToken');
+            headers = <String, String>{
+              'Content-type': 'application/json',
+              'Authorization': 'Bearer $token',
+            };
+            final jsonObj = obj == null ? null : json.encode(obj);
+            print(jsonObj);
+            final response = await http.post(Uri.parse(url),
+                headers: headers, body: jsonObj);
+            if (response.statusCode == 200) {
+              var b = BasicResponse<T>();
+              b.data = fromJson(jsonDecode(response.body));
+              b.code = 200;
+              return b;
+            }
+          }
+        }
+        if (response.statusCode == 403) {
+          snackBarMessageError401('You are not authorized.');
+        }
+        if (response.statusCode == 500) {
+          snackBarMessageError401('Server error!');
+        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
         return responseFail;
-      } else if (response.statusCode == 401) {
-        var rs = await postRefreshToken();
-        if (rs.statusCode == 200) {
-          await post(url, obj, fromJson);
-        }
       } else {
         var b = BasicResponse<T>();
         b.data = fromJson(jsonDecode(response.body));
@@ -77,15 +101,39 @@ class BaseDA {
           await http.delete(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
         print('fail!');
+        print(response.statusCode.toString());
+        if (response.statusCode == 401) {
+          print('fail authen.');
+          var rs = await postRefreshToken();
+          if (rs.statusCode == 200) {
+            token =
+                SharedPreferencesHelper.instance.getString(key: 'accessToken');
+            headers = <String, String>{
+              'Content-type': 'application/json',
+              'Authorization': 'Bearer $token',
+            };
+            final jsonObj = obj == null ? null : json.encode(obj);
+            print(jsonObj);
+            final response = await http.delete(Uri.parse(url),
+                headers: headers, body: jsonObj);
+            if (response.statusCode == 200) {
+              var b = BasicResponse<T>();
+              b.data = fromJson(jsonDecode(response.body));
+              b.code = 200;
+              return b;
+            }
+          }
+        }
+        if (response.statusCode == 403) {
+          snackBarMessageError401('You are not authorized.');
+        }
+        if (response.statusCode == 500) {
+          snackBarMessageError401('Server error!');
+        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
         return responseFail;
-      } else if (response.statusCode == 401) {
-        var rs = await postRefreshToken();
-        if (rs.statusCode == 200) {
-          await post(url, obj, fromJson);
-        }
       } else {
         var b = BasicResponse<T>();
         b.data = fromJson(jsonDecode(response.body));
@@ -122,15 +170,39 @@ class BaseDA {
           await http.put(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
         print('fail!');
+        print(response.statusCode.toString());
+        if (response.statusCode == 401) {
+          print('fail authen.');
+          var rs = await postRefreshToken();
+          if (rs.statusCode == 200) {
+            token =
+                SharedPreferencesHelper.instance.getString(key: 'accessToken');
+            headers = <String, String>{
+              'Content-type': 'application/json',
+              'Authorization': 'Bearer $token',
+            };
+            final jsonObj = obj == null ? null : json.encode(obj);
+            print(jsonObj);
+            final response =
+            await http.put(Uri.parse(url), headers: headers, body: jsonObj);
+            if (response.statusCode == 200) {
+              var b = BasicResponse<T>();
+              b.data = fromJson(jsonDecode(response.body));
+              b.code = 200;
+              return b;
+            }
+          }
+        }
+        if (response.statusCode == 403) {
+          snackBarMessageError401('You are not authorized.');
+        }
+        if (response.statusCode == 500) {
+          snackBarMessageError401('Server error!');
+        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
         return responseFail;
-      } else if (response.statusCode == 401) {
-        var rs = await postRefreshToken();
-        if (rs.statusCode == 200) {
-          await post(url, obj, fromJson);
-        }
       } else {
         var b = BasicResponse<T>();
         b.data = fromJson(jsonDecode(response.body));
@@ -210,8 +282,8 @@ Future<http.BaseResponse> postRefreshToken() async {
         .setString(key: 'accessToken', val: ms['accessToken']);
     print('accessToken ${ms['accessToken']}');
   } else if (response.statusCode == 401) {
-    snackBarMessageError401('Hết phiên làm việc. Vui lòng đăng nhập lại!');
-    SharedPreferencesHelper.instance.reloadAll();
+    snackBarMessageError401('Session is over. Please login again!');
+    SharedPreferencesHelper.instance.clearAllKeys();
     Get.offAllNamed(loginPageRoute);
   } else {
     snackBarMessageError(response.body);

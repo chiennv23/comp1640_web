@@ -101,12 +101,12 @@ class Posts {
 
   Posts(
       {this.sId,
-        this.title,
-        this.content,
-        this.author,
-        this.slug,
-        this.upvotes,
-        this.downvotes});
+      this.title,
+      this.content,
+      this.author,
+      this.slug,
+      this.upvotes,
+      this.downvotes});
 
   Posts.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];

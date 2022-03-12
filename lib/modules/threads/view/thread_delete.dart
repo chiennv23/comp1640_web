@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 Widget deleteDialog({Function deleteOnTap}) => Container(
       width: 300,
       child: Card(
-        margin: EdgeInsets.only(left: 16, right: 16),
+        margin: const EdgeInsets.only(left: 16, right: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),

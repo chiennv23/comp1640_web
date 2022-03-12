@@ -35,12 +35,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool checkRemember;
+  String token;
 
   @override
   void initState() {
-    checkRemember =
-        SharedPreferencesHelper.instance.getBool(key: 'rememberMe') ?? false;
+    token =
+        SharedPreferencesHelper.instance.getString(key: 'accessToken') ?? false;
     super.initState();
   }
 
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
-      initialRoute: checkRemember ? rootRoute : loginPageRoute,
+      initialRoute: token != null ? rootRoute : loginPageRoute,
       defaultTransition: Transition.fade,
       unknownRoute: GetPage(
           name: '/not-found',

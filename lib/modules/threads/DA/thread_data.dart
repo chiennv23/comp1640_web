@@ -16,7 +16,7 @@ class ThreadData {
     final response = await BaseDA.post(
         urlCreateThread,
         {"topic": topic, "description": des},
-        (json) => BasicResponse.fromJson(json));
+        (json) => ThreadItem.fromJson(json));
     if (response.code == 200) {
       print('Create thread done');
     }
@@ -37,11 +37,11 @@ class ThreadData {
   static Future<BasicResponse> editThread(
       {String threadSlug, String topic, String des}) async {
     final response = await BaseDA.put(
-        urlDeleteThread(threadSlug: threadSlug),
+        urlUpdateThread(threadSlug: threadSlug),
         {"topic": topic, "description": des},
-        (json) => BasicResponse.fromJson(json));
+        (json) => ThreadItem.fromJson(json));
     if (response.code == 200) {
-      print('Thread updated.');
+      print('Thread edited.');
     }
     return response;
   }
