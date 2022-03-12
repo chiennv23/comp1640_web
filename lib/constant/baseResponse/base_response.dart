@@ -1,29 +1,139 @@
 import 'dart:convert';
+import 'package:comp1640_web/components/snackbar_messenger.dart';
+import 'package:comp1640_web/config/config_Api.dart';
+import 'package:comp1640_web/constant/route/routes.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class BaseDA {
-  static Future<T> post<T extends BasicResponse>(
+  static Future<BasicResponse<T>> post<T>(
       String url, dynamic obj, T Function(Object json) fromJson,
       {String version, String token}) async {
     obj ??= {};
     try {
       var headers = <String, String>{};
-      headers = <String, String>{
-        'Content-type': 'application/json',
-      };
+      var token =
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      if (token != null) {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        };
+      } else {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+        };
+      }
+
       final jsonObj = obj == null ? null : json.encode(obj);
       print(jsonObj);
-
       final response =
           await http.post(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
         print('fail!');
-        var responseFail = BasicResponse();
+        var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
         return responseFail;
+      } else if (response.statusCode == 401) {
+        var rs = await postRefreshToken();
+        if (rs.statusCode == 200) {
+          await post(url, obj, fromJson);
+        }
       } else {
-        var b = fromJson(response.body);
+        var b = BasicResponse<T>();
+        b.data = fromJson(jsonDecode(response.body));
+        b.code = 200;
+        return b;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<BasicResponse<T>> delete<T>(
+      String url, dynamic obj, T Function(Object json) fromJson,
+      {String version, String token}) async {
+    obj ??= {};
+    try {
+      var headers = <String, String>{};
+      var token =
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      if (token != null) {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        };
+      } else {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+        };
+      }
+
+      final jsonObj = obj == null ? null : json.encode(obj);
+      print(jsonObj);
+      final response =
+          await http.delete(Uri.parse(url), headers: headers, body: jsonObj);
+      if (response.statusCode != 200) {
+        print('fail!');
+        var responseFail = BasicResponse<T>();
+        responseFail.code = response.statusCode;
+        responseFail.message = response.body;
+        return responseFail;
+      } else if (response.statusCode == 401) {
+        var rs = await postRefreshToken();
+        if (rs.statusCode == 200) {
+          await post(url, obj, fromJson);
+        }
+      } else {
+        var b = BasicResponse<T>();
+        b.data = fromJson(jsonDecode(response.body));
+        b.code = 200;
+        return b;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<BasicResponse<T>> put<T>(
+      String url, dynamic obj, T Function(Object json) fromJson,
+      {String version, String token}) async {
+    obj ??= {};
+    try {
+      var headers = <String, String>{};
+      var token =
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      if (token != null) {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        };
+      } else {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+        };
+      }
+
+      final jsonObj = obj == null ? null : json.encode(obj);
+      print(jsonObj);
+      final response =
+          await http.put(Uri.parse(url), headers: headers, body: jsonObj);
+      if (response.statusCode != 200) {
+        print('fail!');
+        var responseFail = BasicResponse<T>();
+        responseFail.code = response.statusCode;
+        responseFail.message = response.body;
+        return responseFail;
+      } else if (response.statusCode == 401) {
+        var rs = await postRefreshToken();
+        if (rs.statusCode == 200) {
+          await post(url, obj, fromJson);
+        }
+      } else {
+        var b = BasicResponse<T>();
+        b.data = fromJson(jsonDecode(response.body));
         b.code = 200;
         return b;
       }
@@ -67,13 +177,6 @@ class BaseDA {
       headers = <String, String>{
         'Content-type': 'application/json',
       };
-      // headers = <String, String>{
-      //   "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-      //   "Access-Control-Allow-Credentials": "true", // Required for cookies, authorization headers with HTTPS
-      //   "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-      //   "Access-Control-Allow-Methods": "POST, OPTIONS"
-      // };
-      print(url);
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode != 200) {
         print('fail!');
@@ -94,6 +197,28 @@ class BaseDA {
   }
 }
 
+Future<http.BaseResponse> postRefreshToken() async {
+  print('refreshToken doing...');
+  var refreshToken =
+      SharedPreferencesHelper.instance.getString(key: 'refreshToken');
+  var response = await http
+      .post(Uri.parse(urlRefreshToken), body: {"refreshToken": refreshToken});
+  Map<String, dynamic> ms = json.decode(response.body);
+
+  if (response.statusCode == 200) {
+    SharedPreferencesHelper.instance
+        .setString(key: 'accessToken', val: ms['accessToken']);
+    print('accessToken ${ms['accessToken']}');
+  } else if (response.statusCode == 401) {
+    snackBarMessageError401('Hết phiên làm việc. Vui lòng đăng nhập lại!');
+    SharedPreferencesHelper.instance.reloadAll();
+    Get.offAllNamed(loginPageRoute);
+  } else {
+    snackBarMessageError(response.body);
+  }
+  return response;
+}
+
 class BasicResponse<T> {
   String message;
   int code;
@@ -103,6 +228,7 @@ class BasicResponse<T> {
   BasicResponse();
 
   BasicResponse.fromJson(Object json) {
+    data = json;
     message = json.toString();
   }
 }

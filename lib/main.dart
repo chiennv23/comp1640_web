@@ -21,7 +21,6 @@ void main() async {
   await SharedPreferencesHelper.instance.init();
   Get.put(CoreRoutes());
   Get.put(MenuController());
-  Get.put(ThreadController());
   runApp(const MyApp());
 }
 
@@ -53,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       defaultTransition: Transition.fade,
       unknownRoute: GetPage(
           name: '/not-found',
-          page: () => PageNotFound(),
+          page: () => const PageNotFound(),
           transition: Transition.fadeIn),
       getPages: [
         GetPage(

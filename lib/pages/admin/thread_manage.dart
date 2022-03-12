@@ -1,8 +1,10 @@
+import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/modules/threads/view/thread_view.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -185,8 +187,8 @@ class _ThreadManageState extends State<ThreadManage> {
                                   DataCell(CustomText(text: item.topic ?? '')),
                                   DataCell(
                                       CustomText(text: item.description ?? '')),
-                                  DataCell(
-                                      CustomText(text: item.creator ?? '')),
+                                  DataCell(CustomText(
+                                      text: item.creator.email ?? '')),
                                   DataCell(CustomText(text: item.slug ?? '')),
                                   DataCell(CustomText(
                                       text: item.posts.length.toString())),
@@ -228,9 +230,8 @@ class _ThreadManageState extends State<ThreadManage> {
                                           child: Tooltip(
                                             message: 'Delete',
                                             child: IconButton(
-                                                onPressed: () {
-                                                  print('delete');
-                                                },
+                                                onPressed: () =>
+                                                    showDelete(item),
                                                 icon: Icon(
                                                   Icons.delete_rounded,
                                                   color: primaryColor2,
@@ -260,6 +261,24 @@ class _ThreadManageState extends State<ThreadManage> {
       barrierDismissible: false,
       builder: (context) => Dialog(
         child: ThreadView(item),
+      ),
+    );
+    // Get.dialog(ThreadView());
+  }
+
+  void showDelete(item) {
+    ThreadController threadController = Get.find();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        child: deleteDialog(deleteOnTap: () {
+          threadController.deleteThread(item.slug);
+          threadController.update();
+          snackBarMessage(
+              title: 'Delete successful!', backGroundColor: Colors.green);
+          Get.back();
+        }),
       ),
     );
     // Get.dialog(ThreadView());

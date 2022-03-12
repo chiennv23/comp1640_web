@@ -14,5 +14,9 @@ void snackBarMessage(
 
 void snackBarMessageError(String messageResponse) {
   Map<String, dynamic> ms = json.decode(messageResponse);
-  snackBarMessage(title: ms['message'], backGroundColor: Colors.red);
+  snackBarMessage(title: ms['error'], backGroundColor: Colors.red);
+}
+
+void snackBarMessageError401(String messageResponse) {
+  snackBarMessage(title: messageResponse, backGroundColor: Colors.red);
 }

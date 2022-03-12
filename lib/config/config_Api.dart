@@ -8,8 +8,8 @@ String urlRegister = '$urlApi/auth/register';
 // login account
 String urlLogin = '$urlApi/auth/login';
 
-// get CSRF token
-String urlCSRF = '$urlApi/auth/csrf';
+// get refresh token
+String urlRefreshToken = '$urlApi/auth/refresh';
 
 //TODO COMMENTS
 // get all comment a Post

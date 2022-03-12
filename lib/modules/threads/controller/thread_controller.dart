@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:collection/src/iterable_extensions.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
@@ -20,7 +23,13 @@ class ThreadController extends GetxController {
     try {
       isLoading(true);
       final data = await ThreadData.getAllThreads();
-      _threadList.assignAll(data?.data);
+      if (data.code == 200) {
+        _threadList.assignAll(data?.data);
+      } else {
+        _threadList;
+      }
+    } catch (e) {
+      print('thread error $e');
     } finally {
       isLoading(false);
     }
@@ -34,14 +43,25 @@ class ThreadController extends GetxController {
     return [
       charts.Series<ThreadItem, String>(
         id: 'Threads',
-        colorFn: (_, count) {
-          if (count < 3) {
+        colorFn: (ThreadItem thread, count) {
+          var post = thread.posts.length;
+          var postMax = _threadList
+              .map((m) => m.posts.length)
+              .reduce((current, next) => current > next ? current : next);
+          if (post == postMax) {
+            return charts.ColorUtil.fromDartColor(primaryColor2);
+          } else if (post < postMax && post >= postMax / 2) {
+            return charts.ColorUtil.fromDartColor(orangeColor);
+          } else if (post < postMax / 2) {
+            return charts.ColorUtil.fromDartColor(redColor);
+          } else {
             return charts.ColorUtil.fromDartColor(redColor);
           }
-          return charts.ColorUtil.fromDartColor(primaryColor2);
         },
         domainFn: (ThreadItem thread, _) => thread.topic,
         measureFn: (ThreadItem thread, _) => thread.posts.length,
+        labelAccessorFn: (ThreadItem thread, _) =>
+            '${thread.topic}: ${thread.posts.length.toString()} posts',
         data: [..._threadList],
       ),
     ];
@@ -61,5 +81,10 @@ class ThreadController extends GetxController {
   threadChangeChoose({String thread = '', String slug}) {
     threadSelected.value = thread;
     slugSelected.value = slug;
+  }
+
+  deleteThread(String threadSLug) {
+    _threadList.removeWhere((element) => element.slug == threadSLug);
+    print(_threadList.length);
   }
 }

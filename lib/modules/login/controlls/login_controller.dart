@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/baseResponse/base_response.dart';
 import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
+import 'package:comp1640_web/modules/login/models/user_items.dart';
+import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -23,17 +27,22 @@ class LoginController {
           'email': userName,
           'password': password,
         },
-        (json) => BasicResponse.fromJson(json));
+        (json) => UserItem.fromJson(json));
     if (response.code == 200) {
-      // await getCsrfToken();
+      SharedPreferencesHelper.instance
+          .setString(key: 'accessToken', val: response.data.accessToken);
+      var token =
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      print('token: ' + token.toString());
+      SharedPreferencesHelper.instance
+          .setString(key: 'refreshToken', val: response.data.refreshToken);
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName.split('@')[0]);
-      print('response.statusCode ' + response.code.toString());
       name = SharedPreferencesHelper.instance.getString(key: 'UserName');
-      menuController.changeActiveItemTo(
-          checkRoleShowCategory(name)[0].name);
+      menuController.changeActiveItemTo(checkRoleShowCategory(name)[0].name);
       MenuController.instance.update();
       print(name);
+      Get.put(ThreadController());
       Get.offAllNamed(
         rootRoute,
       );
@@ -44,17 +53,6 @@ class LoginController {
       snackBarMessageError(response.message);
     }
     return response;
-  }
-
-  static Future<BasicResponse> getCsrfToken() async {
-    var res = await BaseDA.get(urlCSRF, (json) => BasicResponse.fromJson(json));
-    if (res.code == 200) {
-      SharedPreferencesHelper.instance.setString(key: 'csrf', val: res.data);
-      print('csrf_token ${res.data}');
-    } else {
-      snackBarMessageError(res.message);
-    }
-    return res;
   }
 
   static Future<BasicResponse> signUp(
@@ -73,7 +71,6 @@ class LoginController {
         (json) => BasicResponse.fromJson(json));
     print('response.mess ' + response.message);
     if (response.code == 200) {
-      // await getCsrfToken();
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName);
       print('response.statusCode ' + response.code.toString());

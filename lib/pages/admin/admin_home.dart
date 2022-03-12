@@ -1,5 +1,7 @@
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
+import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_small.dart';
 import 'package:comp1640_web/pages/admin/widgets/thread_section_large.dart';
@@ -16,6 +18,12 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  @override
+  void initState() {
+    Get.put(ThreadController());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(

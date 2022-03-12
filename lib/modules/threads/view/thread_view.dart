@@ -1,7 +1,10 @@
+import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/route/route_navigate.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
+import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
+import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,7 +43,7 @@ Widget ThreadView(ThreadItem item) => Container(
               size: 16,
               weight: FontWeight.bold,
             ),
-            trailing: Text(item.creator ?? ''),
+            trailing: Text(item.creator.email ?? ''),
           ),
           ListTile(
             title: const CustomText(
@@ -102,7 +105,23 @@ Widget ThreadView(ThreadItem item) => Container(
                   message: 'Delete',
                   child: IconButton(
                       onPressed: () {
-                        print('delete');
+                        ThreadController threadController = Get.find();
+                        Get.dialog(
+                          Center(
+                            child: Container(
+                              width: 300,
+                              child: deleteDialog(deleteOnTap: () {
+                                threadController.deleteThread(item.slug);
+                                threadController.update();
+                                snackBarMessage(
+                                    title: 'Delete successful!',
+                                    backGroundColor: Colors.green);
+                                Get.back();
+                                Get.back();
+                              }),
+                            ),
+                          ),
+                        );
                       },
                       icon: Icon(
                         Icons.delete_rounded,

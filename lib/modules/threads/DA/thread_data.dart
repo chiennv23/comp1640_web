@@ -11,4 +11,38 @@ class ThreadData {
     }
     return response;
   }
+
+  static Future<BasicResponse> createThread(String topic, String des) async {
+    final response = await BaseDA.post(
+        urlCreateThread,
+        {"topic": topic, "description": des},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Create thread done');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> deleteThread(String threadSlug) async {
+    final response = await BaseDA.delete(
+        urlDeleteThread(threadSlug: threadSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Thread deleted.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> editThread(
+      {String threadSlug, String topic, String des}) async {
+    final response = await BaseDA.put(
+        urlDeleteThread(threadSlug: threadSlug),
+        {"topic": topic, "description": des},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Thread updated.');
+    }
+    return response;
+  }
 }
