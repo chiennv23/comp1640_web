@@ -76,7 +76,12 @@ class SideMenu extends StatelessWidget {
                     onTap: () {
                       if (item.route == loginPageRoute) {
                         print('logout');
-                        SharedPreferencesHelper.instance.clearAllKeys();
+                        SharedPreferencesHelper.instance
+                            .removeKey(key: 'accessToken');
+                        SharedPreferencesHelper.instance
+                            .removeKey(key: 'refreshToken');
+                        SharedPreferencesHelper.instance
+                            .removeKey(key: 'UserName');
                         menuController.changeActiveItemTo(
                             checkRoleShowCategory(nameRole)[0].name);
                         print(checkRoleShowCategory(nameRole)[0].name);

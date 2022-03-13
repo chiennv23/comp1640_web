@@ -29,6 +29,7 @@ class ThreadController extends GetxController {
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
         slugSelected.value = _threadList.first.slug;
+        threadSelected.value = _threadList.first.topic;
       } else {
         _threadList;
       }

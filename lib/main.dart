@@ -14,12 +14,14 @@ import 'constant/route/routes.dart';
 import 'helpers/menu_controller.dart';
 import 'helpers/page_404.dart';
 import 'layout.dart';
+import 'modules/threads/controller/thread_controller.dart';
 
 void main() async {
   setPathUrlStrategy();
   await SharedPreferencesHelper.instance.init();
   Get.put(CoreRoutes());
   Get.put(MenuController());
+  Get.put(ThreadController());
   runApp(const MyApp());
 }
 

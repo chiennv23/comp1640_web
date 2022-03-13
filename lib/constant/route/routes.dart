@@ -1,6 +1,7 @@
 import 'package:comp1640_web/helpers/page_404.dart';
 import 'package:comp1640_web/pages/admin/admin_home.dart';
 import 'package:comp1640_web/pages/admin/thread_manage.dart';
+import 'package:comp1640_web/pages/profile.dart';
 import 'package:comp1640_web/pages/staff/post_page.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ const loginPageRoute = '/login';
 const logOutDisplayName = 'Log Out';
 
 // Student
-const homeDisplayName = 'Home';
+const homeDisplayName = 'Feedbacks';
 const homePageRoute = '/home';
 
 const profileDisplayName = 'Profile';
@@ -21,7 +22,6 @@ const dashboardPageRoute = '/dash';
 
 const threadDisplayName = 'Thread manage';
 const threadPageRoute = '/threadManage';
-
 
 class MenuItem {
   final String name;
@@ -35,20 +35,26 @@ List<MenuItem> checkRoleShowCategory(role) {
   switch (role) {
     case 'admin':
       return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
         MenuItem(dashboardDisplayName, dashboardPageRoute),
         MenuItem(threadDisplayName, threadPageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
-      case 'student':
+    case 'student':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    default:
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
   }
-  return listAction;
 }
-
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -62,7 +68,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case homePageRoute:
       return _getPageRoute(const Home());
     case profilePageRoute:
-      return _getPageRoute(const ThreadManage());
+      return _getPageRoute(const Profile());
     default:
       return _getPageRoute(const PageNotFound());
   }

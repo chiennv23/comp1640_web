@@ -1,7 +1,7 @@
 import 'package:comp1640_web/constant/route/route_navigate.dart';
 import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
-import 'package:comp1640_web/modules/login/controlls/login_controller.dart';
+import 'package:comp1640_web/modules/login/controller/login_controller.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';

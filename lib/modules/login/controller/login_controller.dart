@@ -6,6 +6,7 @@ import 'package:comp1640_web/constant/baseResponse/base_response.dart';
 import 'package:comp1640_web/constant/route/routes.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
+import 'package:comp1640_web/modules/login/controller/user_controller.dart';
 import 'package:comp1640_web/modules/login/models/user_items.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +37,13 @@ class LoginController {
       print('token: ' + token.toString());
       SharedPreferencesHelper.instance
           .setString(key: 'refreshToken', val: response.data.refreshToken);
+      Get.put(UserController());
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: userName.split('@')[0]);
       name = SharedPreferencesHelper.instance.getString(key: 'UserName');
       menuController.changeActiveItemTo(checkRoleShowCategory(name)[0].name);
       MenuController.instance.update();
       print(name);
-      Get.put(ThreadController());
       Get.offAllNamed(
         rootRoute,
       );
@@ -82,6 +83,15 @@ class LoginController {
           backGroundColor: Colors.green);
     } else {
       snackBarMessageError(response.message);
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> postProfile() async {
+    var response = await BaseDA.post(
+        urlPostProfile, {}, (json) => user_items.fromJson(json));
+    if (response.code == 200) {
+      print('get profile done.');
     }
     return response;
   }

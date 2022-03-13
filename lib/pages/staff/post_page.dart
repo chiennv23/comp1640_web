@@ -21,8 +21,14 @@ class _HomeState extends State<Home> {
   int disLike = 2;
 
   @override
+  void initState() {
+    Get.put(PostController());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    PostController postController = Get.put(PostController());
+    PostController postController = Get.find();
     ThreadController threadController = Get.find();
 
     return Scaffold(
@@ -124,7 +130,6 @@ class _HomeState extends State<Home> {
   Widget showChangeThread() {
     ThreadController threadController = Get.find();
     PostController postController = Get.find();
-    var threadTemp = threadController.ThreadList?.first?.topic;
     return Scaffold(
       body: Center(
         child: Container(
@@ -165,27 +170,24 @@ class _HomeState extends State<Home> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Material(
-                            color: active,
+                        Material(
+                          color: active,
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: InkWell(
+                            onTap: () {
+                              Get.back(
+                                  result:
+                                      threadController.threadSelected.value);
+                            },
                             borderRadius: BorderRadius.circular(8.0),
-                            child: InkWell(
-                              onTap: () {
-                                Get.back(
-                                    result:
-                                        threadController.threadSelected.value);
-                              },
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Container(
-                                padding: const EdgeInsets.all(10.0),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0)),
-                                child: const CustomText(
-                                  text: "Cancel",
-                                  color: Colors.white,
-                                ),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: const CustomText(
+                                text: "Cancel",
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -267,56 +269,72 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Row(
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.thumb_up,
-                        ),
-                        tooltip: 'Like',
-                        onPressed: item.oneClickAction
-                            ? () {
-                                postController.chooseLike(item.title);
-                                setState(() {
-                                  item.oneClickAction = false;
-                                });
-                              }
-                            : null,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CustomText(
-                            text: '${item.upvotes.length}',
-                          ))
-                    ],
+                  IconButton(
+                    icon: const Icon(
+                      Icons.thumb_up,
+                    ),
+                    tooltip: 'Like',
+                    onPressed: item.oneClickAction
+                        ? () {
+                            postController.chooseLike(item.title);
+                            setState(() {
+                              item.oneClickAction = false;
+                            });
+                          }
+                        : null,
                   ),
+                  Container(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: CustomText(
+                        text: '${item.upvotes.length}',
+                      )),
                   const SizedBox(
                     width: 24,
                   ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.thumb_down,
+                    ),
+                    tooltip: 'Dislike',
+                    onPressed: item.oneClickAction
+                        ? () {
+                            postController.chooseDisLike(item.title);
+                            setState(() {
+                              item.oneClickAction = false;
+                            });
+                          }
+                        : null,
+                  ),
+                  Container(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: CustomText(text: '${item.downvotes.length}')),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              child: Column(
+                children: [
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.thumb_down,
+                      CustomText(
+                          text: item.comments.isEmpty
+                              ? 'No comments yet.'
+                              : 'There are ${item.comments.length} comments.'),
+                      TextButton(
+                        onPressed: () {},
+                        child: CustomText(
+                          text: item.comments.isEmpty
+                              ? 'Comment now!'
+                              : 'Show all comment?',
+                          weight: FontWeight.bold,
                         ),
-                        tooltip: 'Dislike',
-                        onPressed: item.oneClickAction
-                            ? () {
-                                postController.chooseDisLike(item.title);
-                                setState(() {
-                                  item.oneClickAction = false;
-                                });
-                              }
-                            : null,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CustomText(text: '${item.downvotes.length}'))
+                      )
                     ],
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

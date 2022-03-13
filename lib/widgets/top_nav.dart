@@ -2,7 +2,7 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
-import 'package:comp1640_web/modules/login/controlls/login_controller.dart';
+import 'package:comp1640_web/modules/login/controller/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

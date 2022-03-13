@@ -45,12 +45,10 @@ class PostController extends GetxController {
   }
 
   chooseDisLike(String title) {
-    var listLike =
+    var disListLike =
         _postList.firstWhere((element) => element.title == title).downvotes;
-    if (listLike.isNotEmpty) {
-      listLike.removeLast();
-    }
-    print(listLike.length);
+    disListLike.add('dislike');
+    print(disListLike.length);
     update();
   }
 }
