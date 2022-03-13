@@ -28,6 +28,7 @@ class ThreadController extends GetxController {
       final data = await ThreadData.getAllThreads();
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
+        slugSelected.value = _threadList.first.slug;
       } else {
         _threadList;
       }

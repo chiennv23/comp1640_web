@@ -14,7 +14,6 @@ import 'constant/route/routes.dart';
 import 'helpers/menu_controller.dart';
 import 'helpers/page_404.dart';
 import 'layout.dart';
-import 'modules/threads/controller/thread_controller.dart';
 
 void main() async {
   setPathUrlStrategy();
@@ -40,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     token =
-        SharedPreferencesHelper.instance.getString(key: 'accessToken') ?? false;
+        SharedPreferencesHelper.instance.getString(key: 'accessToken');
     super.initState();
   }
 

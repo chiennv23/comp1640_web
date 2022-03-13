@@ -1,3 +1,4 @@
+import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
@@ -24,7 +25,7 @@ class PostController extends GetxController {
       if (data.code == 200) {
         _postList.assignAll(data?.data);
       } else {
-        _postList.assignAll(PostData.dataHashCode);
+        snackBarMessageError(data.message);
       }
     } finally {
       isLoading(false);

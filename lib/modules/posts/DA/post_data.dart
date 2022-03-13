@@ -9,80 +9,80 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PostData {
-  static List<PostItem> dataHashCode = [
-    PostItem(
-        title: 'title',
-        content: 'content',
-        author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-        comments: [
-          CommentItem(
-              content: 'content',
-              createdAt: DateTime.now().toString(),
-              updatedAt: DateTime.now().toString(),
-              author: Author(
-                  email: 'email', sId: 'sid', username: 'usernameAuthor'),
-              downvotes: [
-                'a',
-              ],
-              upvotes: [
-                '1',
-                '2'
-              ])
-        ],
-        downvotes: [
-          'a',
-        ],
-        upvotes: ['1', '2'],
-        category: 'category',
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
-        thread: 'thread',
-        slug: 'slug'),
-    PostItem(
-        title: 'title2',
-        content: 'content',
-        author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-        comments: [
-          CommentItem(
-              content: 'content',
-              createdAt: DateTime.now().toString(),
-              updatedAt: DateTime.now().toString(),
-              author: Author(
-                  email: 'email', sId: 'sid', username: 'usernameAuthor'),
-              downvotes: [
-                'a',
-              ],
-              upvotes: [
-                '1',
-                '2'
-              ])
-        ],
-        downvotes: [
-          'a',
-        ],
-        upvotes: ['1', '2'],
-        category: 'category',
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
-        thread: 'thread',
-        slug: 'slug'),
-    PostItem(
-        title: 'title3',
-        content: 'content',
-        comments: [],
-        downvotes: [
-          'a',
-        ],
-        upvotes: ['1', '2'],
-        author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-        category: 'category',
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
-        thread: 'thread',
-        slug: 'slug'),
-  ];
+  // static List<PostItem> dataHashCode = [
+  //   PostItem(
+  //       title: 'title',
+  //       content: 'content',
+  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
+  //       comments: [
+  //         CommentItem(
+  //             content: 'content',
+  //             createdAt: DateTime.now().toString(),
+  //             updatedAt: DateTime.now().toString(),
+  //             author: Author(
+  //                 email: 'email', sId: 'sid', username: 'usernameAuthor'),
+  //             downvotes: [
+  //               'a',
+  //             ],
+  //             upvotes: [
+  //               '1',
+  //               '2'
+  //             ])
+  //       ],
+  //       downvotes: [
+  //         'a',
+  //       ],
+  //       upvotes: ['1', '2'],
+  //       category: 'category',
+  //       createdAt: DateTime.now().toString(),
+  //       updatedAt: DateTime.now().toString(),
+  //       thread: 'thread',
+  //       slug: 'slug'),
+  //   PostItem(
+  //       title: 'title2',
+  //       content: 'content',
+  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
+  //       comments: [
+  //         CommentItem(
+  //             content: 'content',
+  //             createdAt: DateTime.now().toString(),
+  //             updatedAt: DateTime.now().toString(),
+  //             author: Author(
+  //                 email: 'email', sId: 'sid', username: 'usernameAuthor'),
+  //             downvotes: [
+  //               'a',
+  //             ],
+  //             upvotes: [
+  //               '1',
+  //               '2'
+  //             ])
+  //       ],
+  //       downvotes: [
+  //         'a',
+  //       ],
+  //       upvotes: ['1', '2'],
+  //       category: 'category',
+  //       createdAt: DateTime.now().toString(),
+  //       updatedAt: DateTime.now().toString(),
+  //       thread: 'thread',
+  //       slug: 'slug'),
+  //   PostItem(
+  //       title: 'title3',
+  //       content: 'content',
+  //       comments: [],
+  //       downvotes: [
+  //         'a',
+  //       ],
+  //       upvotes: ['1', '2'],
+  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
+  //       category: 'category',
+  //       createdAt: DateTime.now().toString(),
+  //       updatedAt: DateTime.now().toString(),
+  //       thread: 'thread',
+  //       slug: 'slug'),
+  // ];
 
-  static Future<BasicResponse<List<PostItem>>> getAllPostByThread(
+  static Future<BasicResponse> getAllPostByThread(
       String threadSlug) async {
     final response = await BaseDA.getList(
         urlGetAllPosts(threadSlug: threadSlug),

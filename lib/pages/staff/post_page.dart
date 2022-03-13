@@ -209,43 +209,6 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        child: Container(
-          color: spaceColor,
-          child: ListView.separated(
-            itemCount: threadController.ThreadList.length,
-            itemBuilder: (context, i) {
-              final item = threadController.ThreadList[i];
-              return ListTile(
-                onTap: () {
-                  threadController.threadChangeChoose(thread: item.topic);
-                },
-                title: CustomText(
-                  text: item.topic,
-                ),
-                trailing: threadTemp == item.topic
-                    ? Icon(
-                        Icons.check_rounded,
-                        color: primaryColor2,
-                      )
-                    : Container(),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider(
-                height: 1.0,
-                thickness: 1.0,
-                color: primaryColor,
-              );
-            },
-          ),
-        ),
-      ),
-    );
-    // Get.dialog(ThreadView());
   }
 
   Widget postCard(PostItem item) {

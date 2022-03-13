@@ -376,7 +376,7 @@ class _LoginState extends State<Login>
                   });
                   return;
                 }
-                print(1111);
+                print('signUp');
                 LoginController.signUp(
                   emailSignUpController.text,
                   userNameSignUpController.text,

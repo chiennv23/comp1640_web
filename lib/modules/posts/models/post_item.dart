@@ -2,48 +2,48 @@ import 'package:comp1640_web/modules/posts/models/comment_item.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 
 class PostItem {
-  String thread;
+  String sId;
+  Thread thread;
   String title;
   String content;
-  Author author;
+  Creator author;
   String slug;
   List<String> upvotes;
   List<String> downvotes;
-  List<CommentItem> comments;
-  String category;
+  List<Comment> comments;
   String createdAt;
   String updatedAt;
   bool oneClickAction;
 
   PostItem(
-      {this.thread,
+      {this.sId,
+      this.thread,
       this.title,
       this.content,
       this.author,
+      this.slug,
       this.upvotes,
       this.downvotes,
       this.comments,
-      this.slug,
-      this.category,
       this.createdAt,
       this.updatedAt,
       this.oneClickAction = true});
 
   PostItem.fromJson(Map<String, dynamic> json) {
-    thread = json['thread'];
+    sId = json['_id'];
+    thread = json['thread'] != null ? Thread.fromJson(json['thread']) : null;
     title = json['title'];
     content = json['content'];
-    author = json['author'] != null ? Author.fromJson(json['author']) : null;
+    author = json['author'] != null ? Creator.fromJson(json['author']) : null;
+    slug = json['slug'];
     upvotes = json['upvotes'].cast<String>();
     downvotes = json['downvotes'].cast<String>();
     if (json['comments'] != null) {
-      comments = <CommentItem>[];
+      comments = [];
       json['comments'].forEach((v) {
-        comments.add(CommentItem.fromJson(v));
+        comments.add(Comment.fromJson(v));
       });
     }
-    slug = json['slug'];
-    category = json['category'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     oneClickAction = true;
@@ -57,9 +57,13 @@ class PostItem {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['thread'] = thread;
+    data['_id'] = sId;
+    if (thread != null) {
+      data['thread'] = thread.toJson();
+    }
     data['title'] = title;
     data['content'] = content;
+    data['slug'] = slug;
     data['upvotes'] = upvotes;
     data['downvotes'] = downvotes;
     if (author != null) {
@@ -68,32 +72,59 @@ class PostItem {
     if (comments != null) {
       data['comments'] = author.toJson();
     }
-    data['slug'] = slug;
-    data['category'] = category;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     return data;
   }
 }
 
-class Author {
+class Comment {
   String sId;
-  String email;
-  String username;
+  String author;
+  String content;
+  List<String> upvotes;
+  List<String> downvotes;
+  String slug;
 
-  Author({this.sId, this.email, this.username});
+  Comment({this.sId, this.author, this.content, this.upvotes, this.downvotes,this.slug});
 
-  Author.fromJson(Map<String, dynamic> json) {
+  Comment.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    email = json['email'];
-    username = json['username'];
+    author = json['author'];
+    content = json['content'];
+    upvotes = json['upvotes'].cast<String>();
+    downvotes = json['downvotes'].cast<String>();
+    slug = json['slug'];
+  }
+}
+
+class Thread {
+  String sId;
+  String topic;
+  String description;
+  Creator creator;
+  String slug;
+
+  Thread({this.sId, this.topic, this.description, this.creator, this.slug});
+
+  Thread.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    topic = json['topic'];
+    description = json['description'];
+    creator =
+        json['creator'] != null ? Creator.fromJson(json['creator']) : null;
+    slug = json['slug'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = sId;
-    data['email'] = email;
-    data['username'] = username;
+    data['topic'] = topic;
+    data['description'] = description;
+    if (creator != null) {
+      data['creator'] = creator.toJson();
+    }
+    data['slug'] = slug;
     return data;
   }
 }
