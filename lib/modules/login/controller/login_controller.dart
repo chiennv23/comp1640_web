@@ -70,16 +70,16 @@ class LoginController {
           "confirmPassword": password
         },
         (json) => BasicResponse.fromJson(json));
-    print('response.mess ' + response.message);
     if (response.code == 200) {
-      SharedPreferencesHelper.instance
-          .setString(key: 'UserName', val: userName);
+      // SharedPreferencesHelper.instance
+      //     .setString(key: 'UserName', val: userName);
       print('response.statusCode ' + response.code.toString());
-      Get.offAllNamed(
-        rootRoute,
-      );
+      print('sign up done.');
+      // Get.offAllNamed(
+      //   rootRoute,
+      // );
       snackBarMessage(
-          title: 'Welcome to Feedback System, $userName',
+          title: 'Successfully registered with email $email. Sign in now!',
           backGroundColor: Colors.green);
     } else {
       snackBarMessageError(response.message);

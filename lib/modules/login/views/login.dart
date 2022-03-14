@@ -19,6 +19,7 @@ class _LoginState extends State<Login>
   // login
   var emailLoginController = TextEditingController();
   var passLoginController = TextEditingController();
+  FocusNode passNode;
 
   // sign up
   var emailSignUpController = TextEditingController();
@@ -145,10 +146,11 @@ class _LoginState extends State<Login>
             TextFormField(
               controller: emailLoginController,
               validator: (email) {
-                if (isEmailValid(email)) {
+                if (isEmailValid(email) &
+                    email.split('@')[1].contains('feedback.com')) {
                   return null;
                 } else {
-                  return 'Enter a valid email address';
+                  return 'Error invalid email@feedback.com';
                 }
               },
               decoration: InputDecoration(
@@ -161,7 +163,7 @@ class _LoginState extends State<Login>
               height: 15,
             ),
             TextFormField(
-              obscureText: visibility,
+              obscureText: visibility,focusNode: passNode,
               controller: passLoginController,
               validator: (password) {
                 if (isPasswordValid(password)) {
@@ -217,6 +219,7 @@ class _LoginState extends State<Login>
             InkWell(
               onTap: () {
                 setState(() {
+                  FocusScope.of(context).unfocus();
                   hasAutoValidation1 = true;
                   isLoading = true;
                 });
@@ -291,10 +294,11 @@ class _LoginState extends State<Login>
                   child: TextFormField(
                     controller: emailSignUpController,
                     validator: (email) {
-                      if (isEmailValid(email)) {
+                      if (isEmailValid(email) &
+                          email.split('@')[1].contains('feedback.com')) {
                         return null;
                       } else {
-                        return 'Enter a valid email';
+                        return 'Error invalid email@feedback.com';
                       }
                     },
                     decoration: InputDecoration(
@@ -365,8 +369,9 @@ class _LoginState extends State<Login>
               height: 35,
             ),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 setState(() {
+                  FocusScope.of(context).unfocus();
                   hasAutoValidation2 = true;
                   isLoading = true;
                 });
@@ -377,7 +382,7 @@ class _LoginState extends State<Login>
                   return;
                 }
                 print('signUp');
-                LoginController.signUp(
+                var rs = await LoginController.signUp(
                   emailSignUpController.text,
                   userNameSignUpController.text,
                   passSignUpController.text,
@@ -387,6 +392,14 @@ class _LoginState extends State<Login>
                       passSignUpController.text = '';
                       verifyPassSignUpController.text = '';
                     }));
+                if (rs.code == 200) {
+                  tabController.animateTo(0);
+                  setState(() {
+                    FocusScope.of(context).requestFocus(passNode);
+                    isLoading = false;
+                    emailLoginController.text = emailSignUpController.text;
+                  });
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
