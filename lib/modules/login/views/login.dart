@@ -154,6 +154,7 @@ class _LoginState extends State<Login>
                 }
               },
               decoration: InputDecoration(
+                  focusColor: primaryColor2.withOpacity(.4),
                   labelText: "Email",
                   hintText: "abc@feedback.com",
                   border: OutlineInputBorder(
@@ -163,7 +164,8 @@ class _LoginState extends State<Login>
               height: 15,
             ),
             TextFormField(
-              obscureText: visibility,focusNode: passNode,
+              obscureText: visibility,
+              focusNode: passNode,
               controller: passLoginController,
               validator: (password) {
                 if (isPasswordValid(password)) {
@@ -173,6 +175,7 @@ class _LoginState extends State<Login>
                 }
               },
               decoration: InputDecoration(
+                  focusColor: primaryColor2.withOpacity(.4),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -302,6 +305,7 @@ class _LoginState extends State<Login>
                       }
                     },
                     decoration: InputDecoration(
+                        focusColor: primaryColor2.withOpacity(.4),
                         labelText: "Email",
                         hintText: "abc@feedback.com",
                         border: OutlineInputBorder(
@@ -322,6 +326,7 @@ class _LoginState extends State<Login>
                       }
                     },
                     decoration: InputDecoration(
+                        focusColor: primaryColor2.withOpacity(.4),
                         labelText: "UserName",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
@@ -343,6 +348,7 @@ class _LoginState extends State<Login>
                 }
               },
               decoration: InputDecoration(
+                  focusColor: primaryColor2.withOpacity(.4),
                   labelText: "Password",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),
@@ -361,6 +367,7 @@ class _LoginState extends State<Login>
                 }
               },
               decoration: InputDecoration(
+                  focusColor: primaryColor2.withOpacity(.4),
                   labelText: "VerifyPassword",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),

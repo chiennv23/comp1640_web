@@ -14,20 +14,23 @@ class PostItem {
   String createdAt;
   String updatedAt;
   bool oneClickAction;
+  bool checkComment;
 
-  PostItem(
-      {this.sId,
-      this.thread,
-      this.title,
-      this.content,
-      this.author,
-      this.slug,
-      this.upvotes,
-      this.downvotes,
-      this.comments,
-      this.createdAt,
-      this.updatedAt,
-      this.oneClickAction = true});
+  PostItem({
+    this.sId,
+    this.thread,
+    this.title,
+    this.content,
+    this.author,
+    this.slug,
+    this.upvotes,
+    this.downvotes,
+    this.comments,
+    this.createdAt,
+    this.updatedAt,
+    this.oneClickAction = true,
+    this.checkComment = false,
+  });
 
   PostItem.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -47,6 +50,7 @@ class PostItem {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     oneClickAction = true;
+    checkComment = false;
   }
 
   static List<PostItem> fromJsonToList(Object json) {
@@ -80,21 +84,30 @@ class PostItem {
 
 class Comment {
   String sId;
-  String author;
+  Creator author;
   String content;
   List<String> upvotes;
   List<String> downvotes;
   String slug;
+  bool oneClickActionCmt;
 
-  Comment({this.sId, this.author, this.content, this.upvotes, this.downvotes,this.slug});
+  Comment(
+      {this.sId,
+      this.author,
+      this.content,
+      this.upvotes,
+      this.downvotes,
+      this.slug,
+      this.oneClickActionCmt});
 
   Comment.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    author = json['author'];
+    author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     content = json['content'];
     upvotes = json['upvotes'].cast<String>();
     downvotes = json['downvotes'].cast<String>();
     slug = json['slug'];
+    oneClickActionCmt = true;
   }
 }
 

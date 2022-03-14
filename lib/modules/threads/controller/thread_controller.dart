@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,9 @@ class ThreadController extends GetxController {
       final data = await ThreadData.getAllThreads();
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
-        slugSelected.value = _threadList.first.slug;
+        slugSelected.value = data?.data?.first?.slug;
+        SharedPreferencesHelper.instance
+            .setString(key: 'firstSlug', val: data?.data?.first?.slug);
         threadSelected.value = _threadList.first.topic;
       } else {
         _threadList;

@@ -5,7 +5,7 @@ import 'package:comp1640_web/pages/profile.dart';
 import 'package:comp1640_web/pages/staff/post_page.dart';
 import 'package:flutter/material.dart';
 
-const rootRoute = '/welcome-to-system';
+const rootRoute = '/';
 const loginPageRoute = '/login';
 const logOutDisplayName = 'Log Out';
 

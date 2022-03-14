@@ -40,8 +40,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    token =
-        SharedPreferencesHelper.instance.getString(key: 'accessToken');
+    token = SharedPreferencesHelper.instance.getString(key: 'accessToken');
     super.initState();
   }
 
@@ -67,6 +66,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Feedback System',
       theme: ThemeData(
         scaffoldBackgroundColor: lightColor,
+        focusColor: primaryColor2.withOpacity(.4),
         textTheme: GoogleFonts.mulishTextTheme(Theme.of(context).textTheme)
             .apply(bodyColor: Colors.black),
         pageTransitionsTheme: const PageTransitionsTheme(builders: {
