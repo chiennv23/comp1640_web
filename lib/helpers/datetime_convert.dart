@@ -9,6 +9,9 @@ class DatetimeConvert {
     if (date.runtimeType == String) {
       final tmp = DateTime.tryParse(date);
       return DateFormat('dd/MM/yyyy').format(tmp);
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
+      return DateFormat('dd/MM/yyyy').format(tmp);
     } else {
       return DateFormat('dd/MM/yyyy').format(date);
     }
@@ -17,18 +20,24 @@ class DatetimeConvert {
   static String hm_dMy(dynamic date) {
     if (date.runtimeType == String) {
       final tmp = DateTime.tryParse(date);
-      return DateFormat('hh:mm - dd/MM/yyyy').format(tmp);
+      return DateFormat('HH:mm - dd/MM/yyyy').format(tmp);
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
+      return DateFormat('HH:mm - dd/MM/yyyy').format(tmp);
     } else {
-      return DateFormat('hh:mm - dd/MM/yyyy').format(date);
+      return DateFormat('HH:mm - dd/MM/yyyy').format(date);
     }
   }
 
   static String dMy_hm(dynamic date) {
     if (date.runtimeType == String) {
       final tmp = DateTime.tryParse(date);
-      return DateFormat('dd/MM/yyyy - hh:mm').format(tmp);
+      return DateFormat('dd/MM/yyyy - HH:mm').format(tmp);
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
+      return DateFormat('dd/MM/yyyy - HH:mm').format(tmp);
     } else {
-      return DateFormat('dd/MM/yyyy - hh:mm').format(date);
+      return DateFormat('dd/MM/yyyy - HH:mm').format(date);
     }
   }
 
@@ -36,6 +45,9 @@ class DatetimeConvert {
   static String dot_dMy(dynamic date) {
     if (date.runtimeType == String) {
       final tmp = DateTime.tryParse(date);
+      return DateFormat('dd.MM.yyyy').format(tmp);
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
       return DateFormat('dd.MM.yyyy').format(tmp);
     } else {
       return DateFormat('dd.MM.yyyy').format(date);
@@ -46,6 +58,9 @@ class DatetimeConvert {
   static String yMd(dynamic date) {
     if (date.runtimeType == String) {
       return DateFormat('yyyy-MM-dd').format(DateTime.tryParse(date));
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
+      return DateFormat('yyyy-MM-dd').format(tmp);
     } else {
       return DateFormat('yyyy-MM-dd').format(date);
     }
@@ -54,9 +69,12 @@ class DatetimeConvert {
   /// MM-dd-yyy -> 09-21-1997
   static String Mdy(dynamic date) {
     if (date.runtimeType == String) {
-      return DateFormat('yyyy-MM-dd').format(DateTime.tryParse(date));
+      return DateFormat('MM-dd-yyyy').format(DateTime.tryParse(date));
+    } else if (date.runtimeType == int) {
+      var tmp = DateTime.fromMillisecondsSinceEpoch(date);
+      return DateFormat('MM-dd-yyyy').format(tmp);
     } else {
-      return DateFormat('yyyy-MM-dd').format(date);
+      return DateFormat('MM-dd-yyyy').format(date);
     }
   }
 

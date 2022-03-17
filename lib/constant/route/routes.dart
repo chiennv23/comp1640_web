@@ -10,7 +10,7 @@ const loginPageRoute = '/login';
 const logOutDisplayName = 'Log Out';
 
 // Student
-const homeDisplayName = 'Feedbacks';
+const homeDisplayName = 'Ideas';
 const homePageRoute = '/home';
 
 const profileDisplayName = 'Profile';

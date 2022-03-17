@@ -154,7 +154,7 @@ class _ThreadManageState extends State<ThreadManage> {
                       ),
                       DataColumn(
                         label: CustomText(
-                          text: "Create Date",
+                          text: "Create date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -162,7 +162,7 @@ class _ThreadManageState extends State<ThreadManage> {
                       ),
                       DataColumn(
                         label: CustomText(
-                          text: "Update Date",
+                          text: "Expiration date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -194,9 +194,11 @@ class _ThreadManageState extends State<ThreadManage> {
                                   DataCell(CustomText(
                                       text: item.posts.length.toString())),
                                   DataCell(CustomText(
-                                      text: item.createdAt.toString())),
+                                      text:
+                                          DatetimeConvert.dMy_hm(item.createdAt))),
                                   DataCell(CustomText(
-                                      text: item.updatedAt.toString())),
+                                      text:
+                                          DatetimeConvert.dMy_hm(item.updatedAt))),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,

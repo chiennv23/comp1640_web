@@ -50,7 +50,7 @@ class LoginController {
         rootRoute,
       );
       snackBarMessage(
-          title: 'Welcome to Feedback System, $userName',
+          title: 'Welcome to Idea System, $userName',
           backGroundColor: Colors.green);
     } else {
       snackBarMessageError(response.message);

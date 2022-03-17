@@ -94,7 +94,7 @@ class Posts {
   String sId;
   String title;
   String content;
-  String author;
+  Creator author;
   String slug;
   List<String> upvotes;
   List<String> downvotes;
@@ -112,7 +112,7 @@ class Posts {
     sId = json['_id'];
     title = json['title'];
     content = json['content'];
-    author = json['author'];
+    author = json['author'] != null ?  Creator.fromJson(json['author']) : null;
     slug = json['slug'];
     upvotes = json['upvotes'].cast<String>();
     downvotes = json['downvotes'].cast<String>();

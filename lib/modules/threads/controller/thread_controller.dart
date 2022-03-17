@@ -105,7 +105,7 @@ class ThreadController extends GetxController {
         Get.back();
         update();
       } else {
-        snackBarMessageError('');
+        snackBarMessageError(data.message);
       }
     } catch (e) {
       print('create thread error $e');

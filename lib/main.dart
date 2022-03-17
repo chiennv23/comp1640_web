@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: loginPageRoute, page: () => const Login()),
       ],
       debugShowCheckedModeBanner: false,
-      title: 'Feedback System',
+      title: 'Idea System',
       theme: ThemeData(
         scaffoldBackgroundColor: lightColor,
         focusColor: primaryColor2.withOpacity(.4),

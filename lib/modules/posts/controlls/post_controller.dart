@@ -21,17 +21,17 @@ class PostController extends GetxController {
   Future callListIntoDA() async {
     try {
       isLoading(true);
-      // var firstSlug =
-      //     SharedPreferencesHelper.instance.getString(key: 'firstSlug');
-      // final data = await PostData.getAllPostByThread(
-      //     threadController.slugSelected.value != ''
-      //         ? threadController.slugSelected.value
-      //         : firstSlug);
-      // if (data.code == 200) {
-      //   _postList.assignAll(data?.data);
-      // } else {
-      //   snackBarMessageError(data.message);
-      // }
+      var firstSlug =
+          SharedPreferencesHelper.instance.getString(key: 'firstSlug');
+      final data = await PostData.getAllPostByThread(
+          threadController.slugSelected.value != ''
+              ? threadController.slugSelected.value
+              : firstSlug);
+      if (data.code == 200) {
+        _postList.assignAll(data?.data);
+      } else {
+        snackBarMessageError(data.message);
+      }
     } finally {
       isLoading(false);
     }

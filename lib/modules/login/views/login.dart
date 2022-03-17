@@ -61,7 +61,7 @@ class _LoginState extends State<Login>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Text("Feedback System",
+                      child: Text("Idea System",
                           overflow: TextOverflow.fade,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.roboto(

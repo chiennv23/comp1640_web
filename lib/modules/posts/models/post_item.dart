@@ -11,8 +11,8 @@ class PostItem {
   List<String> upvotes;
   List<String> downvotes;
   List<Comment> comments;
-  String createdAt;
-  String updatedAt;
+  int createdAt;
+  int updatedAt;
   bool oneClickAction;
   bool checkComment;
 
