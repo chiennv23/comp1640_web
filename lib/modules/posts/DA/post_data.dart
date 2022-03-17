@@ -2,7 +2,7 @@ import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/baseResponse/base_response.dart';
 import 'package:comp1640_web/constant/style.dart';
-import 'package:comp1640_web/modules/posts/models/comment_item.dart';
+import 'package:comp1640_web/modules/comments/models/comment_item.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:flutter/material.dart';
@@ -82,8 +82,7 @@ class PostData {
   //       slug: 'slug'),
   // ];
 
-  static Future<BasicResponse> getAllPostByThread(
-      String threadSlug) async {
+  static Future<BasicResponse> getAllPostByThread(String threadSlug) async {
     final response = await BaseDA.getList(
         urlGetAllPosts(threadSlug: threadSlug),
         (json) => PostItem.fromJsonToList(json));
@@ -96,19 +95,19 @@ class PostData {
   static ThreadController threadController = Get.find();
 
   static Future<BasicResponse> createPost(
+    String threadSlug,
     String title,
     String content,
   ) async {
     var response = await BaseDA.post(
-        urlCreateNewPost(threadController.threadSelected.value),
+        urlCreateNewPost(urlCreateNewPost(threadSlug)),
         {
           'title': title,
           'content': content,
         },
         (json) => BasicResponse.fromJson(json));
     if (response.code == 200) {
-      snackBarMessage(
-          title: 'Create successful!', backGroundColor: successColor);
+      print('create post done.');
     } else {
       snackBarMessageError(response.message);
     }

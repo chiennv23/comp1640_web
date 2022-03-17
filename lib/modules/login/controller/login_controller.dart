@@ -28,7 +28,7 @@ class LoginController {
           'email': userName,
           'password': password,
         },
-        (json) => UserItem.fromJson(json));
+        (json) => user_items.fromJson(json));
     if (response.code == 200) {
       SharedPreferencesHelper.instance
           .setString(key: 'accessToken', val: response.data.accessToken);
@@ -39,7 +39,9 @@ class LoginController {
           .setString(key: 'refreshToken', val: response.data.refreshToken);
       Get.put(UserController());
       SharedPreferencesHelper.instance
-          .setString(key: 'UserName', val: userName.split('@')[0]);
+          .setString(key: 'UserName', val: response.data.user.username);
+      SharedPreferencesHelper.instance
+          .setString(key: 'Role', val: response.data.user.role);
       name = SharedPreferencesHelper.instance.getString(key: 'UserName');
       menuController.changeActiveItemTo(checkRoleShowCategory(name)[0].name);
       MenuController.instance.update();

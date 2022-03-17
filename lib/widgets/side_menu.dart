@@ -17,7 +17,7 @@ class SideMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
-    var nameRole = SharedPreferencesHelper.instance.getString(key: 'UserName');
+    var nameRole = SharedPreferencesHelper.instance.getString(key: 'Role');
 
     return Container(
       decoration: BoxDecoration(
@@ -82,6 +82,7 @@ class SideMenu extends StatelessWidget {
                             .removeKey(key: 'refreshToken');
                         SharedPreferencesHelper.instance
                             .removeKey(key: 'UserName');
+                        SharedPreferencesHelper.instance.removeKey(key: 'Role');
                         menuController.changeActiveItemTo(
                             checkRoleShowCategory(nameRole)[0].name);
                         print(checkRoleShowCategory(nameRole)[0].name);

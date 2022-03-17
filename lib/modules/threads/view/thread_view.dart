@@ -71,7 +71,7 @@ Widget ThreadView(ThreadItem item) => Container(
               size: 16,
               weight: FontWeight.bold,
             ),
-            trailing: Text(DatetimeConvert.dMy_hm(item.createdAt)),
+            trailing: Text(item.createdAt.toString()),
           ),
           ListTile(
             title: const CustomText(
@@ -80,7 +80,7 @@ Widget ThreadView(ThreadItem item) => Container(
               size: 16,
               weight: FontWeight.bold,
             ),
-            trailing: Text(DatetimeConvert.dMy_hm(item.updatedAt)),
+            trailing: Text(item.updatedAt.toString()),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

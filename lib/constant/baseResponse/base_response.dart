@@ -48,6 +48,7 @@ class BaseDA {
             final response = await http.post(Uri.parse(url),
                 headers: headers, body: jsonObj);
             if (response.statusCode == 200) {
+              print(json.encode(jsonDecode(response.body)));
               var b = BasicResponse<T>();
               b.data = fromJson(jsonDecode(response.body));
               b.code = 200;
@@ -184,7 +185,7 @@ class BaseDA {
             final jsonObj = obj == null ? null : json.encode(obj);
             print(jsonObj);
             final response =
-            await http.put(Uri.parse(url), headers: headers, body: jsonObj);
+                await http.put(Uri.parse(url), headers: headers, body: jsonObj);
             if (response.statusCode == 200) {
               var b = BasicResponse<T>();
               b.data = fromJson(jsonDecode(response.body));

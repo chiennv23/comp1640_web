@@ -194,11 +194,9 @@ class _ThreadManageState extends State<ThreadManage> {
                                   DataCell(CustomText(
                                       text: item.posts.length.toString())),
                                   DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.createdAt))),
+                                      text: item.createdAt.toString())),
                                   DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.updatedAt))),
+                                      text: item.updatedAt.toString())),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,

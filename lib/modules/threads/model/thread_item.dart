@@ -7,8 +7,8 @@ class ThreadItem {
   Creator creator;
   String slug;
   List<Posts> posts;
-  String createdAt;
-  String updatedAt;
+  int createdAt;
+  int updatedAt;
 
   ThreadItem({
     this.sId,

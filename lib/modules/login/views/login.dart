@@ -19,7 +19,6 @@ class _LoginState extends State<Login>
   // login
   var emailLoginController = TextEditingController();
   var passLoginController = TextEditingController();
-  FocusNode passNode;
 
   // sign up
   var emailSignUpController = TextEditingController();
@@ -165,7 +164,6 @@ class _LoginState extends State<Login>
             ),
             TextFormField(
               obscureText: visibility,
-              focusNode: passNode,
               controller: passLoginController,
               validator: (password) {
                 if (isPasswordValid(password)) {
@@ -402,8 +400,6 @@ class _LoginState extends State<Login>
                 if (rs.code == 200) {
                   tabController.animateTo(0);
                   setState(() {
-                    FocusScope.of(context).requestFocus(passNode);
-                    isLoading = false;
                     emailLoginController.text = emailSignUpController.text;
                   });
                 }

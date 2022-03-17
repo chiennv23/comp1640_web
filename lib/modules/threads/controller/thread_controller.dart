@@ -30,6 +30,7 @@ class ThreadController extends GetxController {
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
         slugSelected.value = data?.data?.first?.slug;
+        print(slugSelected.value);
         SharedPreferencesHelper.instance
             .setString(key: 'firstSlug', val: data?.data?.first?.slug);
         threadSelected.value = _threadList.first.topic;

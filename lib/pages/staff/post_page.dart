@@ -2,6 +2,9 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/modules/comments/controller/comment_controller.dart';
+import 'package:comp1640_web/modules/comments/views/create_comment.dart';
+import 'package:comp1640_web/modules/comments/views/show_comments.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
@@ -21,6 +24,7 @@ class _HomeState extends State<Home> {
   void initState() {
     Get.put(ThreadController());
     Get.put(PostController());
+    Get.put(CommentController());
     super.initState();
   }
 
@@ -69,13 +73,14 @@ class _HomeState extends State<Home> {
                             message: 'change Thread',
                             child: InkWell(
                               onTap: () async {
-                                return threadController.threadSelected.value =
+                                threadController.threadSelected.value =
                                     await Get.dialog(showChangeThread())
                                         .whenComplete(() {
                                   setState(() {
-                                    postController.postList.forEach((element) {
+                                    for (var element
+                                        in postController.postList) {
                                       element.checkComment = false;
-                                    });
+                                    }
                                   });
                                 });
                               },
@@ -336,13 +341,15 @@ class _HomeState extends State<Home> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(bottom: 10),
-                            child: CustomText(
+                            child: const CustomText(
                               text: 'Comments:',
                               weight: FontWeight.bold,
                               size: 16,
                             ),
                           ),
-                          commentWidget(),
+                          CreateComment(
+                            postItem: item,
+                          ),
                         ],
                       ))
                   : Container(
@@ -352,16 +359,20 @@ class _HomeState extends State<Home> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(bottom: 10),
-                            child: CustomText(
+                            child: const CustomText(
                               text: 'Comments:',
                               weight: FontWeight.bold,
                               size: 16,
                             ),
                           ),
-                          ...showCommentWidget(item),
+                          ShowComment(
+                            postItem: item,
+                          ),
                           Container(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: commentWidget())
+                              child: CreateComment(
+                                postItem: item,
+                              ))
                         ],
                       ),
                     ),
@@ -401,145 +412,10 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future showComment(item) {
+  void showComment(item) {
     print('show comments');
     setState(() {
       item.checkComment = true;
-    });
-  }
-
-  Widget commentWidget() {
-    return Container(
-      height: 56,
-      child: TextFormField(
-        decoration: InputDecoration(
-            labelText: "Comment",
-            hintText: "Typing something",
-            suffixIcon: IconButton(
-              iconSize: 14,
-              icon: Icon(
-                Icons.send_rounded,
-                color: active,
-                size: 20,
-              ),
-              tooltip: 'Sent comment',
-              onPressed: () {},
-            ),
-            focusColor: primaryColor2.withOpacity(.4),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: primaryColor2, width: 1.0),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            )),
-      ),
-    );
-  }
-
-  List<Widget> showCommentWidget(PostItem postItem) {
-    PostController postController = Get.find();
-
-    return List.generate(postItem.comments.length, (index) {
-      var item = postItem.comments[index];
-      return Container(
-        margin: const EdgeInsets.only(
-          bottom: 15,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 40,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.account_circle,
-                color: greyColor,
-                size: 35,
-              ),
-            ),
-            Expanded(
-                child: Container(
-              margin: const EdgeInsets.only(left: 10),
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(.1),
-                  borderRadius: BorderRadius.circular(8.0)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: item.author.username,
-                    weight: FontWeight.w600,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                    child: CustomText(
-                      text: item.content ?? '',
-                      size: 14,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        iconSize: 14,
-                        icon: const Icon(
-                          Icons.thumb_up,
-                          size: 16,
-                        ),
-                        tooltip: 'Like comment',
-                        onPressed: item.oneClickActionCmt
-                            ? () {
-                                postController.chooseLikeCmt(
-                                    title: postItem.title,
-                                    content: item.content);
-                                setState(() {
-                                  item.oneClickActionCmt = false;
-                                });
-                              }
-                            : null,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CustomText(
-                            text: '${item.upvotes.length}',
-                          )),
-                      const SizedBox(
-                        width: 24,
-                      ),
-                      IconButton(
-                        iconSize: 14,
-                        icon: const Icon(
-                          Icons.thumb_down,
-                          size: 16,
-                        ),
-                        tooltip: 'Dislike comment',
-                        onPressed: item.oneClickActionCmt
-                            ? () {
-                                postController.chooseDisLikeCmt(
-                                    title: postItem.title,
-                                    content: item.content);
-                                setState(() {
-                                  item.oneClickActionCmt = false;
-                                });
-                              }
-                            : null,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CustomText(text: '${item.downvotes.length}')),
-                    ],
-                  ),
-                ],
-              ),
-            ))
-          ],
-        ),
-      );
     });
   }
 }

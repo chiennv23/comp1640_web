@@ -1,13 +1,17 @@
-import 'package:comp1640_web/modules/posts/models/comment_item.dart';
+import 'package:comp1640_web/modules/comments/models/comment_item.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 
 class user_items {
   UserItem user;
+  String accessToken;
+  String refreshToken;
 
   user_items({this.user});
 
   user_items.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? UserItem.fromJson(json['user']) : null;
+    accessToken = json['accessToken'];
+    refreshToken = json['refreshToken'];
   }
 }
 
@@ -22,19 +26,16 @@ class UserItem {
   List<OtherList> threads;
   String createdAt;
   String updatedAt;
-  String accessToken;
-  String refreshToken;
 
-  UserItem(
-      {this.sId,
-      this.email,
-      this.slug,
-      this.createdAt,
-      this.updatedAt,
-      this.username,
-      this.role,
-      this.accessToken,
-      this.refreshToken});
+  UserItem({
+    this.sId,
+    this.email,
+    this.slug,
+    this.createdAt,
+    this.updatedAt,
+    this.username,
+    this.role,
+  });
 
   UserItem.fromJson(Map<String, dynamic> json) {
     email = json['email'];
@@ -61,8 +62,6 @@ class UserItem {
     }
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    accessToken = json['accessToken'];
-    refreshToken = json['refreshToken'];
   }
 
   Map<String, dynamic> toJson() {
