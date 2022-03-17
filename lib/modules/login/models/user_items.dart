@@ -24,8 +24,8 @@ class UserItem {
   List<OtherList> posts;
   List<OtherList> comments;
   List<OtherList> threads;
-  String createdAt;
-  String updatedAt;
+  int createdAt;
+  int updatedAt;
 
   UserItem({
     this.sId,
@@ -77,7 +77,7 @@ class OtherList {
   String sId;
   String title;
   String slug;
-  String createdAt;
+  int createdAt;
 
   OtherList({this.sId, this.title, this.slug, this.createdAt});
 

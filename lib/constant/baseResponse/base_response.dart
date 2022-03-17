@@ -35,6 +35,10 @@ class BaseDA {
         print(response.statusCode.toString());
         if (response.statusCode == 401) {
           print('fail authen.');
+          // var responseFail = BasicResponse<T>();
+          // responseFail.code = response.statusCode;
+          // responseFail.message = response.body;
+          // snackBarMessageError(responseFail.message);
           var rs = await postRefreshToken();
           if (rs.statusCode == 200) {
             token =
