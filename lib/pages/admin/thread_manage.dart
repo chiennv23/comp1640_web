@@ -198,7 +198,7 @@ class _ThreadManageState extends State<ThreadManage> {
                                           DatetimeConvert.dMy_hm(item.createdAt))),
                                   DataCell(CustomText(
                                       text:
-                                          DatetimeConvert.dMy_hm(item.updatedAt))),
+                                          DatetimeConvert.dMy_hm(item.deadline))),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,

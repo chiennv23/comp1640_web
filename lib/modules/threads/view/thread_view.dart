@@ -75,12 +75,12 @@ Widget ThreadView(ThreadItem item) => Container(
           ),
           ListTile(
             title: const CustomText(
-              text: "Update Date",
+              text: "Expiration Date",
               color: darkColor,
               size: 16,
               weight: FontWeight.bold,
             ),
-            trailing: Text(DatetimeConvert.dMy_hm(item.updatedAt)),
+            trailing: Text(DatetimeConvert.dMy_hm(item.deadline)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

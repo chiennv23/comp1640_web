@@ -9,17 +9,18 @@ class ThreadItem {
   List<Posts> posts;
   int createdAt;
   int updatedAt;
+  int deadline;
 
-  ThreadItem({
-    this.sId,
-    this.topic,
-    this.description,
-    this.creator,
-    this.slug,
-    this.posts,
-    this.createdAt,
-    this.updatedAt,
-  });
+  ThreadItem(
+      {this.sId,
+      this.topic,
+      this.description,
+      this.creator,
+      this.slug,
+      this.posts,
+      this.createdAt,
+      this.updatedAt,
+      this.deadline});
 
   ThreadItem.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -36,6 +37,8 @@ class ThreadItem {
     }
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    deadline =
+        json['deadline'] ?? DateTime.now().toUtc().millisecondsSinceEpoch;
   }
 
   static List<ThreadItem> fromJsonToList(Object json) {
@@ -112,7 +115,7 @@ class Posts {
     sId = json['_id'];
     title = json['title'];
     content = json['content'];
-    author = json['author'] != null ?  Creator.fromJson(json['author']) : null;
+    author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     slug = json['slug'];
     upvotes = json['upvotes'].cast<String>();
     downvotes = json['downvotes'].cast<String>();
