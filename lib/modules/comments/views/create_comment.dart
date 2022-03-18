@@ -15,117 +15,127 @@ class CreateComment extends StatefulWidget {
 }
 
 class _CreateCommentState extends State<CreateComment> {
-  bool anonymousAuthor = false;
-
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
+  final commentTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     CommentController commentController = Get.find();
-    return Form(
-      key: formGlobalKey,
-      autovalidateMode: hasAutoValidation
-          ? AutovalidateMode.onUserInteraction
-          : AutovalidateMode.disabled,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            controller: commentController.commentTextController,
-            validator: (comment) {
-              if (comment.isNotEmpty) {
-                return null;
-              } else {
-                return 'Enter a valid comment';
-              }
-            },
-            onFieldSubmitted: (string) {
-              setState(() {
-                hasAutoValidation = true;
-              });
-              if (!formGlobalKey.currentState.validate()) {
-                return;
-              }
-              commentController.sendComment(string, widget.postItem);
-              setState(() {
-                hasAutoValidation = false;
-              });
-            },
-            decoration: InputDecoration(
-                labelText: "Comment",
-                hintText: "Typing something",
-                suffixIcon: IconButton(
-                  iconSize: 14,
-                  icon: Icon(
-                    Icons.send_rounded,
-                    color: active,
-                    size: 20,
-                  ),
-                  tooltip: 'Sent comment',
-                  onPressed: () {
-                    setState(() {
-                      hasAutoValidation = true;
-                    });
-                    if (!formGlobalKey.currentState.validate()) {
-                      return;
-                    }
-                    commentController.sendComment(
-                        commentController.commentTextController.text,
-                        widget.postItem);
-                    setState(() {
-                      hasAutoValidation = false;
-                    });
-                  },
-                ),
-                focusColor: primaryColor2.withOpacity(.4),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: primaryColor2, width: 1.0),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                )),
-          ),
-          commentController.loadingSending.value == ''
-              ? Container()
-              : Obx(
-                  () => AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return FadeTransition(child: child, opacity: animation);
+    return Obx(
+      () => Form(
+        key: formGlobalKey,
+        autovalidateMode: hasAutoValidation
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: commentTextController,
+              validator: (comment) {
+                if (comment.isNotEmpty) {
+                  return null;
+                } else {
+                  return 'Enter a valid comment';
+                }
+              },
+              onFieldSubmitted: (string) {
+                setState(() {
+                  hasAutoValidation = true;
+                });
+                if (!formGlobalKey.currentState.validate()) {
+                  return;
+                }
+                commentController.sendComment(string, widget.postItem,
+                    commentController.checkAnonymous.value);
+                if(commentController.loading.value){
+                  commentTextController.clear();
+                }
+                setState(() {
+                  hasAutoValidation = false;
+                });
+              },
+              decoration: InputDecoration(
+                  labelText: "Comment",
+                  hintText: "Typing something",
+                  suffixIcon: IconButton(
+                    iconSize: 14,
+                    icon: Icon(
+                      Icons.send_rounded,
+                      color: active,
+                      size: 20,
+                    ),
+                    tooltip: 'Sent comment',
+                    onPressed: () {
+                      setState(() {
+                        hasAutoValidation = true;
+                      });
+                      if (!formGlobalKey.currentState.validate()) {
+                        return;
+                      }
+                      commentController.sendComment(
+                          commentTextController.text,
+                          widget.postItem,
+                          commentController.checkAnonymous.value);
+                      if(commentController.loading.value){
+                        commentTextController.clear();
+                      }
+                      setState(() {
+                        hasAutoValidation = false;
+                      });
                     },
-                    child: Text(
-                      commentController.loadingSending.value,
-                      key: ValueKey(commentController.loadingSending.value),
-                      style: TextStyle(color: greyColor),
+                  ),
+                  focusColor: primaryColor2.withOpacity(.4),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryColor2, width: 1.0),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  )),
+            ),
+            commentController.loadingSending.value == ''
+                ? Container()
+                : Obx(
+                    () => AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 1000),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return FadeTransition(child: child, opacity: animation);
+                      },
+                      child: Text(
+                        commentController.loadingSending.value,
+                        key: ValueKey(commentController.loadingSending.value),
+                        style: TextStyle(color: greyColor),
+                      ),
                     ),
                   ),
-                ),
-          Row(
-            children: [
-              Checkbox(
-                  value: anonymousAuthor,
-                  onChanged: (value) {
+            Row(
+              children: [
+                Checkbox(
+                    value: commentController.checkAnonymous.value,
+                    onChanged: (value) {
+                      setState(() {
+                        commentController.checkAnonymous.value = value;
+                      });
+                    }),
+                InkWell(
+                  onTap: () {
                     setState(() {
-                      anonymousAuthor = value;
+                      commentController.checkAnonymous.value =
+                          !commentController.checkAnonymous.value;
                     });
-                  }),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    anonymousAuthor = !anonymousAuthor;
-                  });
-                },
-                child: const CustomText(
-                  text: "Anonymous comment",
+                  },
+                  child: const CustomText(
+                    text: "Anonymous comment",
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

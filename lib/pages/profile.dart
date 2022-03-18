@@ -22,7 +22,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     UserController userController = Get.find();
     return Obx(() {
-      var item = userController.userItem.value.user;
+      var item = userController.userItem.value;
 
       return Column(
         children: [

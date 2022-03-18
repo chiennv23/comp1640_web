@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 
 import 'custom_text.dart';
 
+String userName = SharedPreferencesHelper.instance.getString(key: 'UserName');
+
 AppBar topNavigationBar(BuildContext context, GlobalKey<ScaffoldState> key) =>
     AppBar(
       leading: !ResponsiveWidget.isSmallScreen(context)
@@ -70,7 +72,7 @@ AppBar topNavigationBar(BuildContext context, GlobalKey<ScaffoldState> key) =>
             width: 24,
           ),
           CustomText(
-            text: SharedPreferencesHelper.instance.getString(key: 'UserName'),
+            text: userName ?? '',
             color: darkColor,
           ),
           const SizedBox(

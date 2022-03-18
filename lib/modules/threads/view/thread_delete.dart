@@ -1,9 +1,10 @@
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-Widget deleteDialog({Function deleteOnTap}) => Container(
+Widget deleteDialog({Function deleteOnTap, controller}) => Container(
       width: 300,
       child: Card(
         margin: const EdgeInsets.only(left: 16, right: 16),
@@ -53,10 +54,15 @@ Widget deleteDialog({Function deleteOnTap}) => Container(
                           borderRadius: BorderRadius.circular(10),
                           onTap: deleteOnTap,
                           child: Center(
-                            child: CustomText(
-                              text: 'Delete',
-                              color: spaceColor,
-                            ),
+                            child: controller.isLoadingAction.value
+                                ? SpinKitThreeBounce(
+                                    color: spaceColor,
+                                    size: 25,
+                                  )
+                                : CustomText(
+                                    text: 'Delete',
+                                    color: spaceColor,
+                                  ),
                           ),
                         )),
                   )),

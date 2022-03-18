@@ -2,7 +2,9 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -23,6 +25,7 @@ class _ThreadCreateState extends State<ThreadCreate> {
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
   bool isLoading = false;
+  int deadline = 0;
 
   @override
   void initState() {
@@ -39,8 +42,9 @@ class _ThreadCreateState extends State<ThreadCreate> {
     return Scaffold(
       body: Center(
         child: Container(
-          color: spaceColor,
           width: 300,
+          decoration: BoxDecoration(
+              color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: formGlobalKey,
@@ -86,6 +90,39 @@ class _ThreadCreateState extends State<ThreadCreate> {
                           borderRadius: BorderRadius.circular(20))),
                 ),
                 const SizedBox(
+                  height: 10,
+                ),
+                const CustomText(
+                  text: 'Deadline',
+                ),
+                DateTimePicker(
+                  type: DateTimePickerType.dateTimeSeparate,
+                  dateMask: 'd MMM, yyyy',
+                  initialValue: DateTime.now().toString(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                  icon: const Icon(Icons.event),
+                  dateLabelText: 'Date',
+                  timeLabelText: "Hour",
+                  selectableDayPredicate: (date) {
+                    // Disable weekend days to select from the calendar
+                    // if (date.weekday == 6 || date.weekday == 7) {
+                    //   return false;
+                    // }
+                    return true;
+                  },
+                  onChanged: (val) {
+                    setState(() {
+                      deadline = DateTime.tryParse(val).millisecondsSinceEpoch;
+                    });
+                  },
+                  validator: (val) {
+                    print(val);
+                    return null;
+                  },
+                  onSaved: (val) => print(val),
+                ),
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
@@ -120,15 +157,13 @@ class _ThreadCreateState extends State<ThreadCreate> {
                             }
                             threadController.createThread(
                                 title: titleController.text,
-                                content: contentController.text);
+                                content: contentController.text,
+                                deadline: deadline);
                           },
                           child: isLoading
-                              ? SizedBox(
-                                  width: 15,
-                                  height: 15,
-                                  child: CircularProgressIndicator(
-                                    color: spaceColor,
-                                  ),
+                              ? SpinKitThreeBounce(
+                                  color: spaceColor,
+                                  size: 25,
                                 )
                               : Center(
                                   child: CustomText(

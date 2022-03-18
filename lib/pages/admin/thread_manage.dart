@@ -275,6 +275,7 @@ class _ThreadManageState extends State<ThreadManage> {
           deleteOnTap: () {
             threadController.deleteThread(item.slug);
           },
+          controller: threadController
         ),
       ),
     );

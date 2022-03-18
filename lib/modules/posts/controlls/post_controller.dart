@@ -1,5 +1,6 @@
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
+import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
@@ -10,7 +11,7 @@ class PostController extends GetxController {
   ThreadController threadController = Get.find();
 
   RxBool isLoading = true.obs;
-  final _postList = <PostItem>[].obs;
+  final postListController = <PostItem>[].obs;
 
   @override
   void onInit() {
@@ -28,7 +29,7 @@ class PostController extends GetxController {
               ? threadController.slugSelected.value
               : firstSlug);
       if (data.code == 200) {
-        _postList.assignAll(data?.data);
+        postListController.assignAll(data?.data);
       } else {
         snackBarMessageError(data.message);
       }
@@ -38,12 +39,32 @@ class PostController extends GetxController {
   }
 
   List<PostItem> get postList {
-    return [..._postList];
+    return [...postListController];
+  }
+
+  createIdea(
+      {String threadSlug, String title, String content, int deadline}) async {
+    try {
+      final data =
+          await PostData.createPost(threadSlug, title, content, deadline);
+      if (data.code == 200) {
+        print(data.data);
+        postListController.insert(0, data.data);
+        snackBarMessage(
+            title: 'Create idea successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      } else {
+        snackBarMessageError(data.message);
+      }
+    } catch (e) {
+      print('create idea error $e');
+    }
   }
 
   chooseLike(String title) {
     var listLike =
-        _postList.firstWhere((element) => element.title == title).upvotes;
+        postListController.firstWhere((element) => element.title == title).upvotes;
     listLike.add('like');
     print(listLike.length);
     update();
@@ -51,14 +72,14 @@ class PostController extends GetxController {
 
   chooseDisLike(String title) {
     var disListLike =
-        _postList.firstWhere((element) => element.title == title).downvotes;
+        postListController.firstWhere((element) => element.title == title).downvotes;
     disListLike.add('dislike');
     print(disListLike.length);
     update();
   }
 
   chooseLikeCmt({String title, String content}) {
-    var listLike = _postList
+    var listLike = postListController
         .firstWhere((element) => element.title == title)
         .comments
         .firstWhere((e) => e.content == content)
@@ -69,7 +90,7 @@ class PostController extends GetxController {
   }
 
   chooseDisLikeCmt({String title, String content}) {
-    var disListLike = _postList
+    var disListLike = postListController
         .firstWhere((element) => element.title == title)
         .comments
         .firstWhere((e) => e.content == content)

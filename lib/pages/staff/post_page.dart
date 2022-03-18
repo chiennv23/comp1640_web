@@ -7,6 +7,7 @@ import 'package:comp1640_web/modules/comments/views/create_comment.dart';
 import 'package:comp1640_web/modules/comments/views/show_comments.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
+import 'package:comp1640_web/modules/posts/views/post_create.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _HomeState extends State<Home> {
                       child: Row(
                         children: [
                           CustomText(
-                            text: "Posts in Thread: ",
+                            text: "Ideas in Thread: ",
                             size: ResponsiveWidget.isSmallScreen(context)
                                 ? 14
                                 : 20,
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
                             color: greyColor,
                           ),
                           Tooltip(
-                            message: 'change Thread',
+                            message: 'Change Thread',
                             child: InkWell(
                               onTap: () async {
                                 threadController.threadSelected.value =
@@ -88,6 +89,7 @@ class _HomeState extends State<Home> {
                                 padding: const EdgeInsets.all(5.0),
                                 decoration: BoxDecoration(
                                   color: spaceColor,
+                                  borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(color: primaryColor2),
                                 ),
                                 child: CustomText(
@@ -108,6 +110,48 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Material(
+                        color: active,
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: InkWell(
+                          onTap: () => showCreateIdea(
+                            threadSlug: threadController.slugSelected.value,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(10.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Icon(
+                                    Icons.create,
+                                    color: spaceColor,
+                                  ),
+                                ),
+                                const CustomText(
+                                  text: "Create your idea",
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Flexible(
                     child: Center(
                       child: postController.isLoading.value
@@ -115,7 +159,7 @@ class _HomeState extends State<Home> {
                           : postController.postList.isEmpty
                               ? const Center(
                                   child: CustomText(
-                                    text: 'No Post to view. Try again !',
+                                    text: 'No Idea to view. Try again !',
                                   ),
                                 )
                               : ListView.builder(
@@ -143,84 +187,103 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: Center(
         child: Container(
+          padding: const EdgeInsets.all(20.0),
           margin: const EdgeInsets.all(20.0),
           width: ResponsiveWidget.isSmallScreen(context)
               ? MediaQuery.of(context).size.width
               : MediaQuery.of(context).size.width / 3,
-          height: 56.0 * threadController.ThreadList.length,
-          color: spaceColor,
-          child: ListView.separated(
-            itemCount: threadController.ThreadList.length,
-            itemBuilder: (context, i) {
-              final item = threadController.ThreadList[i];
-              return Column(
+          height: 75.0 * threadController.ThreadList.length,
+          decoration: BoxDecoration(
+              color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CustomText(
+                text: 'Change thread',
+                size: 20,
+                weight: FontWeight.bold,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: threadController.ThreadList.length,
+                  itemBuilder: (context, i) {
+                    final item = threadController.ThreadList[i];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        threadController.threadChangeChoose(
+                            thread: item.topic, slug: item.slug);
+                        postController.onInit();
+                        Get.back(result: item.topic);
+                      },
+                      title: CustomText(
+                        text: item.topic,
+                      ),
+                      trailing:
+                          threadController.threadSelected.value == item.topic
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  color: primaryColor2,
+                                )
+                              : const SizedBox(
+                                  width: 1,
+                                  height: 1,
+                                ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      height: 1.0,
+                      thickness: 1.0,
+                      color: primaryColor,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ListTile(
-                    onTap: () {
-                      threadController.threadChangeChoose(
-                          thread: item.topic, slug: item.slug);
-                      postController.onInit();
-                      Get.back(result: item.topic);
-                    },
-                    title: CustomText(
-                      text: item.topic,
-                    ),
-                    trailing:
-                        threadController.threadSelected.value == item.topic
-                            ? Icon(
-                                Icons.check_rounded,
-                                color: primaryColor2,
-                              )
-                            : const SizedBox(
-                                width: 1,
-                                height: 1,
-                              ),
-                  ),
-                  if (i == threadController.ThreadList.length - 1)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Material(
-                          color: active,
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              Get.back(
-                                  result:
-                                      threadController.threadSelected.value);
-                            },
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(10.0),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0)),
-                              child: const CustomText(
-                                text: "Cancel",
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                  Material(
+                    color: active,
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Get.back(result: threadController.threadSelected.value);
+                      },
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: const CustomText(
+                          text: "Cancel",
+                          color: Colors.white,
                         ),
-                        const SizedBox(
-                          width: 10,
-                        )
-                      ],
+                      ),
                     ),
+                  ),
                 ],
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return Divider(
-                height: 1.0,
-                thickness: 1.0,
-                color: primaryColor,
-              );
-            },
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void showCreateIdea({String threadSlug, PostItem itemPost}) {
+    Get.dialog(PostCreate(
+      threadSlug: threadSlug,
+      item: itemPost,
+    ));
   }
 
   Widget postCard(PostItem item) {
@@ -352,7 +415,8 @@ class _HomeState extends State<Home> {
                           ),
                         ],
                       ))
-                  : Container(
+                  : AnimatedContainer(
+                      duration: const Duration(microseconds: 500),
                       padding: const EdgeInsets.only(left: 24.0, right: 24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,8 +432,16 @@ class _HomeState extends State<Home> {
                           ShowComment(
                             postItem: item,
                           ),
+                          TextButton(
+                            onPressed: () => hideComment(item),
+                            child: const CustomText(
+                              text: 'Hide all comment?',
+                              weight: FontWeight.bold,
+                            ),
+                          ),
                           Container(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, top: 10),
                               child: CreateComment(
                                 postItem: item,
                               ))
@@ -416,6 +488,13 @@ class _HomeState extends State<Home> {
     print('show comments');
     setState(() {
       item.checkComment = true;
+    });
+  }
+
+  void hideComment(item) {
+    print('hide comments');
+    setState(() {
+      item.checkComment = false;
     });
   }
 }

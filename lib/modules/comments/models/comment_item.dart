@@ -1,24 +1,31 @@
-import 'package:comp1640_web/modules/login/models/user_items.dart';
-import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 
 class CommentItem {
-  PostItem post;
+  String id;
   Creator author;
   String title;
   String content;
   String slug;
   List<String> upvotes;
   List<String> downvotes;
-  String createdAt;
-  String updatedAt;
+  int createdAt;
+  int updatedAt;
 
-  CommentItem({this.post, this.author, this.title, this.content, this.slug, this.upvotes, this.downvotes, this.createdAt, this.updatedAt});
+  CommentItem(
+      {this.author,
+      this.id,
+      this.title,
+      this.content,
+      this.slug,
+      this.upvotes,
+      this.downvotes,
+      this.createdAt,
+      this.updatedAt});
 
   CommentItem.fromJson(Map<String, dynamic> json) {
-    post = json['post'] != null ?  PostItem.fromJson(json['post']) : null;
-    author = json['author'] != null ?  Creator.fromJson(json['author']) : null;
+    author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     title = json['title'];
+    id = json['_id'];
     content = json['content'];
     slug = json['slug'];
     upvotes = json['upvotes'].cast<String>();
@@ -26,22 +33,20 @@ class CommentItem {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  <String, dynamic>{};
-    if (post != null) {
-      data['post'] = post.toJson();
-    }
-    if (author != null) {
-      data['author'] = author.toJson();
-    }
-    data['title'] = title;
-    data['content'] = content;
-    data['slug'] = slug;
-    data['upvotes'] = upvotes;
-    data['downvotes'] = downvotes;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    return data;
+class Author {
+  String email;
+  String username;
+  String role;
+  String slug;
+
+  Author({this.email, this.username, this.role, this.slug});
+
+  Author.fromJson(Map<String, dynamic> json) {
+    email = json['email'];
+    username = json['username'];
+    role = json['role'];
+    slug = json['slug'];
   }
 }

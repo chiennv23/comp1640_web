@@ -12,10 +12,11 @@ class ThreadData {
     return response;
   }
 
-  static Future<BasicResponse> createThread(String topic, String des) async {
+  static Future<BasicResponse> createThread(
+      String topic, String des, int deadline) async {
     final response = await BaseDA.post(
         urlCreateThread,
-        {"topic": topic, "description": des},
+        {"topic": topic, "description": des, "deadline": deadline},
         (json) => ThreadItem.fromJson(json));
     if (response.code == 200) {
       print('Create thread done');

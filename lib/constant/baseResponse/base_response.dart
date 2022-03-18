@@ -220,14 +220,23 @@ class BaseDA {
     }
   }
 
-  static Future<T> get<T extends BasicResponse>(
+  static Future<BasicResponse<T>> get<T>(
       String url, T Function(Object json) fromJson,
       {String version, String token}) async {
     try {
       var headers = <String, String>{};
-      headers = <String, String>{
-        'Content-type': 'application/json',
-      };
+      var token =
+      SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      if (token != null) {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        };
+      } else {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+        };
+      }
 
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode != 200) {
@@ -238,7 +247,8 @@ class BaseDA {
         responseFail.message = response.body;
         return responseFail;
       } else {
-        var b = fromJson(response.body);
+        var b = BasicResponse<T>();
+        b.data = fromJson(jsonDecode(response.body));
         b.code = 200;
         return b;
       }
@@ -279,6 +289,7 @@ Future<http.BaseResponse> postRefreshToken() async {
   print('refreshToken doing...');
   var refreshToken =
       SharedPreferencesHelper.instance.getString(key: 'refreshToken');
+  print(refreshToken);
   var response = await http
       .post(Uri.parse(urlRefreshToken), body: {"refreshToken": refreshToken});
   Map<String, dynamic> ms = json.decode(response.body);

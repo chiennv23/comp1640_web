@@ -95,17 +95,11 @@ class PostData {
   static ThreadController threadController = Get.find();
 
   static Future<BasicResponse> createPost(
-    String threadSlug,
-    String title,
-    String content,
-  ) async {
+      String threadSlug, String title, String content, int deadline) async {
     var response = await BaseDA.post(
-        urlCreateNewPost(urlCreateNewPost(threadSlug)),
-        {
-          'title': title,
-          'content': content,
-        },
-        (json) => BasicResponse.fromJson(json));
+        urlCreateNewPost(threadSlug),
+        {'title': title, 'content': content, 'deadline': deadline},
+        (json) => PostItem.fromJson(json));
     if (response.code == 200) {
       print('create post done.');
     } else {

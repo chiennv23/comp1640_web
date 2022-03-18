@@ -94,12 +94,12 @@ class ThreadController extends GetxController {
     slugSelected.value = slug;
   }
 
-  createThread({String title, String content}) async {
+  createThread({String title, String content, int deadline}) async {
     try {
-      final data = await ThreadData.createThread(title, content);
+      final data = await ThreadData.createThread(title, content, deadline);
       if (data.code == 200) {
         print(data.data);
-        _threadList.add(data.data);
+        _threadList.insert(0, data.data);
         snackBarMessage(
             title: 'Create successful!', backGroundColor: successColor);
         Get.back();

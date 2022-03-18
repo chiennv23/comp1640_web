@@ -10,7 +10,7 @@ class UserController extends GetxController {
   static UserController instance = Get.find();
 
   var loading = false.obs;
-  var userItem = user_items().obs;
+  var userItem = UserItem().obs;
 
   @override
   void onInit() {
@@ -25,7 +25,7 @@ class UserController extends GetxController {
       if (data.code == 200) {
         userItem.value = data.data;
         SharedPreferencesHelper.instance
-            .setString(key: 'UserName', val: userItem.value.user.username);
+            .setString(key: 'UserName', val: userItem.value.username);
       } else {
         snackBarMessageError(data.message);
       }

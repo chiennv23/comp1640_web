@@ -12,7 +12,7 @@ String urlLogin = '$urlApi/auth/login';
 String urlRefreshToken = '$urlApi/auth/refresh';
 
 // urlPost
-String urlPostProfile = '$urlApi/auth/check';
+String urlPostProfile = '$urlApi/my-profile/';
 
 //TODO COMMENTS
 // get all comment a Post

@@ -11,6 +11,7 @@ class PostItem {
   List<String> upvotes;
   List<String> downvotes;
   List<Comment> comments;
+  int deadline;
   int createdAt;
   int updatedAt;
   bool oneClickAction;
@@ -26,6 +27,7 @@ class PostItem {
     this.upvotes,
     this.downvotes,
     this.comments,
+    this.deadline,
     this.createdAt,
     this.updatedAt,
     this.oneClickAction = true,
@@ -47,6 +49,7 @@ class PostItem {
         comments.add(Comment.fromJson(v));
       });
     }
+    deadline = json['deadline'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     oneClickAction = true;
@@ -57,28 +60,6 @@ class PostItem {
     var list = json as List;
 
     return list.map((c) => PostItem.fromJson(c)).toList();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    if (thread != null) {
-      data['thread'] = thread.toJson();
-    }
-    data['title'] = title;
-    data['content'] = content;
-    data['slug'] = slug;
-    data['upvotes'] = upvotes;
-    data['downvotes'] = downvotes;
-    if (author != null) {
-      data['author'] = author.toJson();
-    }
-    if (comments != null) {
-      data['comments'] = author.toJson();
-    }
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    return data;
   }
 }
 

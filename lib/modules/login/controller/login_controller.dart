@@ -38,6 +38,7 @@ class LoginController {
       SharedPreferencesHelper.instance
           .setString(key: 'refreshToken', val: response.data.refreshToken);
       Get.put(UserController());
+      Get.put(ThreadController());
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: response.data.user.username);
       SharedPreferencesHelper.instance
@@ -90,8 +91,8 @@ class LoginController {
   }
 
   static Future<BasicResponse> postProfile() async {
-    var response = await BaseDA.post(
-        urlPostProfile, {}, (json) => user_items.fromJson(json));
+    var response =
+        await BaseDA.get(urlPostProfile, (json) => UserItem.fromJson(json));
     if (response.code == 200) {
       print('get profile done.');
     }

@@ -28,7 +28,8 @@ class _LoginState extends State<Login>
 
   bool rememberMe = false;
   bool visibility = true;
-  bool isLoading = false;
+  bool isLoading1 = false;
+  bool isLoading2 = false;
   TabController tabController;
 
   final formGlobalKey1 = GlobalKey<FormState>();
@@ -222,11 +223,11 @@ class _LoginState extends State<Login>
                 setState(() {
                   FocusScope.of(context).unfocus();
                   hasAutoValidation1 = true;
-                  isLoading = true;
+                  isLoading1 = true;
                 });
                 if (!formGlobalKey1.currentState.validate()) {
                   setState(() {
-                    isLoading = false;
+                    isLoading1 = false;
                   });
                   return;
                 }
@@ -242,7 +243,7 @@ class _LoginState extends State<Login>
                 LoginController.signIn(
                         emailLoginController.text, passLoginController.text)
                     .whenComplete(() => setState(() {
-                          isLoading = false;
+                          isLoading1 = false;
                           hasAutoValidation1 = false;
                           passLoginController.text = '';
                         }));
@@ -253,7 +254,7 @@ class _LoginState extends State<Login>
                 alignment: Alignment.center,
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: isLoading
+                child: isLoading1
                     ? SizedBox(
                         width: 22,
                         height: 22,
@@ -378,11 +379,11 @@ class _LoginState extends State<Login>
                 setState(() {
                   FocusScope.of(context).unfocus();
                   hasAutoValidation2 = true;
-                  isLoading = true;
+                  isLoading2 = true;
                 });
                 if (!formGlobalKey2.currentState.validate()) {
                   setState(() {
-                    isLoading = false;
+                    isLoading2 = false;
                   });
                   return;
                 }
@@ -392,7 +393,7 @@ class _LoginState extends State<Login>
                   userNameSignUpController.text,
                   passSignUpController.text,
                 ).whenComplete(() => setState(() {
-                      isLoading = false;
+                      isLoading2 = false;
                       hasAutoValidation2 = false;
                       passSignUpController.text = '';
                       verifyPassSignUpController.text = '';
@@ -410,7 +411,7 @@ class _LoginState extends State<Login>
                 alignment: Alignment.center,
                 width: double.maxFinite,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: isLoading
+                child: isLoading2
                     ? SizedBox(
                         width: 22,
                         height: 22,

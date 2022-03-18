@@ -19,6 +19,7 @@ class InfoCardSmall extends StatelessWidget {
     return Expanded(
       child: Container(
           padding: const EdgeInsets.all(24),
+          margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),

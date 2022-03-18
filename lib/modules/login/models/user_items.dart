@@ -64,13 +64,6 @@ class UserItem {
     updatedAt = json['updatedAt'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['email'] = email;
-    data['username'] = username;
-    data['role'] = role;
-    return data;
-  }
 }
 
 class OtherList {

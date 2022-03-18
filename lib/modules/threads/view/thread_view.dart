@@ -113,10 +113,12 @@ Widget ThreadView(ThreadItem item) => Container(
                           Center(
                             child: Container(
                               width: 300,
-                              child: deleteDialog(deleteOnTap: () {
-                                threadController.deleteThread(item.slug);
-                                Get.back();
-                              }),
+                              child: deleteDialog(
+                                  deleteOnTap: () {
+                                    threadController.deleteThread(item.slug);
+                                    Get.back();
+                                  },
+                                  controller: threadController),
                             ),
                           ),
                         );
