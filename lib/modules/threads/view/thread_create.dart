@@ -24,14 +24,15 @@ class _ThreadCreateState extends State<ThreadCreate> {
 
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
-  bool isLoading = false;
-  int deadline = 0;
+  int deadline = DateTime.now().millisecondsSinceEpoch;
+  DateTime initDate = DateTime.now();
 
   @override
   void initState() {
     if (widget.item != null) {
       titleController.text = widget.item.topic;
       contentController.text = widget.item.description;
+      initDate = DateTime.fromMillisecondsSinceEpoch(widget.item.deadline);
     }
     super.initState();
   }
@@ -93,12 +94,12 @@ class _ThreadCreateState extends State<ThreadCreate> {
                   height: 10,
                 ),
                 const CustomText(
-                  text: 'Deadline',
+                  text: 'End time for thread:',
                 ),
                 DateTimePicker(
                   type: DateTimePickerType.dateTimeSeparate,
                   dateMask: 'd MMM, yyyy',
-                  initialValue: DateTime.now().toString(),
+                  initialValue: initDate.toString(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                   icon: const Icon(Icons.event),
@@ -137,42 +138,43 @@ class _ThreadCreateState extends State<ThreadCreate> {
                         color: primaryColor2,
                         borderRadius: BorderRadius.circular(10),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(10),
-                          onTap: () async {
-                            setState(() {
-                              hasAutoValidation = true;
-                              isLoading = true;
-                            });
-                            if (!formGlobalKey.currentState.validate()) {
-                              return;
-                            }
-                            if (widget.item != null) {
-                              threadController.editThread(
-                                  sid: widget.item.sId,
-                                  slug: widget.item.slug,
-                                  topic: titleController.text,
-                                  desc: contentController.text);
-                              Get.back();
-                              return;
-                            }
-                            threadController.createThread(
-                                title: titleController.text,
-                                content: contentController.text,
-                                deadline: deadline);
-                          },
-                          child: isLoading
-                              ? SpinKitThreeBounce(
-                                  color: spaceColor,
-                                  size: 25,
-                                )
-                              : Center(
-                                  child: CustomText(
-                                    text:
-                                        widget.item != null ? 'Edit' : 'Create',
-                                    color: spaceColor,
-                                  ),
-                                ),
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () async {
+                              setState(() {
+                                hasAutoValidation = true;
+                              });
+                              if (!formGlobalKey.currentState.validate()) {
+                                return;
+                              }
+                              if (widget.item != null) {
+                                threadController.editThread(
+                                    sid: widget.item.sId,
+                                    slug: widget.item.slug,
+                                    topic: titleController.text,
+                                    desc: contentController.text,
+                                    deadline: deadline);
+                                return;
+                              }
+                              threadController.createThread(
+                                  title: titleController.text,
+                                  content: contentController.text,
+                                  deadline: deadline);
+                            },
+                            child: Obx(
+                              () => threadController.isLoadingAction.value
+                                  ? SpinKitThreeBounce(
+                                      color: spaceColor,
+                                      size: 25,
+                                    )
+                                  : Center(
+                                      child: CustomText(
+                                        text: widget.item != null
+                                            ? 'Edit'
+                                            : 'Create',
+                                        color: spaceColor,
+                                      ),
+                                    ),
+                            )),
                       ),
                     )),
                     const SizedBox(

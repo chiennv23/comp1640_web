@@ -177,12 +177,12 @@ class _ThreadManageState extends State<ThreadManage> {
                         ),
                       ),
                     ],
-                    rows: threadController.isLoading.value
+                    rows: threadController.isLoadingFirst.value
                         ? [dataRowLoading()]
                         : List<DataRow>.generate(
                             threadController.ThreadList.length ?? 0,
                             (index) {
-                              final item = threadController.ThreadList[index];
+                              final item = threadController.ThreadList.reversed.toList()[index];
                               return DataRow2(
                                 cells: [
                                   DataCell(CustomText(text: item.topic ?? '')),
@@ -194,11 +194,11 @@ class _ThreadManageState extends State<ThreadManage> {
                                   DataCell(CustomText(
                                       text: item.posts.length.toString())),
                                   DataCell(CustomText(
-                                      text:
-                                          DatetimeConvert.dMy_hm(item.createdAt))),
+                                      text: DatetimeConvert.dMy_hm(
+                                          item.createdAt))),
                                   DataCell(CustomText(
-                                      text:
-                                          DatetimeConvert.dMy_hm(item.deadline))),
+                                      text: DatetimeConvert.dMy_hm(
+                                          item.deadline))),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -272,11 +272,10 @@ class _ThreadManageState extends State<ThreadManage> {
       barrierDismissible: false,
       builder: (context) => Dialog(
         child: deleteDialog(
-          deleteOnTap: () {
-            threadController.deleteThread(item.slug);
-          },
-          controller: threadController
-        ),
+            deleteOnTap: () {
+              threadController.deleteThread(item.slug);
+            },
+            controller: threadController),
       ),
     );
   }

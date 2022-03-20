@@ -42,6 +42,8 @@ class LoginController {
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: response.data.user.username);
       SharedPreferencesHelper.instance
+          .setString(key: 'nameSlug', val: response.data.user.slug);
+      SharedPreferencesHelper.instance
           .setString(key: 'Role', val: response.data.user.role);
       name = SharedPreferencesHelper.instance.getString(key: 'UserName');
       menuController.changeActiveItemTo(checkRoleShowCategory(name)[0].name);

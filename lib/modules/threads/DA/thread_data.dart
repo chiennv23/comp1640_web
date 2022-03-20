@@ -36,10 +36,10 @@ class ThreadData {
   }
 
   static Future<BasicResponse> editThread(
-      {String threadSlug, String topic, String des}) async {
+      {String threadSlug, String topic, String des, int deadline}) async {
     final response = await BaseDA.put(
         urlUpdateThread(threadSlug: threadSlug),
-        {"topic": topic, "description": des},
+        {"topic": topic, "description": des, "deadline": deadline},
         (json) => ThreadItem.fromJson(json));
     if (response.code == 200) {
       print('Thread edited.');

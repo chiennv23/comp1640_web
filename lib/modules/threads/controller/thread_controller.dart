@@ -11,11 +11,12 @@ import 'package:get/get.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ThreadController extends GetxController {
-  RxBool isLoading = true.obs;
+  RxBool isLoadingFirst = true.obs;
   RxBool isLoadingAction = false.obs;
   final _threadList = <ThreadItem>[].obs;
   var threadSelected = ''.obs;
   var slugSelected = ''.obs;
+  var deadlineSelectedThread = 0.obs;
 
   @override
   void onInit() {
@@ -25,11 +26,12 @@ class ThreadController extends GetxController {
 
   Future callListIntoDA() async {
     try {
-      isLoading(true);
+      isLoadingFirst(true);
       final data = await ThreadData.getAllThreads();
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
         slugSelected.value = data?.data?.first?.slug;
+        deadlineSelectedThread.value = data?.data?.first?.deadline;
         print(slugSelected.value);
         SharedPreferencesHelper.instance
             .setString(key: 'firstSlug', val: data?.data?.first?.slug);
@@ -40,12 +42,21 @@ class ThreadController extends GetxController {
     } catch (e) {
       print('thread error $e');
     } finally {
-      isLoading(false);
+      isLoadingFirst(false);
     }
   }
 
   List<ThreadItem> get ThreadList {
     return [..._threadList];
+  }
+
+  bool get checkDeadlineCreateIdea {
+    return DateTime.now().toUtc().isAfter(
+          DateTime.fromMillisecondsSinceEpoch(
+            deadlineSelectedThread.value,
+            isUtc: false,
+          ).toUtc(),
+        );
   }
 
   loadingAction(bool checkLoading) => isLoadingAction.value = checkLoading;
@@ -89,13 +100,15 @@ class ThreadController extends GetxController {
     return allPost;
   }
 
-  threadChangeChoose({String thread = '', String slug}) {
+  threadChangeChoose({String thread = '', String slug, int deadline}) {
     threadSelected.value = thread;
     slugSelected.value = slug;
+    deadlineSelectedThread.value = deadline;
   }
 
   createThread({String title, String content, int deadline}) async {
     try {
+      loadingAction(true);
       final data = await ThreadData.createThread(title, content, deadline);
       if (data.code == 200) {
         print(data.data);
@@ -104,18 +117,24 @@ class ThreadController extends GetxController {
             title: 'Create successful!', backGroundColor: successColor);
         Get.back();
         update();
-      } else {
-        snackBarMessageError(data.message);
       }
     } catch (e) {
       print('create thread error $e');
+    } finally {
+      loadingAction(false);
     }
   }
 
-  editThread({String sid, String slug, String topic, String desc}) async {
+  editThread(
+      {String sid,
+      String slug,
+      String topic,
+      String desc,
+      int deadline}) async {
     try {
+      loadingAction(true);
       final data = await ThreadData.editThread(
-          threadSlug: slug, topic: topic, des: desc);
+          threadSlug: slug, topic: topic, des: desc, deadline: deadline);
       if (data.code == 200) {
         _threadList[_threadList.indexWhere((element) => element.sId == sid)] =
             data.data;
@@ -123,11 +142,11 @@ class ThreadController extends GetxController {
             title: 'Edit successful!', backGroundColor: successColor);
         Get.back();
         update();
-      } else {
-        snackBarMessageError('');
       }
     } catch (e) {
       print('edit thread error $e');
+    } finally {
+      loadingAction(false);
     }
   }
 
@@ -136,20 +155,16 @@ class ThreadController extends GetxController {
       loadingAction(true);
       final data = await ThreadData.deleteThread(threadSLug);
       if (data.code == 200) {
-        print(_threadList.length);
         _threadList.removeWhere((element) => element.slug == threadSLug);
         snackBarMessage(
             title: 'Delete successful!', backGroundColor: successColor);
-        print(_threadList.length);
         Get.back();
         update();
-        loadingAction(false);
-      } else {
-        snackBarMessageError('');
       }
     } catch (e) {
       print('delete thread error $e');
+    } finally {
+      loadingAction(false);
     }
-    print(_threadList.length);
   }
 }

@@ -16,8 +16,30 @@ class CommentData {
         (json) => CommentItem.fromJson(json));
     if (response.code == 200) {
       print('Create comment done');
-    } else {
-      snackBarMessageError(response.message);
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> likeComment(
+      String threadSlug, String postSlug, String cmtSlug) async {
+    var response = await BaseDA.post(
+        urlLikeComment(threadSlug: threadSlug, postSlug: postSlug,cmtSlug:cmtSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('like cmt done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> disLikeComment(
+      String threadSlug, String postSlug, String cmtSlug) async {
+    var response = await BaseDA.post(
+        urlDislikeComment(threadSlug: threadSlug, postSlug: postSlug,cmtSlug:cmtSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('dislike cmt done.');
     }
     return response;
   }

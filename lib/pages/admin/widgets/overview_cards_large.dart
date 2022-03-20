@@ -15,7 +15,7 @@ class OverviewCardsLargeScreen extends StatelessWidget {
         children: [
           InfoCard(
             title: "All Threads",
-            value: threadController.isLoading.value
+            value: threadController.isLoadingFirst.value
                 ? '...'
                 : "${threadController.ThreadList.length}",
             topColor: Colors.orange,
@@ -25,7 +25,7 @@ class OverviewCardsLargeScreen extends StatelessWidget {
           ),
           InfoCard(
             title: "All Posts",
-            value: threadController.isLoading.value
+            value: threadController.isLoadingFirst.value
                 ? '...'
                 : "${threadController.AllPostInThread}",
             topColor: Colors.lightGreen,

@@ -71,6 +71,7 @@ class Comment {
   List<String> downvotes;
   String slug;
   bool oneClickActionCmt;
+  bool anonymous;
 
   Comment(
       {this.sId,
@@ -79,7 +80,8 @@ class Comment {
       this.upvotes,
       this.downvotes,
       this.slug,
-      this.oneClickActionCmt});
+      this.oneClickActionCmt,
+      this.anonymous});
 
   Comment.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -88,6 +90,7 @@ class Comment {
     upvotes = json['upvotes'].cast<String>();
     downvotes = json['downvotes'].cast<String>();
     slug = json['slug'];
+    anonymous = json['anonymous'] ?? false;
     oneClickActionCmt = true;
   }
 }

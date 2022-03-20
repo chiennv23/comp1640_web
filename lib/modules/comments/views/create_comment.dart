@@ -50,7 +50,7 @@ class _CreateCommentState extends State<CreateComment> {
                 }
                 commentController.sendComment(string, widget.postItem,
                     commentController.checkAnonymous.value);
-                if(commentController.loading.value){
+                if (commentController.loading.value) {
                   commentTextController.clear();
                 }
                 setState(() {
@@ -79,7 +79,7 @@ class _CreateCommentState extends State<CreateComment> {
                           commentTextController.text,
                           widget.postItem,
                           commentController.checkAnonymous.value);
-                      if(commentController.loading.value){
+                      if (commentController.loading.value) {
                         commentTextController.clear();
                       }
                       setState(() {
@@ -96,10 +96,10 @@ class _CreateCommentState extends State<CreateComment> {
                     borderRadius: BorderRadius.circular(8.0),
                   )),
             ),
-            commentController.loadingSending.value == ''
-                ? Container()
-                : Obx(
-                    () => AnimatedSwitcher(
+            Obx(
+              () => commentController.loadingSending.value == ''
+                  ? Container()
+                  : AnimatedSwitcher(
                       duration: const Duration(milliseconds: 1000),
                       transitionBuilder:
                           (Widget child, Animation<double> animation) {
@@ -111,7 +111,7 @@ class _CreateCommentState extends State<CreateComment> {
                         style: TextStyle(color: greyColor),
                       ),
                     ),
-                  ),
+            ),
             Row(
               children: [
                 Checkbox(

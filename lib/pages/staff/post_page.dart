@@ -1,3 +1,5 @@
+import 'package:comp1640_web/components/dropdown_custom.dart';
+import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
@@ -117,12 +119,22 @@ class _HomeState extends State<Home> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Material(
-                        color: active,
+                        color: threadController.checkDeadlineCreateIdea
+                            ? greyColor
+                            : active,
                         borderRadius: BorderRadius.circular(8.0),
                         child: InkWell(
-                          onTap: () => showCreateIdea(
-                            threadSlug: threadController.slugSelected.value,
-                          ),
+                          onTap: threadController.checkDeadlineCreateIdea
+                              ? () => snackBarMessage(
+                                  backGroundColor: redColor,
+                                  title:
+                                      'Could not generate more ideas. Because ${threadController.threadSelected.value} thread was out of date.')
+                              : () => showCreateIdea(
+                                    thread:
+                                        threadController.threadSelected.value,
+                                    threadSlug:
+                                        threadController.slugSelected.value,
+                                  ),
                           borderRadius: BorderRadius.circular(8.0),
                           child: Container(
                             padding: const EdgeInsets.all(10.0),
@@ -154,7 +166,7 @@ class _HomeState extends State<Home> {
                   ),
                   Flexible(
                     child: Center(
-                      child: postController.isLoading.value
+                      child: postController.isLoadingFirst.value
                           ? const CircularProgressIndicator()
                           : postController.postList.isEmpty
                               ? const Center(
@@ -168,7 +180,9 @@ class _HomeState extends State<Home> {
                                   itemCount: postController.postList.length,
                                   itemBuilder: (context, i) {
                                     final item = postController.postList[i];
-                                    return postCard(item);
+                                    return postCard(item,
+                                        threadSlug: threadController
+                                            .slugSelected.value);
                                   }),
                     ),
                   ),
@@ -192,7 +206,7 @@ class _HomeState extends State<Home> {
           width: ResponsiveWidget.isSmallScreen(context)
               ? MediaQuery.of(context).size.width
               : MediaQuery.of(context).size.width / 3,
-          height: 75.0 * threadController.ThreadList.length,
+          height: 130.0 * threadController.ThreadList.length,
           decoration: BoxDecoration(
               color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
           child: Column(
@@ -216,7 +230,9 @@ class _HomeState extends State<Home> {
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
                         threadController.threadChangeChoose(
-                            thread: item.topic, slug: item.slug);
+                            thread: item.topic,
+                            slug: item.slug,
+                            deadline: item.deadline);
                         postController.onInit();
                         Get.back(result: item.topic);
                       },
@@ -244,33 +260,34 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Material(
-                    color: active,
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        Get.back(result: threadController.threadSelected.value);
-                      },
+              Container(
+                padding: const EdgeInsets.only(top: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Material(
+                      color: active,
                       borderRadius: BorderRadius.circular(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0)),
-                        child: const CustomText(
-                          text: "Cancel",
-                          color: Colors.white,
+                      child: InkWell(
+                        onTap: () {
+                          Get.back(
+                              result: threadController.threadSelected.value);
+                        },
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(10.0),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: const CustomText(
+                            text: "Cancel",
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -279,14 +296,15 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void showCreateIdea({String threadSlug, PostItem itemPost}) {
+  void showCreateIdea({String thread, String threadSlug, PostItem itemPost}) {
     Get.dialog(PostCreate(
+      thread: thread,
       threadSlug: threadSlug,
       item: itemPost,
     ));
   }
 
-  Widget postCard(PostItem item) {
+  Widget postCard(PostItem item, {String threadSlug}) {
     PostController postController = Get.find();
     return Card(
       elevation: 1,
@@ -306,33 +324,36 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              leading: Container(
-                height: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.account_circle,
-                  size: 40,
-                ),
-              ),
-              title: CustomText(
-                text: item.author.username,
-                weight: FontWeight.w600,
-              ),
-              subtitle: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text:
-                        '${item.title} (create date: ${DatetimeConvert.dMy_hm(item.updatedAt)})' ??
-                            '',
-                    size: 14,
+                leading: Container(
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                   ),
-                ],
-              ),
-            ),
+                  child: const Icon(
+                    Icons.account_circle,
+                    size: 40,
+                  ),
+                ),
+                title: CustomText(
+                  text: item.author.username,
+                  weight: FontWeight.w600,
+                ),
+                subtitle: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text:
+                          '${item.title} (created: ${DatetimeConvert.dMy_hm(item.updatedAt)}) (End: ${DatetimeConvert.dMy_hm(item.deadline)})' ??
+                              '',
+                      size: 14,
+                    ),
+                  ],
+                ),
+                trailing: CustomButtonTest(
+                  itemPost: item,
+                  threadSlug: threadSlug,
+                )),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
@@ -350,14 +371,16 @@ class _HomeState extends State<Home> {
                       Icons.thumb_up,
                     ),
                     tooltip: 'Like',
-                    onPressed: item.oneClickAction
-                        ? () {
-                            postController.chooseLike(item.title);
-                            setState(() {
-                              item.oneClickAction = false;
-                            });
-                          }
-                        : null,
+                    onPressed: postController.checkDeadlinePost(item.deadline)
+                        ? null
+                        : item.oneClickAction
+                            ? () {
+                                postController.chooseLike(
+                                    item.title, item.oneClickAction,
+                                    threadSlug: threadSlug,
+                                    postSlug: item.slug);
+                              }
+                            : null,
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 8),
@@ -372,14 +395,16 @@ class _HomeState extends State<Home> {
                       Icons.thumb_down,
                     ),
                     tooltip: 'Dislike',
-                    onPressed: item.oneClickAction
-                        ? () {
-                            postController.chooseDisLike(item.title);
-                            setState(() {
-                              item.oneClickAction = false;
-                            });
-                          }
-                        : null,
+                    onPressed: postController.checkDeadlinePost(item.deadline)
+                        ? null
+                        : item.oneClickAction
+                            ? () {
+                                postController.chooseDisLike(
+                                    item.title, item.oneClickAction,
+                                    threadSlug: threadSlug,
+                                    postSlug: item.slug);
+                              }
+                            : null,
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 8),
@@ -397,24 +422,34 @@ class _HomeState extends State<Home> {
             AnimatedCrossFade(
               duration: const Duration(microseconds: 1000),
               secondChild: item.comments.isEmpty
-                  ? Container(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: const CustomText(
-                              text: 'Comments:',
-                              weight: FontWeight.bold,
-                              size: 16,
-                            ),
+                  ? postController.checkDeadlinePost(item.deadline)
+                      ? Container(
+                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 14),
+                          child: const CustomText(
+                            text:
+                                'Idea was out of date. Could not comment in here.',
+                            weight: FontWeight.bold,
+                            size: 16,
                           ),
-                          CreateComment(
-                            postItem: item,
-                          ),
-                        ],
-                      ))
+                        )
+                      : Container(
+                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: const CustomText(
+                                  text: 'Comments:',
+                                  weight: FontWeight.bold,
+                                  size: 16,
+                                ),
+                              ),
+                              CreateComment(
+                                postItem: item,
+                              ),
+                            ],
+                          ))
                   : AnimatedContainer(
                       duration: const Duration(microseconds: 500),
                       padding: const EdgeInsets.only(left: 24.0, right: 24.0),
@@ -431,6 +466,7 @@ class _HomeState extends State<Home> {
                           ),
                           ShowComment(
                             postItem: item,
+                            threadSlug: threadSlug,
                           ),
                           TextButton(
                             onPressed: () => hideComment(item),
@@ -439,12 +475,17 @@ class _HomeState extends State<Home> {
                               weight: FontWeight.bold,
                             ),
                           ),
-                          Container(
-                              padding:
-                                  const EdgeInsets.only(bottom: 10, top: 10),
-                              child: CreateComment(
-                                postItem: item,
-                              ))
+                          postController.checkDeadlinePost(item.deadline)
+                              ? Container(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, top: 10),
+                                )
+                              : Container(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, top: 10),
+                                  child: CreateComment(
+                                    postItem: item,
+                                  ))
                         ],
                       ),
                     ),

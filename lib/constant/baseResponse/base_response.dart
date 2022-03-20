@@ -57,19 +57,10 @@ class BaseDA {
             }
           }
         }
-        if (response.statusCode == 403) {
-          var responseFail = BasicResponse<T>();
-          responseFail.code = response.statusCode;
-          responseFail.message = response.body;
-          snackBarMessageError(responseFail.message);
-          return responseFail;
-        }
-        if (response.statusCode == 500) {
-          snackBarMessageError401('Server error!');
-        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
+        snackBarMessageError(responseFail.message);
         return responseFail;
       } else {
         var b = BasicResponse<T>();
@@ -110,6 +101,7 @@ class BaseDA {
         print(response.statusCode.toString());
         if (response.statusCode == 401) {
           print('fail authen.');
+
           var rs = await postRefreshToken();
           if (rs.statusCode == 200) {
             token =
@@ -123,6 +115,7 @@ class BaseDA {
             final response = await http.delete(Uri.parse(url),
                 headers: headers, body: jsonObj);
             if (response.statusCode == 200) {
+              print(json.encode(jsonDecode(response.body)));
               var b = BasicResponse<T>();
               b.data = fromJson(jsonDecode(response.body));
               b.code = 200;
@@ -130,15 +123,10 @@ class BaseDA {
             }
           }
         }
-        if (response.statusCode == 403) {
-          snackBarMessageError401('You are not authorized.');
-        }
-        if (response.statusCode == 500) {
-          snackBarMessageError401('Server error!');
-        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
+        snackBarMessageError(responseFail.message);
         return responseFail;
       } else {
         var b = BasicResponse<T>();
@@ -179,6 +167,7 @@ class BaseDA {
         print(response.statusCode.toString());
         if (response.statusCode == 401) {
           print('fail authen.');
+
           var rs = await postRefreshToken();
           if (rs.statusCode == 200) {
             token =
@@ -192,6 +181,7 @@ class BaseDA {
             final response =
                 await http.put(Uri.parse(url), headers: headers, body: jsonObj);
             if (response.statusCode == 200) {
+              print(json.encode(jsonDecode(response.body)));
               var b = BasicResponse<T>();
               b.data = fromJson(jsonDecode(response.body));
               b.code = 200;
@@ -199,15 +189,10 @@ class BaseDA {
             }
           }
         }
-        if (response.statusCode == 403) {
-          snackBarMessageError401('You are not authorized.');
-        }
-        if (response.statusCode == 500) {
-          snackBarMessageError401('Server error!');
-        }
         var responseFail = BasicResponse<T>();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
+        snackBarMessageError(responseFail.message);
         return responseFail;
       } else {
         var b = BasicResponse<T>();
@@ -226,7 +211,7 @@ class BaseDA {
     try {
       var headers = <String, String>{};
       var token =
-      SharedPreferencesHelper.instance.getString(key: 'accessToken');
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
       if (token != null) {
         headers = <String, String>{
           'Content-type': 'application/json',

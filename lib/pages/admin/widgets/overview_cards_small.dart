@@ -16,7 +16,7 @@ class OverviewCardsSmallScreen extends StatelessWidget {
             children: [
               InfoCardSmall(
                 title: "All Threads",
-                value: threadController.isLoading.value
+                value: threadController.isLoadingFirst.value
                     ? '...'
                     : "${threadController.ThreadList.length}",
               ),
@@ -25,7 +25,7 @@ class OverviewCardsSmallScreen extends StatelessWidget {
               ),
               InfoCardSmall(
                 title: "All Posts",
-                value: threadController.isLoading.value
+                value: threadController.isLoadingFirst.value
                     ? '...'
                     : "${threadController.AllPostInThread}",
               ),

@@ -2,8 +2,6 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
-import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
-import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +13,10 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 class PostCreate extends StatefulWidget {
   final PostItem item;
   final String threadSlug;
+  final String thread;
 
-  const PostCreate({Key key, this.item, this.threadSlug}) : super(key: key);
+  const PostCreate({Key key, this.item, this.threadSlug, this.thread})
+      : super(key: key);
 
   @override
   State<PostCreate> createState() => _PostCreateState();
@@ -28,15 +28,16 @@ class _PostCreateState extends State<PostCreate> {
 
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
-  bool isLoading = false;
   bool checkFile = false;
-  int deadline = 0;
+  DateTime initDate = DateTime.now();
+  int deadline = DateTime.now().millisecondsSinceEpoch;
 
   @override
   void initState() {
     if (widget.item != null) {
       titleController.text = widget.item.title;
       contentController.text = widget.item.content;
+      initDate = DateTime.fromMillisecondsSinceEpoch(widget.item.deadline);
     }
     super.initState();
   }
@@ -59,8 +60,9 @@ class _PostCreateState extends State<PostCreate> {
                 : AutovalidateMode.disabled,
             child: Column(
               children: [
-                const CustomText(
-                  text: 'Create Idea',
+                CustomText(
+                  text:
+                      '${(widget.item != null) ? 'Edit' : 'Create'} Idea in ${widget.thread} thread',
                   size: 20,
                   weight: FontWeight.bold,
                 ),
@@ -99,8 +101,8 @@ class _PostCreateState extends State<PostCreate> {
                   decoration: InputDecoration(
                       labelText: "Content",
                       hintText: "",
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 25, horizontal: 15),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
                 ),
@@ -108,12 +110,12 @@ class _PostCreateState extends State<PostCreate> {
                   height: 10,
                 ),
                 const CustomText(
-                  text: 'Deadline',
+                  text: 'End time for idea:',
                 ),
                 DateTimePicker(
                   type: DateTimePickerType.dateTimeSeparate,
                   dateMask: 'd MMM, yyyy',
-                  initialValue: DateTime.now().toString(),
+                  initialValue: initDate.toString(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                   icon: const Icon(Icons.event),
@@ -196,46 +198,51 @@ class _PostCreateState extends State<PostCreate> {
                       height: 45,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10)),
-                      child: Material(
-                        color: primaryColor2,
-                        borderRadius: BorderRadius.circular(10),
-                        child: InkWell(
+                      child: Obx(
+                        () => Material(
+                          color: primaryColor2,
                           borderRadius: BorderRadius.circular(10),
-                          onTap: () async {
-                            setState(() {
-                              hasAutoValidation = true;
-                              isLoading = true;
-                            });
-                            if (!formGlobalKey.currentState.validate()) {
-                              return;
-                            }
-                            if (widget.item != null) {
-                              // postController.editThread(
-                              //     sid: widget.item.sId,
-                              //     slug: widget.item.slug,
-                              //     topic: titleController.text,
-                              //     desc: contentController.text);
-                              Get.back();
-                              return;
-                            }
-                            postController.createIdea(
-                                title: titleController.text,
-                                content: contentController.text,
-                                threadSlug: widget.threadSlug,
-                                deadline: deadline);
-                          },
-                          child: isLoading
-                              ? SpinKitThreeBounce(
-                                  color: spaceColor,
-                                  size: 25,
-                                )
-                              : Center(
-                                  child: CustomText(
-                                    text:
-                                        widget.item != null ? 'Edit' : 'Create',
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: postController.isLoadingAction.value
+                                ? () {}
+                                : () async {
+                                    setState(() {
+                                      hasAutoValidation = true;
+                                    });
+                                    if (!formGlobalKey.currentState
+                                        .validate()) {
+                                      return;
+                                    }
+                                    if (widget.item != null) {
+                                      postController.editIdea(
+                                          title: titleController.text,
+                                          content: contentController.text,
+                                          postSlug: widget.item.slug,
+                                          threadSlug: widget.threadSlug,
+                                          deadline: deadline);
+                                      return;
+                                    }
+                                    postController.createIdea(
+                                        title: titleController.text,
+                                        content: contentController.text,
+                                        threadSlug: widget.threadSlug,
+                                        deadline: deadline);
+                                  },
+                            child: postController.isLoadingAction.value
+                                ? SpinKitThreeBounce(
                                     color: spaceColor,
+                                    size: 25,
+                                  )
+                                : Center(
+                                    child: CustomText(
+                                      text: widget.item != null
+                                          ? 'Edit'
+                                          : 'Create',
+                                      color: spaceColor,
+                                    ),
                                   ),
-                                ),
+                          ),
                         ),
                       ),
                     )),

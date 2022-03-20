@@ -8,6 +8,7 @@ import 'constant/style.dart';
 import 'helpers/local_navigator.dart';
 import 'helpers/reponsive_pages.dart';
 import 'modules/login/controller/user_controller.dart';
+import 'modules/threads/controller/thread_controller.dart';
 
 class SiteLayout extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
@@ -15,6 +16,7 @@ class SiteLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => UserController());
+    Get.put(ThreadController());
 
     return Scaffold(
       key: scaffoldKey,

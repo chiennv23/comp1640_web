@@ -42,6 +42,16 @@ String urlDeleteComment(
   return '$urlApi/threads/$threadSlug/posts/$postSlug/comments/delete/$commentSlug';
 }
 
+// like a comment
+String urlLikeComment({String threadSlug, String postSlug, String cmtSlug}) {
+  return '$urlApi/threads/$threadSlug/posts/$postSlug/comments/upvote/$cmtSlug';
+}
+
+// dislike a comment
+String urlDislikeComment({String threadSlug, String postSlug, String cmtSlug}) {
+  return '$urlApi/threads/$threadSlug/posts/$postSlug/comments/downvote/$cmtSlug';
+}
+
 //TODO POST
 // get all posts in thread
 String urlGetAllPosts({String threadSlug}) {
@@ -66,6 +76,16 @@ String urlUpdatePost({String threadSlug, String postSlug}) {
 // Delete a post
 String urlDeletePost({String threadSlug, String postSlug}) {
   return '$urlApi/threads/$threadSlug/posts/delete/$postSlug';
+}
+
+// like a post
+String urlLikePost({String threadSlug, String postSlug}) {
+  return '$urlApi/threads/$threadSlug/posts/upvote/$postSlug';
+}
+
+// dislike a post
+String urlDislikePost({String threadSlug, String postSlug}) {
+  return '$urlApi/threads/$threadSlug/posts/downvote/$postSlug';
 }
 
 //TODO THREAD

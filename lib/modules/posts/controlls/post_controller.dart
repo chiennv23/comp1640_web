@@ -10,7 +10,8 @@ import 'package:get/get.dart';
 class PostController extends GetxController {
   ThreadController threadController = Get.find();
 
-  RxBool isLoading = true.obs;
+  RxBool isLoadingFirst = false.obs;
+  RxBool isLoadingAction = false.obs;
   final postListController = <PostItem>[].obs;
 
   @override
@@ -21,7 +22,7 @@ class PostController extends GetxController {
 
   Future callListIntoDA() async {
     try {
-      isLoading(true);
+      isLoadingFirst(true);
       var firstSlug =
           SharedPreferencesHelper.instance.getString(key: 'firstSlug');
       final data = await PostData.getAllPostByThread(
@@ -34,7 +35,7 @@ class PostController extends GetxController {
         snackBarMessageError(data.message);
       }
     } finally {
-      isLoading(false);
+      isLoadingFirst(false);
     }
   }
 
@@ -42,61 +43,134 @@ class PostController extends GetxController {
     return [...postListController];
   }
 
+  bool loadingAction(bool loading) => isLoadingAction.value = loading;
+
   createIdea(
       {String threadSlug, String title, String content, int deadline}) async {
     try {
+      loadingAction(true);
       final data =
           await PostData.createPost(threadSlug, title, content, deadline);
       if (data.code == 200) {
-        print(data.data);
         postListController.insert(0, data.data);
         snackBarMessage(
             title: 'Create idea successful!', backGroundColor: successColor);
         Get.back();
         update();
-      } else {
-        snackBarMessageError(data.message);
       }
     } catch (e) {
       print('create idea error $e');
+    } finally {
+      loadingAction(false);
     }
   }
 
-  chooseLike(String title) {
-    var listLike =
-        postListController.firstWhere((element) => element.title == title).upvotes;
-    listLike.add('like');
-    print(listLike.length);
-    update();
+  editIdea(
+      {String threadSlug,
+      String postSlug,
+      String title,
+      String content,
+      int deadline}) async {
+    try {
+      loadingAction(true);
+      final data = await PostData.editPost(
+          threadSlug, postSlug, title, content, deadline);
+      if (data.code == 200) {
+        postListController[postListController
+            .indexWhere((element) => element.slug == postSlug)] = data.data;
+        snackBarMessage(
+            title: 'Edit idea successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      }
+    } catch (e) {
+      print('Edit idea error $e');
+    } finally {
+      loadingAction(false);
+    }
   }
 
-  chooseDisLike(String title) {
-    var disListLike =
-        postListController.firstWhere((element) => element.title == title).downvotes;
-    disListLike.add('dislike');
-    print(disListLike.length);
-    update();
+  deleteIdea(String threadSLug, String postSLug) async {
+    try {
+      loadingAction(true);
+      final data = await PostData.deletePost(threadSLug, postSLug);
+      if (data.code == 200) {
+        postListController.removeWhere((element) => element.slug == postSLug);
+        snackBarMessage(
+            title: 'Delete successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      }
+    } catch (e) {
+      print('delete idea error $e');
+    } finally {
+      loadingAction(false);
+    }
   }
 
-  chooseLikeCmt({String title, String content}) {
+  bool checkDeadlinePost(int deadline) {
+    return DateTime.now().toUtc().isAfter(
+          DateTime.fromMillisecondsSinceEpoch(
+            deadline,
+            isUtc: false,
+          ).toUtc(),
+        );
+  }
+
+  chooseLike(
+    String title,
+    bool checkClickAction, {
+    String threadSlug,
+    String postSlug,
+  }) async {
     var listLike = postListController
         .firstWhere((element) => element.title == title)
-        .comments
-        .firstWhere((e) => e.content == content)
         .upvotes;
     listLike.add('like');
+    postListController
+        .firstWhere((element) => element.title == title)
+        .oneClickAction = false;
+    postListController.refresh();
+
+    final data = await PostData.likePost(threadSlug, postSlug);
+    if (data.code != 200) {
+      postListController
+          .firstWhere((element) => element.title == title)
+          .oneClickAction = true;
+      if (listLike.isNotEmpty) listLike.removeLast();
+    } else {
+      postListController
+          .firstWhere((element) => element.title == title)
+          .oneClickAction = false;
+    }
     print(listLike.length);
-    update();
   }
 
-  chooseDisLikeCmt({String title, String content}) {
+  chooseDisLike(
+    String title,
+    bool checkClickAction, {
+    String threadSlug,
+    String postSlug,
+  }) async {
     var disListLike = postListController
         .firstWhere((element) => element.title == title)
-        .comments
-        .firstWhere((e) => e.content == content)
         .downvotes;
     disListLike.add('dislike');
+    postListController
+        .firstWhere((element) => element.title == title)
+        .oneClickAction = false;
+    postListController.refresh();
+    final data = await PostData.disLikePost(threadSlug, postSlug);
+    if (data.code != 200) {
+      postListController
+          .firstWhere((element) => element.title == title)
+          .oneClickAction = true;
+      if (disListLike.isNotEmpty) disListLike.removeLast();
+    } else {
+      postListController
+          .firstWhere((element) => element.title == title)
+          .oneClickAction = false;
+    }
     print(disListLike.length);
-    update();
   }
 }

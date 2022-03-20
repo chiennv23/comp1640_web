@@ -9,79 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PostData {
-  // static List<PostItem> dataHashCode = [
-  //   PostItem(
-  //       title: 'title',
-  //       content: 'content',
-  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-  //       comments: [
-  //         CommentItem(
-  //             content: 'content',
-  //             createdAt: DateTime.now().toString(),
-  //             updatedAt: DateTime.now().toString(),
-  //             author: Author(
-  //                 email: 'email', sId: 'sid', username: 'usernameAuthor'),
-  //             downvotes: [
-  //               'a',
-  //             ],
-  //             upvotes: [
-  //               '1',
-  //               '2'
-  //             ])
-  //       ],
-  //       downvotes: [
-  //         'a',
-  //       ],
-  //       upvotes: ['1', '2'],
-  //       category: 'category',
-  //       createdAt: DateTime.now().toString(),
-  //       updatedAt: DateTime.now().toString(),
-  //       thread: 'thread',
-  //       slug: 'slug'),
-  //   PostItem(
-  //       title: 'title2',
-  //       content: 'content',
-  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-  //       comments: [
-  //         CommentItem(
-  //             content: 'content',
-  //             createdAt: DateTime.now().toString(),
-  //             updatedAt: DateTime.now().toString(),
-  //             author: Author(
-  //                 email: 'email', sId: 'sid', username: 'usernameAuthor'),
-  //             downvotes: [
-  //               'a',
-  //             ],
-  //             upvotes: [
-  //               '1',
-  //               '2'
-  //             ])
-  //       ],
-  //       downvotes: [
-  //         'a',
-  //       ],
-  //       upvotes: ['1', '2'],
-  //       category: 'category',
-  //       createdAt: DateTime.now().toString(),
-  //       updatedAt: DateTime.now().toString(),
-  //       thread: 'thread',
-  //       slug: 'slug'),
-  //   PostItem(
-  //       title: 'title3',
-  //       content: 'content',
-  //       comments: [],
-  //       downvotes: [
-  //         'a',
-  //       ],
-  //       upvotes: ['1', '2'],
-  //       author: Author(email: 'email', sId: 'sid', username: 'usernameAuthor'),
-  //       category: 'category',
-  //       createdAt: DateTime.now().toString(),
-  //       updatedAt: DateTime.now().toString(),
-  //       thread: 'thread',
-  //       slug: 'slug'),
-  // ];
-
   static Future<BasicResponse> getAllPostByThread(String threadSlug) async {
     final response = await BaseDA.getList(
         urlGetAllPosts(threadSlug: threadSlug),
@@ -92,8 +19,6 @@ class PostData {
     return response;
   }
 
-  static ThreadController threadController = Get.find();
-
   static Future<BasicResponse> createPost(
       String threadSlug, String title, String content, int deadline) async {
     var response = await BaseDA.post(
@@ -102,6 +27,54 @@ class PostData {
         (json) => PostItem.fromJson(json));
     if (response.code == 200) {
       print('create post done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> editPost(String threadSlug, String postSlug,
+      String title, String content, int deadline) async {
+    var response = await BaseDA.put(
+        urlUpdatePost(threadSlug: threadSlug, postSlug: postSlug),
+        {'title': title, 'content': content, 'deadline': deadline},
+        (json) => PostItem.fromJson(json));
+    if (response.code == 200) {
+      print('Edit post done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> deletePost(String threadSlug, String postSlug,
+      ) async {
+    var response = await BaseDA.delete(
+        urlDeletePost(threadSlug: threadSlug, postSlug: postSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Del post done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> likePost(
+      String threadSlug, String postSlug) async {
+    var response = await BaseDA.post(
+        urlLikePost(threadSlug: threadSlug, postSlug: postSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('like post done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> disLikePost(
+      String threadSlug, String postSlug) async {
+    var response = await BaseDA.post(
+        urlDislikePost(threadSlug: threadSlug, postSlug: postSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('dislike post done.');
     } else {
       snackBarMessageError(response.message);
     }

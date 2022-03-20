@@ -1,4 +1,6 @@
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
+import 'package:comp1640_web/modules/comments/controller/comment_controller.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
@@ -7,17 +9,22 @@ import 'package:get/get.dart';
 
 class ShowComment extends StatefulWidget {
   final PostItem postItem;
+  final String threadSlug;
 
-  const ShowComment({Key key, this.postItem}) : super(key: key);
+  const ShowComment({Key key, this.postItem, this.threadSlug})
+      : super(key: key);
 
   @override
   State<ShowComment> createState() => _ShowCommentState();
 }
 
 class _ShowCommentState extends State<ShowComment> {
+  var nameSlugLogin =
+      SharedPreferencesHelper.instance.getString(key: 'nameSlug');
+
   @override
   Widget build(BuildContext context) {
-    PostController postController = Get.find();
+    CommentController commentController = Get.find();
     return Column(
       children: [
         ...List.generate(widget.postItem.comments.length, (index) {
@@ -53,7 +60,9 @@ class _ShowCommentState extends State<ShowComment> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomText(
-                        text: item.author.username,
+                        text: (item.author.slug == nameSlugLogin)
+                            ? '${item.author.username} (You)'
+                            : item.author.username,
                         weight: FontWeight.w600,
                       ),
                       Container(
@@ -74,12 +83,13 @@ class _ShowCommentState extends State<ShowComment> {
                             tooltip: 'Like comment',
                             onPressed: item.oneClickActionCmt
                                 ? () {
-                                    postController.chooseLikeCmt(
-                                        title: widget.postItem.title,
-                                        content: item.content);
-                                    setState(() {
-                                      item.oneClickActionCmt = false;
-                                    });
+                                    commentController.chooseLikeCmt(
+                                        widget.postItem.title,
+                                        item.content,
+                                        item.oneClickActionCmt,
+                                        threadSlug: widget.threadSlug,
+                                        postSlug: widget.postItem.slug,
+                                        cmtSlug: item.slug);
                                   }
                                 : null,
                           ),
@@ -100,12 +110,13 @@ class _ShowCommentState extends State<ShowComment> {
                             tooltip: 'Dislike comment',
                             onPressed: item.oneClickActionCmt
                                 ? () {
-                                    postController.chooseDisLikeCmt(
-                                        title: widget.postItem.title,
-                                        content: item.content);
-                                    setState(() {
-                                      item.oneClickActionCmt = false;
-                                    });
+                                    commentController.chooseDisLikeCmt(
+                                        widget.postItem.title,
+                                        item.content,
+                                        item.oneClickActionCmt,
+                                        threadSlug: widget.threadSlug,
+                                        postSlug: widget.postItem.slug,
+                                        cmtSlug: item.slug);
                                   }
                                 : null,
                           ),
