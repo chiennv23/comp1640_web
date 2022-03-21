@@ -36,160 +36,167 @@ class _HomeState extends State<Home> {
     PostController postController = Get.find();
     ThreadController threadController = Get.find();
 
-    return Scaffold(
-      backgroundColor: lightColor,
-      body: Obx(
-        () => Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                    margin: EdgeInsets.only(
-                        top: ResponsiveWidget.isSmallScreen(context) ? 56 : 15),
-                    child: CustomText(
-                      text: menuController.activeItem.value == 'Log Out'
-                          ? ''
-                          : menuController.activeItem.value,
-                      size: 24,
-                      weight: FontWeight.bold,
-                    )),
-              ],
-            ),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: lightColor,
+        body: Obx(
+          () => Column(
+            children: [
+              Row(
                 children: [
-                  if (threadController.ThreadList.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.only(top: 24, right: 24),
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: "Ideas in Thread: ",
-                            size: ResponsiveWidget.isSmallScreen(context)
-                                ? 14
-                                : 20,
-                            weight: FontWeight.normal,
-                            color: greyColor,
-                          ),
-                          Tooltip(
-                            message: 'Change Thread',
-                            child: InkWell(
-                              onTap: () async {
-                                threadController.threadSelected.value =
-                                    await Get.dialog(showChangeThread())
-                                        .whenComplete(() {
-                                  setState(() {
-                                    for (var element
-                                        in postController.postList) {
-                                      element.checkComment = false;
-                                    }
+                  Container(
+                      margin: EdgeInsets.only(
+                          top: ResponsiveWidget.isSmallScreen(context)
+                              ? 56
+                              : 15),
+                      child: CustomText(
+                        text: menuController.activeItem.value == 'Log Out'
+                            ? ''
+                            : menuController.activeItem.value,
+                        size: 24,
+                        weight: FontWeight.bold,
+                      )),
+                ],
+              ),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (threadController.ThreadList.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.only(top: 24, right: 24),
+                        child: Row(
+                          children: [
+                            CustomText(
+                              text: "Ideas in Thread: ",
+                              size: ResponsiveWidget.isSmallScreen(context)
+                                  ? 14
+                                  : 20,
+                              weight: FontWeight.normal,
+                              color: greyColor,
+                            ),
+                            Tooltip(
+                              message: 'Change Thread',
+                              child: InkWell(
+                                onTap: () async {
+                                  threadController.threadSelected.value =
+                                      await Get.dialog(showChangeThread())
+                                          .whenComplete(() {
+                                    setState(() {
+                                      for (var element
+                                          in postController.postList) {
+                                        element.checkComment = false;
+                                      }
+                                    });
                                   });
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(5.0),
-                                decoration: BoxDecoration(
-                                  color: spaceColor,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(color: primaryColor2),
-                                ),
-                                child: CustomText(
-                                  text: threadController.threadSelected.value ==
-                                          ''
-                                      ? threadController
-                                          .ThreadList?.first?.topic
-                                      : threadController.threadSelected.value,
-                                  size: ResponsiveWidget.isSmallScreen(context)
-                                      ? 16
-                                      : 20,
-                                  weight: FontWeight.bold,
-                                  color: greyColor,
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5.0),
+                                  decoration: BoxDecoration(
+                                    color: spaceColor,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    border: Border.all(color: primaryColor2),
+                                  ),
+                                  child: CustomText(
+                                    text: threadController
+                                                .threadSelected.value ==
+                                            ''
+                                        ? threadController
+                                            .ThreadList?.first?.topic
+                                        : threadController.threadSelected.value,
+                                    size:
+                                        ResponsiveWidget.isSmallScreen(context)
+                                            ? 16
+                                            : 20,
+                                    weight: FontWeight.bold,
+                                    color: greyColor,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                    const SizedBox(
+                      height: 15,
                     ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Material(
-                        color: threadController.checkDeadlineCreateIdea
-                            ? greyColor
-                            : active,
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: InkWell(
-                          onTap: threadController.checkDeadlineCreateIdea
-                              ? () => snackBarMessage(
-                                  backGroundColor: redColor,
-                                  title:
-                                      'Could not generate more ideas. Because ${threadController.threadSelected.value} thread was out of date.')
-                              : () => showCreateIdea(
-                                    thread:
-                                        threadController.threadSelected.value,
-                                    threadSlug:
-                                        threadController.slugSelected.value,
-                                  ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Material(
+                          color: threadController.checkDeadlineCreateIdea
+                              ? greyColor
+                              : active,
                           borderRadius: BorderRadius.circular(8.0),
-                          child: Container(
-                            padding: const EdgeInsets.all(10.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0)),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.only(right: 5.0),
-                                  child: Icon(
-                                    Icons.create,
-                                    color: spaceColor,
+                          child: InkWell(
+                            onTap: threadController.checkDeadlineCreateIdea
+                                ? () => snackBarMessage(
+                                    backGroundColor: redColor,
+                                    title:
+                                        'Could not generate more ideas. Because ${threadController.threadSelected.value} thread was out of date.')
+                                : () => showCreateIdea(
+                                      thread:
+                                          threadController.threadSelected.value,
+                                      threadSlug:
+                                          threadController.slugSelected.value,
+                                    ),
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(right: 5.0),
+                                    child: Icon(
+                                      Icons.create,
+                                      color: spaceColor,
+                                    ),
                                   ),
-                                ),
-                                const CustomText(
-                                  text: "Create your idea",
-                                  color: Colors.white,
-                                ),
-                              ],
+                                  const CustomText(
+                                    text: "Create your idea",
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Flexible(
-                    child: Center(
-                      child: postController.isLoadingFirst.value
-                          ? const CircularProgressIndicator()
-                          : postController.postList.isEmpty
-                              ? const Center(
-                                  child: CustomText(
-                                    text: 'No Idea to view. Try again !',
-                                  ),
-                                )
-                              : ListView.builder(
-                                  padding:
-                                      const EdgeInsets.only(top: 16, right: 24),
-                                  itemCount: postController.postList.length,
-                                  itemBuilder: (context, i) {
-                                    final item = postController.postList[i];
-                                    return postCard(item,
-                                        threadSlug: threadController
-                                            .slugSelected.value);
-                                  }),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Flexible(
+                      child: Center(
+                        child: postController.isLoadingFirst.value
+                            ? const CircularProgressIndicator()
+                            : postController.postList.isEmpty
+                                ? const Center(
+                                    child: CustomText(
+                                      text: 'No Idea to view. Try again !',
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    padding: const EdgeInsets.only(
+                                        top: 16, right: 24),
+                                    itemCount: postController.postList.length,
+                                    itemBuilder: (context, i) {
+                                      final item = postController.postList[i];
+                                      return postCard(item,
+                                          threadSlug: threadController
+                                              .slugSelected.value);
+                                    }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

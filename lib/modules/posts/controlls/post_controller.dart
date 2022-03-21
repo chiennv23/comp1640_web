@@ -5,6 +5,7 @@ import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:get/get.dart';
 
 class PostController extends GetxController {
@@ -13,6 +14,7 @@ class PostController extends GetxController {
   RxBool isLoadingFirst = false.obs;
   RxBool isLoadingAction = false.obs;
   final postListController = <PostItem>[].obs;
+  var fileName = ''.obs;
 
   @override
   void onInit() {

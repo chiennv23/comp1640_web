@@ -42,6 +42,7 @@ class _CreateCommentState extends State<CreateComment> {
                 }
               },
               onFieldSubmitted: (string) {
+                FocusScope.of(context).unfocus();
                 setState(() {
                   hasAutoValidation = true;
                 });
@@ -57,6 +58,8 @@ class _CreateCommentState extends State<CreateComment> {
                   hasAutoValidation = false;
                 });
               },
+              maxLines: 3,
+              minLines: 1,
               decoration: InputDecoration(
                   labelText: "Comment",
                   hintText: "Typing something",
@@ -69,6 +72,7 @@ class _CreateCommentState extends State<CreateComment> {
                     ),
                     tooltip: 'Sent comment',
                     onPressed: () {
+                      FocusScope.of(context).unfocus();
                       setState(() {
                         hasAutoValidation = true;
                       });
@@ -117,12 +121,14 @@ class _CreateCommentState extends State<CreateComment> {
                 Checkbox(
                     value: commentController.checkAnonymous.value,
                     onChanged: (value) {
+                      FocusScope.of(context).unfocus();
                       setState(() {
                         commentController.checkAnonymous.value = value;
                       });
                     }),
                 InkWell(
                   onTap: () {
+                    FocusScope.of(context).unfocus();
                     setState(() {
                       commentController.checkAnonymous.value =
                           !commentController.checkAnonymous.value;

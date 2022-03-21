@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
+import 'package:comp1640_web/utils/DropZoneFile/drop_zone_widget.dart';
+import 'package:comp1640_web/utils/DropZoneFile/dropped_file.dart';
+import 'package:comp1640_web/utils/DropZoneFile/model/file_drop_item.dart';
+import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +15,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class PostCreate extends StatefulWidget {
   final PostItem item;
@@ -40,6 +47,14 @@ class _PostCreateState extends State<PostCreate> {
       initDate = DateTime.fromMillisecondsSinceEpoch(widget.item.deadline);
     }
     super.initState();
+  }
+
+  File_Data_Model file;
+
+  bool checkFileFunc(String nameCheck) {
+    test(String value) => value.contains(nameCheck);
+
+    return allowFileList.any(test);
   }
 
   @override
@@ -142,51 +157,99 @@ class _PostCreateState extends State<PostCreate> {
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                  children: [
-                    Material(
-                      color: primaryColor2,
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            checkFile = true;
-                          });
-                        },
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(10.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0)),
-                          child: Row(
+                (kIsWeb)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            child: DropZoneWidget(
+                              onDroppedFile: (file) =>
+                                  setState(() => this.file = file),
+                            ),
+                          ),
+                          if (file != null &&
+                              !checkFileFunc(
+                                  file.name.toLowerCase().split('.').last))
+                            CustomText(
+                              text:
+                                  'Only using file type: jpg, jpeg, png, pdf, doc, docx',
+                              color: redColor,
+                            ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          if (file != null &&
+                              checkFileFunc(
+                                  file.name.toLowerCase().split('.').last))
+                            Container(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: CustomText(
+                                maxLine: 2,
+                                text: 'FileName: ${file.name}',
+                              ),
+                            ),
+                        ],
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.only(right: 5.0),
-                                child: Icon(
-                                  Icons.attach_file,
-                                  color: spaceColor,
+                              Material(
+                                color: primaryColor2,
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      checkFile = true;
+                                    });
+                                    pickFile();
+                                  },
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0)),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.only(right: 5.0),
+                                          child: Icon(
+                                            Icons.attach_file,
+                                            color: spaceColor,
+                                          ),
+                                        ),
+                                        const CustomText(
+                                          text: "Attach file",
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                              const CustomText(
-                                text: "Attach file",
-                                color: Colors.white,
+                              const SizedBox(
+                                width: 10,
                               ),
                             ],
                           ),
-                        ),
+                          if (checkFile)
+                            Obx(
+                              () => Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: CustomText(
+                                  text:
+                                      'FileName: ${postController.fileName.value}',
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    if (checkFile)
-                      Expanded(
-                          child: CustomText(
-                        text: 'example.txt',
-                      ))
-                  ],
-                ),
                 const SizedBox(
                   height: 20,
                 ),
