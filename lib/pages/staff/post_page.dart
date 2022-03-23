@@ -172,24 +172,28 @@ class _HomeState extends State<Home> {
                     ),
                     Flexible(
                       child: Center(
-                        child: postController.isLoadingFirst.value
-                            ? const CircularProgressIndicator()
-                            : postController.postList.isEmpty
-                                ? const Center(
-                                    child: CustomText(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          child: postController.isLoadingFirst.value
+                              ? const CircularProgressIndicator(
+                                  key: ValueKey(0),
+                                )
+                              : postController.postList.isEmpty
+                                  ? const CustomText(
+                                      key: ValueKey(1),
                                       text: 'No Idea to view. Try again !',
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    padding: const EdgeInsets.only(
-                                        top: 16, right: 24),
-                                    itemCount: postController.postList.length,
-                                    itemBuilder: (context, i) {
-                                      final item = postController.postList[i];
-                                      return postCard(item,
-                                          threadSlug: threadController
-                                              .slugSelected.value);
-                                    }),
+                                    )
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.only(
+                                          top: 16, right: 24),
+                                      itemCount: postController.postList.length,
+                                      itemBuilder: (context, i) {
+                                        final item = postController.postList[i];
+                                        return postCard(item,
+                                            threadSlug: threadController
+                                                .slugSelected.value);
+                                      }),
+                        ),
                       ),
                     ),
                   ],
@@ -504,11 +508,14 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        CustomText(
-                            text: item.comments.isEmpty
-                                ? 'No comments yet.'
-                                : 'There are ${item.comments.length} comments.'),
+                        Flexible(
+                          child: CustomText(
+                              text: item.comments.isEmpty
+                                  ? 'No comments yet.'
+                                  : 'There are ${item.comments.length} comments.'),
+                        ),
                         item.checkComment
                             ? Container()
                             : TextButton(

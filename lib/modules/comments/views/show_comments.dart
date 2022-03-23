@@ -25,6 +25,7 @@ class _ShowCommentState extends State<ShowComment> {
   @override
   Widget build(BuildContext context) {
     CommentController commentController = Get.find();
+    PostController postController = Get.find();
     return Column(
       children: [
         ...List.generate(widget.postItem.comments.length, (index) {
@@ -81,17 +82,20 @@ class _ShowCommentState extends State<ShowComment> {
                               size: 16,
                             ),
                             tooltip: 'Like comment',
-                            onPressed: item.oneClickActionCmt
-                                ? () {
-                                    commentController.chooseLikeCmt(
-                                        widget.postItem.title,
-                                        item.content,
-                                        item.oneClickActionCmt,
-                                        threadSlug: widget.threadSlug,
-                                        postSlug: widget.postItem.slug,
-                                        cmtSlug: item.slug);
-                                  }
-                                : null,
+                            onPressed: postController
+                                    .checkDeadlinePost(widget.postItem.deadline)
+                                ? null
+                                : item.oneClickActionCmt
+                                    ? () {
+                                        commentController.chooseLikeCmt(
+                                            widget.postItem.title,
+                                            item.content,
+                                            item.oneClickActionCmt,
+                                            threadSlug: widget.threadSlug,
+                                            postSlug: widget.postItem.slug,
+                                            cmtSlug: item.slug);
+                                      }
+                                    : null,
                           ),
                           Container(
                               padding: const EdgeInsets.only(left: 8),
@@ -108,17 +112,20 @@ class _ShowCommentState extends State<ShowComment> {
                               size: 16,
                             ),
                             tooltip: 'Dislike comment',
-                            onPressed: item.oneClickActionCmt
-                                ? () {
-                                    commentController.chooseDisLikeCmt(
-                                        widget.postItem.title,
-                                        item.content,
-                                        item.oneClickActionCmt,
-                                        threadSlug: widget.threadSlug,
-                                        postSlug: widget.postItem.slug,
-                                        cmtSlug: item.slug);
-                                  }
-                                : null,
+                            onPressed: postController
+                                    .checkDeadlinePost(widget.postItem.deadline)
+                                ? null
+                                : item.oneClickActionCmt
+                                    ? () {
+                                        commentController.chooseDisLikeCmt(
+                                            widget.postItem.title,
+                                            item.content,
+                                            item.oneClickActionCmt,
+                                            threadSlug: widget.threadSlug,
+                                            postSlug: widget.postItem.slug,
+                                            cmtSlug: item.slug);
+                                      }
+                                    : null,
                           ),
                           Container(
                               padding: const EdgeInsets.only(left: 8),

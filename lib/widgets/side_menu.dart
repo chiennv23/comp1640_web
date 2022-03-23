@@ -73,18 +73,20 @@ class SideMenu extends StatelessWidget {
             children: checkRoleShowCategory(nameRole)
                 .map((item) => SideMenuItem(
                     itemName: item.name,
-                    onTap: () {
+                    onTap: () async {
                       if (item.route == loginPageRoute) {
                         print('logout');
-                        SharedPreferencesHelper.instance
+                        await SharedPreferencesHelper.instance
                             .removeKey(key: 'accessToken');
-                        SharedPreferencesHelper.instance
+                        await SharedPreferencesHelper.instance
                             .removeKey(key: 'refreshToken');
-                        SharedPreferencesHelper.instance
+                        await SharedPreferencesHelper.instance
                             .removeKey(key: 'UserName');
-                        SharedPreferencesHelper.instance.removeKey(key: 'Role');
-                        SharedPreferencesHelper.instance
+                        await SharedPreferencesHelper.instance
+                            .removeKey(key: 'Role');
+                        await SharedPreferencesHelper.instance
                             .removeKey(key: 'nameSlug');
+                        await SharedPreferencesHelper.instance.clearAllKeys();
                         menuController.changeActiveItemTo(
                             checkRoleShowCategory(nameRole)[0].name);
                         print(checkRoleShowCategory(nameRole)[0].name);

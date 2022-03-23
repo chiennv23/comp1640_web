@@ -34,7 +34,6 @@ class LoginController {
           .setString(key: 'accessToken', val: response.data.accessToken);
       var token =
           SharedPreferencesHelper.instance.getString(key: 'accessToken');
-      print('token: ' + token.toString());
       SharedPreferencesHelper.instance
           .setString(key: 'refreshToken', val: response.data.refreshToken);
       Get.put(UserController());

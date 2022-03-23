@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:collection/src/iterable_extensions.dart';
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
@@ -16,6 +14,9 @@ class ThreadController extends GetxController {
   final _threadList = <ThreadItem>[].obs;
   var threadSelected = ''.obs;
   var slugSelected = ''.obs;
+
+  var threadChartSelected = ''.obs;
+  var slugChartSelected = ''.obs;
   var deadlineSelectedThread = 0.obs;
 
   @override
@@ -32,7 +33,6 @@ class ThreadController extends GetxController {
         _threadList.assignAll(data?.data);
         slugSelected.value = data?.data?.first?.slug;
         deadlineSelectedThread.value = data?.data?.first?.deadline;
-        print(slugSelected.value);
         SharedPreferencesHelper.instance
             .setString(key: 'firstSlug', val: data?.data?.first?.slug);
         threadSelected.value = _threadList.first.topic;
@@ -61,18 +61,20 @@ class ThreadController extends GetxController {
 
   loadingAction(bool checkLoading) => isLoadingAction.value = checkLoading;
 
-  List<charts.Series<ThreadItem, String>> get ThreadChart {
+  List<charts.Series<ThreadItem, String>> get threadAndPostChart {
+    var list = [..._threadList]
+      ..sort((b, a) => a.posts.length.compareTo(b.posts.length));
     return [
       charts.Series<ThreadItem, String>(
         id: 'Threads',
         colorFn: (ThreadItem thread, count) {
           var post = thread.posts.length;
-          var postMax = _threadList
-              .map((m) => m.posts.length)
-              .reduce((current, next) => current > next ? current : next);
+          var postMax = _threadList.map((m) => m.posts.length).reduce(max);
           if (post == postMax) {
+            // max
             return charts.ColorUtil.fromDartColor(primaryColor2);
-          } else if (post < postMax && post >= postMax / 2) {
+          } else if (post <= postMax / (1 / 4) && post >= postMax / 2) {
+            // medium
             return charts.ColorUtil.fromDartColor(orangeColor);
           } else if (post < postMax / 2) {
             return charts.ColorUtil.fromDartColor(redColor);
@@ -83,8 +85,8 @@ class ThreadController extends GetxController {
         domainFn: (ThreadItem thread, _) => thread.topic,
         measureFn: (ThreadItem thread, _) => thread.posts.length,
         labelAccessorFn: (ThreadItem thread, _) =>
-            '${thread.topic}: ${thread.posts.length.toString()} posts',
-        data: [..._threadList],
+            '${thread.topic}: ${thread.posts.length.toString()} ideas',
+        data: list,
       ),
     ];
   }
@@ -104,6 +106,14 @@ class ThreadController extends GetxController {
     threadSelected.value = thread;
     slugSelected.value = slug;
     deadlineSelectedThread.value = deadline;
+  }
+
+  threadChartChoose({
+    String thread = '',
+    String slug,
+  }) {
+    threadSelected.value = thread;
+    slugSelected.value = slug;
   }
 
   createThread({String title, String content, int deadline}) async {

@@ -27,7 +27,7 @@ class BaseDA {
       }
 
       final jsonObj = obj == null ? null : json.encode(obj);
-      print(jsonObj);
+      // print(jsonObj);
       final response =
           await http.post(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
@@ -93,7 +93,7 @@ class BaseDA {
       }
 
       final jsonObj = obj == null ? null : json.encode(obj);
-      print(jsonObj);
+      // print(jsonObj);
       final response =
           await http.delete(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
@@ -159,7 +159,7 @@ class BaseDA {
       }
 
       final jsonObj = obj == null ? null : json.encode(obj);
-      print(jsonObj);
+      // print(jsonObj);
       final response =
           await http.put(Uri.parse(url), headers: headers, body: jsonObj);
       if (response.statusCode != 200) {
@@ -274,7 +274,6 @@ Future<http.BaseResponse> postRefreshToken() async {
   print('refreshToken doing...');
   var refreshToken =
       SharedPreferencesHelper.instance.getString(key: 'refreshToken');
-  print(refreshToken);
   var response = await http
       .post(Uri.parse(urlRefreshToken), body: {"refreshToken": refreshToken});
   Map<String, dynamic> ms = json.decode(response.body);
@@ -282,7 +281,7 @@ Future<http.BaseResponse> postRefreshToken() async {
   if (response.statusCode == 200) {
     SharedPreferencesHelper.instance
         .setString(key: 'accessToken', val: ms['accessToken']);
-    print('accessToken ${ms['accessToken']}');
+    print('${ms['accessToken']}');
   } else if (response.statusCode == 401) {
     snackBarMessageError401('Session is over. Please login again!');
     SharedPreferencesHelper.instance.clearAllKeys();

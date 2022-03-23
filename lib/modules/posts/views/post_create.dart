@@ -173,8 +173,7 @@ class _PostCreateState extends State<PostCreate> {
                               !checkFileFunc(
                                   file.name.toLowerCase().split('.').last))
                             CustomText(
-                              text:
-                                  'Only using file type: jpg, jpeg, png, pdf, doc, docx',
+                              text: 'Only using file type: pdf, doc, docx',
                               color: redColor,
                             ),
                           SizedBox(

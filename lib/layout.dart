@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'constant/style.dart';
 import 'helpers/local_navigator.dart';
 import 'helpers/reponsive_pages.dart';
+import 'helpers/storageKeys_helper.dart';
 import 'modules/login/controller/user_controller.dart';
 import 'modules/threads/controller/thread_controller.dart';
 
@@ -17,12 +18,14 @@ class SiteLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.lazyPut(() => UserController());
     Get.put(ThreadController());
+    String userName =
+        SharedPreferencesHelper.instance.getString(key: 'UserName');
 
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: primaryColor.withOpacity(.1),
       extendBodyBehindAppBar: true,
-      appBar: topNavigationBar(context, scaffoldKey),
+      appBar: topNavigationBar(context, scaffoldKey, userName),
       drawer: const Drawer(
         child: SideMenu(),
       ),

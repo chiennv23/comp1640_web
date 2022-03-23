@@ -76,6 +76,7 @@ class _LoginState extends State<Login>
               child: DefaultTabController(
                 length: 2,
                 child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   decoration: BoxDecoration(
                       color: spaceColor,
                       borderRadius: BorderRadius.circular(20.0)),
@@ -84,8 +85,23 @@ class _LoginState extends State<Login>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (ResponsiveWidget.isSmallScreen(context))
+                        Container(
+                          margin: const EdgeInsets.only(
+                            top: 35,
+                          ),
+                          child: Center(
+                            child: Text("Idea System",
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.roboto(
+                                    fontSize: 35, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
                       Container(
-                        padding: const EdgeInsets.only(top: 35, left: 24),
+                        padding: EdgeInsets.only(
+                            top: 35,
+                            left: 24),
                         width: 200,
                         child: TabBar(
                             controller: tabController,
@@ -231,7 +247,6 @@ class _LoginState extends State<Login>
                   });
                   return;
                 }
-                print(1111);
                 if (rememberMe) {
                   SharedPreferencesHelper.instance
                       .setString(key: 'Email', val: emailLoginController.text);

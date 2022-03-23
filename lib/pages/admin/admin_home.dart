@@ -1,11 +1,14 @@
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart2_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart2_section_small.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_small.dart';
-import 'package:comp1640_web/pages/admin/widgets/thread_section_large.dart';
-import 'package:comp1640_web/pages/admin/widgets/thread_section_small.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart1_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart1_section_small.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,9 +21,12 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  PostController postController = Get.find();
+
   @override
   void initState() {
     Get.put(ThreadController());
+    postController.callListForChart();
     super.initState();
   }
 
@@ -53,9 +59,13 @@ class _AdminHomeState extends State<AdminHome> {
             else
               OverviewCardsSmallScreen(),
             if (!ResponsiveWidget.isSmallScreen(context))
-              ThreadSectionLarge()
+              Chart1SectionLarge()
             else
-              ThreadSectionSmall(),
+              Chart1SectionSmall(),
+            if (!ResponsiveWidget.isSmallScreen(context))
+              Chart2SectionLarger()
+            else
+              Chart2SectionSmall(),
           ],
         ))
       ],
