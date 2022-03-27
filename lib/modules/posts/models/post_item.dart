@@ -11,9 +11,9 @@ class PostItem {
   List<String> upvotes;
   List<String> downvotes;
   List<Comment> comments;
-  int deadline;
   int createdAt;
   int updatedAt;
+  bool anonymous;
   bool oneClickAction;
   bool checkComment;
 
@@ -27,7 +27,6 @@ class PostItem {
     this.upvotes,
     this.downvotes,
     this.comments,
-    this.deadline,
     this.createdAt,
     this.updatedAt,
     this.oneClickAction = true,
@@ -49,9 +48,9 @@ class PostItem {
         comments.add(Comment.fromJson(v));
       });
     }
-    deadline = json['deadline'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    anonymous = json['anonymous'];
     oneClickAction = true;
     checkComment = false;
   }
@@ -111,17 +110,5 @@ class Thread {
     creator =
         json['creator'] != null ? Creator.fromJson(json['creator']) : null;
     slug = json['slug'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['topic'] = topic;
-    data['description'] = description;
-    if (creator != null) {
-      data['creator'] = creator.toJson();
-    }
-    data['slug'] = slug;
-    return data;
   }
 }

@@ -36,15 +36,14 @@ class _PostCreateState extends State<PostCreate> {
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
   bool checkFile = false;
-  DateTime initDate = DateTime.now();
-  int deadline = DateTime.now().millisecondsSinceEpoch;
+  bool checkAnonymous = false;
 
   @override
   void initState() {
     if (widget.item != null) {
       titleController.text = widget.item.title;
       contentController.text = widget.item.content;
-      initDate = DateTime.fromMillisecondsSinceEpoch(widget.item.deadline);
+      checkAnonymous = widget.item.anonymous;
     }
     super.initState();
   }
@@ -124,35 +123,28 @@ class _PostCreateState extends State<PostCreate> {
                 const SizedBox(
                   height: 10,
                 ),
-                const CustomText(
-                  text: 'End time for idea:',
-                ),
-                DateTimePicker(
-                  type: DateTimePickerType.dateTimeSeparate,
-                  dateMask: 'd MMM, yyyy',
-                  initialValue: initDate.toString(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
-                  icon: const Icon(Icons.event),
-                  dateLabelText: 'Date',
-                  timeLabelText: "Hour",
-                  selectableDayPredicate: (date) {
-                    // Disable weekend days to select from the calendar
-                    // if (date.weekday == 6 || date.weekday == 7) {
-                    //   return false;
-                    // }
-                    return true;
-                  },
-                  onChanged: (val) {
-                    setState(() {
-                      deadline = DateTime.tryParse(val).millisecondsSinceEpoch;
-                    });
-                  },
-                  validator: (val) {
-                    print(val);
-                    return null;
-                  },
-                  onSaved: (val) => print(val),
+                Row(
+                  children: [
+                    Checkbox(
+                        value: checkAnonymous,
+                        onChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          setState(() {
+                            checkAnonymous = value;
+                          });
+                        }),
+                    InkWell(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        setState(() {
+                          checkAnonymous = !checkAnonymous;
+                        });
+                      },
+                      child: const CustomText(
+                        text: "Anonymous idea",
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
@@ -176,7 +168,7 @@ class _PostCreateState extends State<PostCreate> {
                               text: 'Only using file type: pdf, doc, docx',
                               color: redColor,
                             ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           if (file != null &&
@@ -278,18 +270,20 @@ class _PostCreateState extends State<PostCreate> {
                                     }
                                     if (widget.item != null) {
                                       postController.editIdea(
-                                          title: titleController.text,
-                                          content: contentController.text,
-                                          postSlug: widget.item.slug,
-                                          threadSlug: widget.threadSlug,
-                                          deadline: deadline);
+                                        title: titleController.text,
+                                        content: contentController.text,
+                                        postSlug: widget.item.slug,
+                                        threadSlug: widget.threadSlug,
+                                        anonymous: checkAnonymous,
+                                      );
                                       return;
                                     }
                                     postController.createIdea(
-                                        title: titleController.text,
-                                        content: contentController.text,
-                                        threadSlug: widget.threadSlug,
-                                        deadline: deadline);
+                                      title: titleController.text,
+                                      content: contentController.text,
+                                      threadSlug: widget.threadSlug,
+                                      anonymous: checkAnonymous,
+                                    );
                                   },
                             child: postController.isLoadingAction.value
                                 ? SpinKitThreeBounce(

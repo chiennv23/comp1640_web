@@ -102,7 +102,7 @@ class MenuItems {
 
     switch (item) {
       case MenuItems.edit:
-        postController.checkDeadlinePost(itemPost.deadline)
+        threadController.checkDeadlineCreateIdea
             ? snackBarMessageError401(
                 'Idea was out of date. Can not do action in this idea')
             : Get.dialog(
@@ -117,7 +117,7 @@ class MenuItems {
         //Do something
         break;
       case MenuItems.delete:
-        postController.checkDeadlinePost(itemPost.deadline)
+        threadController.checkDeadlineCreateIdea
             ? snackBarMessageError401(
                 'Idea was out of date. Can not do action in this idea')
             : Get.dialog(

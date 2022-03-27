@@ -17,7 +17,7 @@ Widget deleteDialog({Function deleteOnTap, controller}) =>
         ),
         elevation: 0.0,
         child: Container(
-          margin: EdgeInsets.all(14),
+          margin: const EdgeInsets.all(14),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -119,25 +119,18 @@ class _ThreadManageState extends State<ThreadManage> {
                         ),
                         size: ColumnSize.L,
                       ),
-                      DataColumn(
+                      DataColumn2(
                         label: CustomText(
                           text: "Description",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.L,
                       ),
                       DataColumn(
                         label: CustomText(
                           text: "Creator",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                      ),
-                      DataColumn(
-                        label: CustomText(
-                          text: "Slug",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -152,29 +145,41 @@ class _ThreadManageState extends State<ThreadManage> {
                           weight: FontWeight.bold,
                         ),
                       ),
-                      DataColumn(
+                      DataColumn2(
                         label: CustomText(
                           text: "Create date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.L,
                       ),
-                      DataColumn(
+                      DataColumn2(
                         label: CustomText(
-                          text: "Expiration date",
+                          text: "Expiration idea date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.L,
                       ),
-                      DataColumn(
+                      DataColumn2(
+                        label: CustomText(
+                          text: "Expiration comment date",
+                          color: darkColor,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
+                        size: ColumnSize.L,
+                      ),
+                      DataColumn2(
                         label: CustomText(
                           text: "Action",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.L,
                       ),
                     ],
                     rows: threadController.isLoadingFirst.value
@@ -182,7 +187,8 @@ class _ThreadManageState extends State<ThreadManage> {
                         : List<DataRow>.generate(
                             threadController.ThreadList.length ?? 0,
                             (index) {
-                              final item = threadController.ThreadList.reversed.toList()[index];
+                              final item = threadController.ThreadList.reversed
+                                  .toList()[index];
                               return DataRow2(
                                 cells: [
                                   DataCell(CustomText(text: item.topic ?? '')),
@@ -190,7 +196,6 @@ class _ThreadManageState extends State<ThreadManage> {
                                       CustomText(text: item.description ?? '')),
                                   DataCell(CustomText(
                                       text: item.creator.email ?? '')),
-                                  DataCell(CustomText(text: item.slug ?? '')),
                                   DataCell(CustomText(
                                       text: item.posts.length.toString())),
                                   DataCell(CustomText(
@@ -198,7 +203,10 @@ class _ThreadManageState extends State<ThreadManage> {
                                           item.createdAt))),
                                   DataCell(CustomText(
                                       text: DatetimeConvert.dMy_hm(
-                                          item.deadline))),
+                                          item.deadlineIdea))),
+                                  DataCell(CustomText(
+                                      text: DatetimeConvert.dMy_hm(
+                                          item.deadlineComment))),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,

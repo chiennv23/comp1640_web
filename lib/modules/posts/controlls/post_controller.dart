@@ -17,6 +17,7 @@ class PostController extends GetxController {
 
   RxBool isLoadingFirst = false.obs;
   RxBool isLoadingAction = false.obs;
+  RxBool isLoadingChart = false.obs;
   final postListController = <PostItem>[].obs;
   final postListChartController = <PostItem>[].obs;
   var fileName = ''.obs;
@@ -48,7 +49,7 @@ class PostController extends GetxController {
 
   Future callListForChart({String threadSlug}) async {
     try {
-      isLoadingAction(true);
+      isLoadingChart(true);
       final data = await PostData.getAllPostByThread(
           threadSlug ?? threadController.slugSelected.value);
       if (data.code == 200) {
@@ -57,7 +58,7 @@ class PostController extends GetxController {
         snackBarMessageError(data.message);
       }
     } finally {
-      isLoadingAction(false);
+      isLoadingChart(false);
     }
   }
 
@@ -87,7 +88,7 @@ class PostController extends GetxController {
             return charts.ColorUtil.fromDartColor(redColor);
           }
         },
-        domainFn: (PostItem post, _) => post.deadline ?? 0,
+        domainFn: (PostItem post, _) => post.createdAt ?? 0,
         measureFn: (PostItem post, _) => post.comments.length ?? 0,
         labelAccessorFn: (PostItem post, _) =>
             '${post.title}: ${post.comments.length.toString()} comments',
@@ -119,9 +120,8 @@ class PostController extends GetxController {
         id: 'Ideas&Like',
         colorFn: (Posts postItem, count) {
           var post = postItem.upvotes.length;
-          var postMax = topLikePostList
-              .map((m) => m.upvotes.length)
-              .reduce(max);
+          var postMax =
+              topLikePostList.map((m) => m.upvotes.length).reduce(max);
           if (post == postMax) {
             // max
             return charts.ColorUtil.fromDartColor(primaryColor2);
@@ -162,9 +162,8 @@ class PostController extends GetxController {
         id: 'Ideas&DisLike',
         colorFn: (Posts postItem, count) {
           var post = postItem.downvotes.length;
-          var postMax = topLikePostList
-              .map((m) => m.downvotes.length)
-              .reduce(max);
+          var postMax =
+              topLikePostList.map((m) => m.downvotes.length).reduce(max);
           if (post == postMax) {
             // max
             return charts.ColorUtil.fromDartColor(primaryColor2);
@@ -201,11 +200,11 @@ class PostController extends GetxController {
   bool loadingAction(bool loading) => isLoadingAction.value = loading;
 
   createIdea(
-      {String threadSlug, String title, String content, int deadline}) async {
+      {String threadSlug, String title, String content, bool anonymous}) async {
     try {
       loadingAction(true);
       final data =
-          await PostData.createPost(threadSlug, title, content, deadline);
+          await PostData.createPost(threadSlug, title, content, anonymous);
       if (data.code == 200) {
         postListController.insert(0, data.data);
         snackBarMessage(
@@ -225,11 +224,11 @@ class PostController extends GetxController {
       String postSlug,
       String title,
       String content,
-      int deadline}) async {
+      bool anonymous}) async {
     try {
       loadingAction(true);
       final data = await PostData.editPost(
-          threadSlug, postSlug, title, content, deadline);
+          threadSlug, postSlug, title, content, anonymous);
       if (data.code == 200) {
         postListController[postListController
             .indexWhere((element) => element.slug == postSlug)] = data.data;

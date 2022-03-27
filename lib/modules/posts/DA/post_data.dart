@@ -20,10 +20,10 @@ class PostData {
   }
 
   static Future<BasicResponse> createPost(
-      String threadSlug, String title, String content, int deadline) async {
+      String threadSlug, String title, String content, bool anonymous) async {
     var response = await BaseDA.post(
         urlCreateNewPost(threadSlug),
-        {'title': title, 'content': content, 'deadline': deadline},
+        {'title': title, 'content': content, 'anonymous': anonymous},
         (json) => PostItem.fromJson(json));
     if (response.code == 200) {
       print('create post done.');
@@ -32,10 +32,10 @@ class PostData {
   }
 
   static Future<BasicResponse> editPost(String threadSlug, String postSlug,
-      String title, String content, int deadline) async {
+      String title, String content, bool anonymous) async {
     var response = await BaseDA.put(
         urlUpdatePost(threadSlug: threadSlug, postSlug: postSlug),
-        {'title': title, 'content': content, 'deadline': deadline},
+        {'title': title, 'content': content, 'anonymous': anonymous},
         (json) => PostItem.fromJson(json));
     if (response.code == 200) {
       print('Edit post done.');

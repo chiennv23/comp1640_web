@@ -16,6 +16,11 @@ Widget ThreadView(ThreadItem item) => Container(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          CustomText(
+            text: 'View ${item.topic} thread:',
+            size: 20,
+            weight: FontWeight.bold,
+          ),
           ListTile(
             title: const CustomText(
               text: "Topic",
@@ -75,12 +80,21 @@ Widget ThreadView(ThreadItem item) => Container(
           ),
           ListTile(
             title: const CustomText(
-              text: "Expiration Date",
+              text: "Expiration ideas date",
               color: darkColor,
               size: 16,
               weight: FontWeight.bold,
             ),
-            trailing: Text(DatetimeConvert.dMy_hm(item.deadline)),
+            trailing: Text(DatetimeConvert.dMy_hm(item.deadlineIdea)),
+          ),
+          ListTile(
+            title: const CustomText(
+              text: "Expiration comments date",
+              color: darkColor,
+              size: 16,
+              weight: FontWeight.bold,
+            ),
+            trailing: Text(DatetimeConvert.dMy_hm(item.deadlineComment)),
           ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

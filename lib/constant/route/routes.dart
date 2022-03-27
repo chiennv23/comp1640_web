@@ -41,6 +41,13 @@ List<MenuItem> checkRoleShowCategory(role) {
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
+    case 'manager':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(threadDisplayName, threadPageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
     case 'student':
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
@@ -58,13 +65,10 @@ List<MenuItem> checkRoleShowCategory(role) {
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    // admin
     case dashboardPageRoute:
       return _getPageRoute(const AdminHome());
     case threadPageRoute:
       return _getPageRoute(const ThreadManage());
-
-    // student
     case homePageRoute:
       return _getPageRoute(const Home());
     case profilePageRoute:

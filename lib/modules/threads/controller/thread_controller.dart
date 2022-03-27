@@ -17,7 +17,8 @@ class ThreadController extends GetxController {
 
   var threadChartSelected = ''.obs;
   var slugChartSelected = ''.obs;
-  var deadlineSelectedThread = 0.obs;
+  var deadlineIdeaSelectedThread = 0.obs;
+  var deadlineCommentSelectedThread = 0.obs;
 
   @override
   void onInit() {
@@ -32,7 +33,9 @@ class ThreadController extends GetxController {
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
         slugSelected.value = data?.data?.first?.slug;
-        deadlineSelectedThread.value = data?.data?.first?.deadline;
+        deadlineIdeaSelectedThread.value = data?.data?.first?.deadlineIdea;
+        deadlineCommentSelectedThread.value =
+            data?.data?.first?.deadlineComment;
         SharedPreferencesHelper.instance
             .setString(key: 'firstSlug', val: data?.data?.first?.slug);
         threadSelected.value = _threadList.first.topic;
@@ -51,9 +54,34 @@ class ThreadController extends GetxController {
   }
 
   bool get checkDeadlineCreateIdea {
+    if (ThreadList.length == 1) {
+      return DateTime.now().toUtc().isAfter(
+            DateTime.fromMillisecondsSinceEpoch(
+              ThreadList.first.deadlineIdea,
+              isUtc: false,
+            ).toUtc(),
+          );
+    }
     return DateTime.now().toUtc().isAfter(
           DateTime.fromMillisecondsSinceEpoch(
-            deadlineSelectedThread.value,
+            deadlineIdeaSelectedThread.value,
+            isUtc: false,
+          ).toUtc(),
+        );
+  }
+
+  bool get checkDeadlineComment {
+    if (ThreadList.length == 1) {
+      return DateTime.now().toUtc().isAfter(
+            DateTime.fromMillisecondsSinceEpoch(
+              ThreadList.first.deadlineComment,
+              isUtc: false,
+            ).toUtc(),
+          );
+    }
+    return DateTime.now().toUtc().isAfter(
+          DateTime.fromMillisecondsSinceEpoch(
+            deadlineCommentSelectedThread.value,
             isUtc: false,
           ).toUtc(),
         );
@@ -102,10 +130,15 @@ class ThreadController extends GetxController {
     return allPost;
   }
 
-  threadChangeChoose({String thread = '', String slug, int deadline}) {
+  threadChangeChoose(
+      {String thread = '',
+      String slug,
+      int deadlineIdea,
+      int deadlineComment}) {
     threadSelected.value = thread;
     slugSelected.value = slug;
-    deadlineSelectedThread.value = deadline;
+    deadlineIdeaSelectedThread.value = deadlineIdea;
+    deadlineCommentSelectedThread.value = deadlineComment;
   }
 
   threadChartChoose({
@@ -116,10 +149,15 @@ class ThreadController extends GetxController {
     slugSelected.value = slug;
   }
 
-  createThread({String title, String content, int deadline}) async {
+  createThread(
+      {String title,
+      String content,
+      int deadlineIdea,
+      int deadlineComment}) async {
     try {
       loadingAction(true);
-      final data = await ThreadData.createThread(title, content, deadline);
+      final data = await ThreadData.createThread(
+          title, content, deadlineIdea, deadlineComment);
       if (data.code == 200) {
         print(data.data);
         _threadList.insert(0, data.data);
@@ -140,11 +178,16 @@ class ThreadController extends GetxController {
       String slug,
       String topic,
       String desc,
-      int deadline}) async {
+      int deadlineIdea,
+      int deadlineComment}) async {
     try {
       loadingAction(true);
       final data = await ThreadData.editThread(
-          threadSlug: slug, topic: topic, des: desc, deadline: deadline);
+          threadSlug: slug,
+          topic: topic,
+          des: desc,
+          deadlineIdea: deadlineIdea,
+          deadlineComment: deadlineComment);
       if (data.code == 200) {
         _threadList[_threadList.indexWhere((element) => element.sId == sid)] =
             data.data;

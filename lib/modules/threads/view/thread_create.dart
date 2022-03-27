@@ -24,15 +24,18 @@ class _ThreadCreateState extends State<ThreadCreate> {
 
   final formGlobalKey = GlobalKey<FormState>();
   bool hasAutoValidation = false;
-  int deadline = DateTime.now().millisecondsSinceEpoch;
-  DateTime initDate = DateTime.now();
+  int deadlineIdea = DateTime.now().millisecondsSinceEpoch;
+  int deadlineComment = DateTime.now().millisecondsSinceEpoch;
+  DateTime initDateIdea = DateTime.now();
+  DateTime initDateComment = DateTime.now();
 
   @override
   void initState() {
     if (widget.item != null) {
       titleController.text = widget.item.topic;
       contentController.text = widget.item.description;
-      initDate = DateTime.fromMillisecondsSinceEpoch(widget.item.deadline);
+      initDateIdea = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea);
+      initDateComment = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment);
     }
     super.initState();
   }
@@ -40,10 +43,11 @@ class _ThreadCreateState extends State<ThreadCreate> {
   @override
   Widget build(BuildContext context) {
     ThreadController threadController = Get.find();
+    final px = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
         child: Container(
-          width: 300,
+          width: px.width / 2,
           decoration: BoxDecoration(
               color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
           padding: const EdgeInsets.all(16.0),
@@ -54,6 +58,11 @@ class _ThreadCreateState extends State<ThreadCreate> {
                 : AutovalidateMode.disabled,
             child: Column(
               children: [
+                CustomText(
+                  text: '${(widget.item != null) ? 'Edit' : 'Create'} thread:',
+                  size: 20,
+                  weight: FontWeight.bold,
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -84,6 +93,8 @@ class _ThreadCreateState extends State<ThreadCreate> {
                       return 'Enter content';
                     }
                   },
+                  minLines: 1,
+                  maxLines: 3,
                   decoration: InputDecoration(
                       labelText: "Content",
                       hintText: "",
@@ -94,12 +105,12 @@ class _ThreadCreateState extends State<ThreadCreate> {
                   height: 10,
                 ),
                 const CustomText(
-                  text: 'End time for thread:',
+                  text: 'Deadline for all ideas:',
                 ),
                 DateTimePicker(
                   type: DateTimePickerType.dateTimeSeparate,
                   dateMask: 'd MMM, yyyy',
-                  initialValue: initDate.toString(),
+                  initialValue: initDateIdea.toString(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                   icon: const Icon(Icons.event),
@@ -114,7 +125,42 @@ class _ThreadCreateState extends State<ThreadCreate> {
                   },
                   onChanged: (val) {
                     setState(() {
-                      deadline = DateTime.tryParse(val).millisecondsSinceEpoch;
+                      deadlineIdea =
+                          DateTime.tryParse(val).millisecondsSinceEpoch;
+                    });
+                  },
+                  validator: (val) {
+                    print(val);
+                    return null;
+                  },
+                  onSaved: (val) => print(val),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const CustomText(
+                  text: 'Deadline for all comments:',
+                ),
+                DateTimePicker(
+                  type: DateTimePickerType.dateTimeSeparate,
+                  dateMask: 'd MMM, yyyy',
+                  initialValue: initDateComment.toString(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                  icon: const Icon(Icons.event),
+                  dateLabelText: 'Date',
+                  timeLabelText: "Hour",
+                  selectableDayPredicate: (date) {
+                    // Disable weekend days to select from the calendar
+                    // if (date.weekday == 6 || date.weekday == 7) {
+                    //   return false;
+                    // }
+                    return true;
+                  },
+                  onChanged: (val) {
+                    setState(() {
+                      deadlineComment =
+                          DateTime.tryParse(val).millisecondsSinceEpoch;
                     });
                   },
                   validator: (val) {
@@ -148,17 +194,21 @@ class _ThreadCreateState extends State<ThreadCreate> {
                               }
                               if (widget.item != null) {
                                 threadController.editThread(
-                                    sid: widget.item.sId,
-                                    slug: widget.item.slug,
-                                    topic: titleController.text,
-                                    desc: contentController.text,
-                                    deadline: deadline);
+                                  sid: widget.item.sId,
+                                  slug: widget.item.slug,
+                                  topic: titleController.text,
+                                  desc: contentController.text,
+                                  deadlineIdea: deadlineIdea,
+                                  deadlineComment: deadlineComment,
+                                );
                                 return;
                               }
                               threadController.createThread(
-                                  title: titleController.text,
-                                  content: contentController.text,
-                                  deadline: deadline);
+                                title: titleController.text,
+                                content: contentController.text,
+                                deadlineIdea: deadlineIdea,
+                                deadlineComment: deadlineComment,
+                              );
                             },
                             child: Obx(
                               () => threadController.isLoadingAction.value

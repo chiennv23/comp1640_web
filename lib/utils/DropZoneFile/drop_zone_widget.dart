@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -97,16 +99,21 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
 
     final mime = await controller.getFileMIME(event);
     final byte = await controller.getFileSize(event);
-    final url = await controller.createFileUrl(event);
+    final file = await controller.getFileData(event);
 
     print('Name : $name');
     print('Mime: $mime');
+    // print('file: #file');
+    var f = File.fromRawPath(file);
+    print(f.path);
 
     print('Size : ${byte / (1024 * 1024)}');
-    print('URL: $url');
 
-    final droppedFile =
-        File_Data_Model(name: name, mime: mime, bytes: byte, url: url);
+    final droppedFile = File_Data_Model(
+      name: name,
+      mime: mime,
+      bytes: byte,
+    );
 
     widget.onDroppedFile(droppedFile);
     setState(() {

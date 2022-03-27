@@ -32,8 +32,9 @@ String urlPostNewComment({String threadSlug, String postSlug}) {
 }
 
 // update a comment
-String urlPutUpdateComment({String threadSlug, String postSlug}) {
-  return '$urlApi/threads/$threadSlug/posts/update/$postSlug';
+String urlPutUpdateComment(
+    {String threadSlug, String postSlug, String commentSlug}) {
+  return '$urlApi/threads/$threadSlug/posts/$postSlug/comments/update/$commentSlug';
 }
 
 // delete a comment
