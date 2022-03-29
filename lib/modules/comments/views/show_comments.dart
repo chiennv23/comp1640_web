@@ -79,104 +79,128 @@ class _ShowCommentState extends State<ShowComment> {
                           ),
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              iconSize: 14,
-                              icon: const Icon(
-                                Icons.thumb_up,
-                                size: 16,
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    iconSize: 14,
+                                    icon: const Icon(
+                                      Icons.thumb_up,
+                                      size: 16,
+                                    ),
+                                    tooltip: 'Like comment',
+                                    onPressed: threadController
+                                            .checkDeadlineComment
+                                        ? null
+                                        : item.oneClickActionCmt
+                                            ? () {
+                                                commentController.chooseLikeCmt(
+                                                    widget.postItem.title,
+                                                    item.content,
+                                                    item.oneClickActionCmt,
+                                                    threadSlug:
+                                                        widget.threadSlug,
+                                                    postSlug:
+                                                        widget.postItem.slug,
+                                                    cmtSlug: item.slug);
+                                              }
+                                            : null,
+                                  ),
+                                  Container(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: CustomText(
+                                        text: '${item.upvotes.length}',
+                                      )),
+                                  const SizedBox(
+                                    width: 24,
+                                  ),
+                                  IconButton(
+                                    iconSize: 14,
+                                    icon: const Icon(
+                                      Icons.thumb_down,
+                                      size: 16,
+                                    ),
+                                    tooltip: 'Dislike comment',
+                                    onPressed: threadController
+                                            .checkDeadlineComment
+                                        ? null
+                                        : item.oneClickActionCmt
+                                            ? () {
+                                                commentController
+                                                    .chooseDisLikeCmt(
+                                                        widget.postItem.title,
+                                                        item.content,
+                                                        item.oneClickActionCmt,
+                                                        threadSlug:
+                                                            widget.threadSlug,
+                                                        postSlug: widget
+                                                            .postItem.slug,
+                                                        cmtSlug: item.slug);
+                                              }
+                                            : null,
+                                  ),
+                                  Container(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: CustomText(
+                                          text: '${item.downvotes.length}')),
+                                ],
                               ),
-                              tooltip: 'Like comment',
-                              onPressed: threadController.checkDeadlineComment
-                                  ? null
-                                  : item.oneClickActionCmt
-                                      ? () {
-                                          commentController.chooseLikeCmt(
-                                              widget.postItem.title,
-                                              item.content,
-                                              item.oneClickActionCmt,
-                                              threadSlug: widget.threadSlug,
-                                              postSlug: widget.postItem.slug,
-                                              cmtSlug: item.slug);
-                                        }
-                                      : null,
                             ),
-                            Container(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: CustomText(
-                                  text: '${item.upvotes.length}',
-                                )),
-                            const SizedBox(
-                              width: 24,
-                            ),
-                            IconButton(
-                              iconSize: 14,
-                              icon: const Icon(
-                                Icons.thumb_down,
-                                size: 16,
-                              ),
-                              tooltip: 'Dislike comment',
-                              onPressed: threadController.checkDeadlineComment
-                                  ? null
-                                  : item.oneClickActionCmt
-                                      ? () {
-                                          commentController.chooseDisLikeCmt(
-                                              widget.postItem.title,
-                                              item.content,
-                                              item.oneClickActionCmt,
-                                              threadSlug: widget.threadSlug,
-                                              postSlug: widget.postItem.slug,
-                                              cmtSlug: item.slug);
-                                        }
-                                      : null,
-                            ),
-                            Container(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: CustomText(
-                                    text: '${item.downvotes.length}')),
-                            const Spacer(),
                             if (item.author.slug == nameSlugLogin)
-                              TextButton(
-                                  onPressed: threadController
-                                          .checkDeadlineComment
-                                      ? null
-                                      : () {
-                                          Get.dialog(Scaffold(
-                                              body: Center(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  2,
-                                              decoration: BoxDecoration(
-                                                  color: spaceColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0)),
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              child: CreateComment(
-                                                  postItem: widget.postItem,
-                                                  commentItem: item),
-                                            ),
-                                          )));
-                                        },
-                                  child: CustomText(
-                                    text: 'Edit',
-                                    size: 12,
-                                    color: active,
-                                  )),
-                            if (item.author.slug == nameSlugLogin)
-                              TextButton(
-                                  onPressed:
-                                      threadController.checkDeadlineComment
-                                          ? null
-                                          : () => showDelete(item),
-                                  child: CustomText(
-                                    text: 'Delete',
-                                    size: 12,
-                                    color: redColor,
-                                  )),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: threadController
+                                                .checkDeadlineComment
+                                            ? null
+                                            : () {
+                                                Get.dialog(Scaffold(
+                                                    body: Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                    decoration: BoxDecoration(
+                                                        color: spaceColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                    12.0)),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: CreateComment(
+                                                        postItem:
+                                                            widget.postItem,
+                                                        commentItem: item),
+                                                  ),
+                                                )));
+                                              },
+                                        child: CustomText(
+                                          text: 'Edit',
+                                          size: 12,
+                                          color: active,
+                                        )),
+                                    TextButton(
+                                        onPressed: threadController
+                                                .checkDeadlineComment
+                                            ? null
+                                            : () => showDelete(item),
+                                        child: CustomText(
+                                          text: 'Delete',
+                                          size: 12,
+                                          color: redColor,
+                                        )),
+                                  ],
+                                ),
+                              )
                           ],
                         ),
                       ],

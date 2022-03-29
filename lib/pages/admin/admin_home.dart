@@ -11,6 +11,7 @@ import 'package:comp1640_web/pages/admin/widgets/chart1_section_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart1_section_small.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 class AdminHome extends StatefulWidget {
@@ -20,13 +21,14 @@ class AdminHome extends StatefulWidget {
   State<AdminHome> createState() => _AdminHomeState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _AdminHomeState extends State<AdminHome>
+    with AutomaticKeepAliveClientMixin {
   PostController postController = Get.find();
 
   @override
   void initState() {
-    Get.put(ThreadController());
     postController.callListForChart();
+
     super.initState();
   }
 
@@ -71,4 +73,8 @@ class _AdminHomeState extends State<AdminHome> {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

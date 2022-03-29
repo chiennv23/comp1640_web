@@ -45,6 +45,11 @@ class LoginController {
       SharedPreferencesHelper.instance
           .setString(key: 'Role', val: response.data.user.role);
       name = SharedPreferencesHelper.instance.getString(key: 'UserName');
+      var role = SharedPreferencesHelper.instance.getString(key: 'Role');
+      if (role != 'staff') {
+        ThreadController threadController = Get.find();
+        threadController.callListManageThread();
+      }
       menuController.changeActiveItemTo(checkRoleShowCategory(name)[0].name);
       MenuController.instance.update();
       print(name);

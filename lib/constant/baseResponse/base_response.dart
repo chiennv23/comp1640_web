@@ -247,9 +247,18 @@ class BaseDA {
       {String version, String token}) async {
     try {
       var headers = <String, String>{};
-      headers = <String, String>{
-        'Content-type': 'application/json',
-      };
+      var token =
+      SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      if (token != null) {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        };
+      } else {
+        headers = <String, String>{
+          'Content-type': 'application/json',
+        };
+      }
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode != 200) {
         print('fail!');

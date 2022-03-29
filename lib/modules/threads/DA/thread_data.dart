@@ -12,7 +12,16 @@ class ThreadData {
     return response;
   }
 
-  static Future<BasicResponse> createThread(
+  static Future<BasicResponse<List<ThreadItem>>> getAllManageThreads() async {
+    final response = await BaseDA.getList(
+        urlGetAllManageThread, (json) => ThreadItem.fromJsonToList(json));
+    if (response.code == 200) {
+      print('List Threads manage done...${response.data.length}');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse<ThreadItem>> createThread(
       String topic, String des, int deadlineIdea, int deadlineComment) async {
     final response = await BaseDA.post(
         urlCreateThread,

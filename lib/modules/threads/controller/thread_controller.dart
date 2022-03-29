@@ -12,6 +12,7 @@ class ThreadController extends GetxController {
   RxBool isLoadingFirst = true.obs;
   RxBool isLoadingAction = false.obs;
   final _threadList = <ThreadItem>[].obs;
+  final _threadManageList = <ThreadItem>[].obs;
   var threadSelected = ''.obs;
   var slugSelected = ''.obs;
 
@@ -33,12 +34,14 @@ class ThreadController extends GetxController {
       if (data.code == 200) {
         _threadList.assignAll(data?.data);
         slugSelected.value = data?.data?.first?.slug;
+        slugChartSelected.value = data?.data?.first?.slug;
         deadlineIdeaSelectedThread.value = data?.data?.first?.deadlineIdea;
         deadlineCommentSelectedThread.value =
             data?.data?.first?.deadlineComment;
         SharedPreferencesHelper.instance
             .setString(key: 'firstSlug', val: data?.data?.first?.slug);
         threadSelected.value = _threadList.first.topic;
+        threadChartSelected.value = _threadList.first.topic;
       } else {
         _threadList;
       }
@@ -49,8 +52,28 @@ class ThreadController extends GetxController {
     }
   }
 
+  Future callListManageThread() async {
+    try {
+      isLoadingFirst(true);
+      final data = await ThreadData.getAllManageThreads();
+      if (data.code == 200) {
+        _threadManageList.assignAll(data?.data);
+      } else {
+        _threadManageList;
+      }
+    } catch (e) {
+      print('manage thread error $e');
+    } finally {
+      isLoadingFirst(false);
+    }
+  }
+
   List<ThreadItem> get ThreadList {
     return [..._threadList];
+  }
+
+  List<ThreadItem> get threadManageList {
+    return [..._threadManageList];
   }
 
   bool get checkDeadlineCreateIdea {
@@ -145,24 +168,33 @@ class ThreadController extends GetxController {
     String thread = '',
     String slug,
   }) {
-    threadSelected.value = thread;
-    slugSelected.value = slug;
+    threadChartSelected.value = thread;
+    slugChartSelected.value = slug;
   }
 
   createThread(
       {String title,
       String content,
       int deadlineIdea,
-      int deadlineComment}) async {
+      int deadlineComment,
+      bool checkStaff = false}) async {
     try {
       loadingAction(true);
       final data = await ThreadData.createThread(
           title, content, deadlineIdea, deadlineComment);
       if (data.code == 200) {
         print(data.data);
-        _threadList.insert(0, data.data);
-        snackBarMessage(
-            title: 'Create successful!', backGroundColor: successColor);
+        _threadManageList.insert(0, data.data);
+        if (checkStaff) {
+          snackBarMessage(
+              title:
+                  'Create successful! Waiting for Admin or Manager approved your thread',
+              backGroundColor: successColor);
+        } else {
+          snackBarMessage(
+              title: 'Create successful!', backGroundColor: successColor);
+        }
+
         Get.back();
         update();
       }

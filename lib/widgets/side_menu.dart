@@ -86,7 +86,6 @@ class SideMenu extends StatelessWidget {
                             .removeKey(key: 'Role');
                         await SharedPreferencesHelper.instance
                             .removeKey(key: 'nameSlug');
-                        await SharedPreferencesHelper.instance.clearAllKeys();
                         menuController.changeActiveItemTo(
                             checkRoleShowCategory(nameRole)[0].name);
                         print(checkRoleShowCategory(nameRole)[0].name);

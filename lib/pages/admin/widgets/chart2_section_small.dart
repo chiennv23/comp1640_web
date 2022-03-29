@@ -61,7 +61,7 @@ class Chart2SectionSmall extends StatelessWidget {
                           text: item.topic,
                         ),
                         trailing:
-                            threadController.threadSelected.value == item.topic
+                            threadController.threadChartSelected.value == item.topic
                                 ? Icon(
                                     Icons.check_rounded,
                                     color: primaryColor2,
@@ -92,7 +92,7 @@ class Chart2SectionSmall extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
                             Get.back(
-                                result: threadController.threadSelected.value);
+                                result: threadController.threadChartSelected.value);
                           },
                           borderRadius: BorderRadius.circular(8.0),
                           child: Container(
@@ -148,7 +148,7 @@ class Chart2SectionSmall extends StatelessWidget {
                       message: 'Choose Thread',
                       child: InkWell(
                         onTap: () async {
-                          threadController.threadSelected.value =
+                          threadController.threadChartSelected.value =
                               await Get.dialog(showChangeThread());
                         },
                         child: Container(
@@ -159,9 +159,9 @@ class Chart2SectionSmall extends StatelessWidget {
                             border: Border.all(color: primaryColor2),
                           ),
                           child: CustomText(
-                            text: threadController.threadSelected.value == ''
+                            text: threadController.threadChartSelected.value == ''
                                 ? threadController.ThreadList?.first?.topic
-                                : threadController.threadSelected.value,
+                                : threadController.threadChartSelected.value,
                             size: ResponsiveWidget.isSmallScreen(context)
                                 ? 16
                                 : 20,
@@ -177,7 +177,7 @@ class Chart2SectionSmall extends StatelessWidget {
                   height: 5,
                 ),
                 Flexible(
-                    child: postController.isLoadingAction.value
+                    child: postController.isLoadingChart.value
                         ? Stack(
                             alignment: AlignmentDirectional.center,
                             fit: StackFit.loose,

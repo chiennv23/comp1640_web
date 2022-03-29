@@ -12,14 +12,14 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ThreadManage extends StatefulWidget {
-  const ThreadManage({Key key}) : super(key: key);
+class MyThreads extends StatefulWidget {
+  const MyThreads({Key key}) : super(key: key);
 
   @override
-  State<ThreadManage> createState() => _ThreadManageState();
+  State<MyThreads> createState() => _MyThreadsState();
 }
 
-class _ThreadManageState extends State<ThreadManage> {
+class _MyThreadsState extends State<MyThreads> {
   @override
   Widget build(BuildContext context) {
     ThreadController threadController = Get.find();
@@ -52,7 +52,7 @@ class _ThreadManageState extends State<ThreadManage> {
                     borderRadius: BorderRadius.circular(8.0),
                     child: InkWell(
                       onTap: () {
-                        threadController.callListManageThread();
+                        threadController.onInit();
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -156,7 +156,7 @@ class _ThreadManageState extends State<ThreadManage> {
                       ),
                       DataColumn2(
                         label: CustomText(
-                          text: "Expiration idea",
+                          text: "Expiration idea date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -165,21 +165,12 @@ class _ThreadManageState extends State<ThreadManage> {
                       ),
                       DataColumn2(
                         label: CustomText(
-                          text: "Expiration comment",
+                          text: "Expiration comment date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
                         size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Status",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.S,
                       ),
                       DataColumn2(
                         label: CustomText(
@@ -194,10 +185,9 @@ class _ThreadManageState extends State<ThreadManage> {
                     rows: threadController.isLoadingFirst.value
                         ? [dataRowLoading()]
                         : List<DataRow>.generate(
-                            threadController.threadManageList.length ?? 0,
+                            threadController.ThreadList.length ?? 0,
                             (index) {
-                              final item = threadController
-                                  .threadManageList.reversed
+                              final item = threadController.ThreadList.reversed
                                   .toList()[index];
                               return DataRow2(
                                 cells: [
@@ -217,14 +207,6 @@ class _ThreadManageState extends State<ThreadManage> {
                                   DataCell(CustomText(
                                       text: DatetimeConvert.dMy_hm(
                                           item.deadlineComment))),
-                                  DataCell(CustomText(
-                                    text:
-                                        item.approved ? 'Approved' : 'Not yet',
-                                    color: item.approved
-                                        ? successColor
-                                        : orangeColor,
-                                    weight: FontWeight.w600,
-                                  )),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -307,7 +289,9 @@ class _ThreadManageState extends State<ThreadManage> {
   }
 
   void showCreate() {
-    Get.dialog(ThreadCreate());
+    Get.dialog(ThreadCreate(
+      checkRoleStaff: true,
+    ));
   }
 
   void showEdit(item) {
@@ -318,7 +302,7 @@ class _ThreadManageState extends State<ThreadManage> {
 
   DataRow dataRowLoading() => DataRow(cells: [
         ...List<DataCell>.generate(
-          8,
+          7,
           (index) => const DataCell(CustomText(text: 'loading')),
         ),
         DataCell(

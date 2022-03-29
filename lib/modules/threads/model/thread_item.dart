@@ -11,19 +11,20 @@ class ThreadItem {
   int updatedAt;
   int deadlineIdea;
   int deadlineComment;
+  bool approved;
 
-  ThreadItem({
-    this.sId,
-    this.topic,
-    this.description,
-    this.creator,
-    this.slug,
-    this.posts,
-    this.createdAt,
-    this.updatedAt,
-    this.deadlineIdea,
-    this.deadlineComment,
-  });
+  ThreadItem(
+      {this.sId,
+      this.topic,
+      this.description,
+      this.creator,
+      this.slug,
+      this.posts,
+      this.createdAt,
+      this.updatedAt,
+      this.deadlineIdea,
+      this.deadlineComment,
+      this.approved});
 
   ThreadItem.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -40,10 +41,11 @@ class ThreadItem {
     }
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    approved = json['approved'] ?? false;
     deadlineIdea =
         json['postDeadline'] ?? DateTime.now().toUtc().millisecondsSinceEpoch;
-    deadlineComment =
-        json['commentDeadline'] ?? DateTime.now().toUtc().millisecondsSinceEpoch;
+    deadlineComment = json['commentDeadline'] ??
+        DateTime.now().toUtc().millisecondsSinceEpoch;
   }
 
   static List<ThreadItem> fromJsonToList(Object json) {

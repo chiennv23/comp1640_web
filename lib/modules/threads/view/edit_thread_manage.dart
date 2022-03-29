@@ -9,17 +9,16 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
-class ThreadCreate extends StatefulWidget {
+class EditThreadManage extends StatefulWidget {
   final ThreadItem item;
-  final bool checkRoleStaff;
 
-  const ThreadCreate({Key key, this.item, this.checkRoleStaff}) : super(key: key);
+  const EditThreadManage({Key key, this.item}) : super(key: key);
 
   @override
-  State<ThreadCreate> createState() => _ThreadCreateState();
+  State<EditThreadManage> createState() => _EditThreadManageState();
 }
 
-class _ThreadCreateState extends State<ThreadCreate> {
+class _EditThreadManageState extends State<EditThreadManage> {
   final titleController = TextEditingController();
   final contentController = TextEditingController();
 
@@ -178,80 +177,80 @@ class _ThreadCreateState extends State<ThreadCreate> {
                   children: [
                     Expanded(
                         child: Container(
-                      height: 45,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Material(
-                        color: primaryColor2,
-                        borderRadius: BorderRadius.circular(10),
-                        child: InkWell(
+                          height: 45,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Material(
+                            color: primaryColor2,
                             borderRadius: BorderRadius.circular(10),
-                            onTap: () async {
-                              setState(() {
-                                hasAutoValidation = true;
-                              });
-                              if (!formGlobalKey.currentState.validate()) {
-                                return;
-                              }
-                              if (widget.item != null) {
-                                threadController.editThread(
-                                  sid: widget.item.sId,
-                                  slug: widget.item.slug,
-                                  topic: titleController.text,
-                                  desc: contentController.text,
-                                  deadlineIdea: deadlineIdea,
-                                  deadlineComment: deadlineComment,
-                                );
-                                return;
-                              }
-                              threadController.createThread(
-                                title: titleController.text,
-                                content: contentController.text,
-                                deadlineIdea: deadlineIdea,
-                                deadlineComment: deadlineComment,checkStaff: widget.checkRoleStaff
-                              );
-                            },
-                            child: Obx(
-                              () => threadController.isLoadingAction.value
-                                  ? SpinKitThreeBounce(
+                            child: InkWell(
+                                borderRadius: BorderRadius.circular(10),
+                                onTap: () async {
+                                  setState(() {
+                                    hasAutoValidation = true;
+                                  });
+                                  if (!formGlobalKey.currentState.validate()) {
+                                    return;
+                                  }
+                                  if (widget.item != null) {
+                                    threadController.editThread(
+                                      sid: widget.item.sId,
+                                      slug: widget.item.slug,
+                                      topic: titleController.text,
+                                      desc: contentController.text,
+                                      deadlineIdea: deadlineIdea,
+                                      deadlineComment: deadlineComment,
+                                    );
+                                    return;
+                                  }
+                                  threadController.createThread(
+                                    title: titleController.text,
+                                    content: contentController.text,
+                                    deadlineIdea: deadlineIdea,
+                                    deadlineComment: deadlineComment,
+                                  );
+                                },
+                                child: Obx(
+                                      () => threadController.isLoadingAction.value
+                                      ? SpinKitThreeBounce(
+                                    color: spaceColor,
+                                    size: 25,
+                                  )
+                                      : Center(
+                                    child: CustomText(
+                                      text: widget.item != null
+                                          ? 'Edit'
+                                          : 'Create',
                                       color: spaceColor,
-                                      size: 25,
-                                    )
-                                  : Center(
-                                      child: CustomText(
-                                        text: widget.item != null
-                                            ? 'Edit'
-                                            : 'Create',
-                                        color: spaceColor,
-                                      ),
                                     ),
-                            )),
-                      ),
-                    )),
+                                  ),
+                                )),
+                          ),
+                        )),
                     const SizedBox(
                       width: 8,
                     ),
                     Expanded(
                         child: Container(
-                      height: 45,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Material(
-                          color: greyColor.withOpacity(.5),
-                          borderRadius: BorderRadius.circular(10),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(10),
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Center(
-                              child: CustomText(
-                                text: 'Cancel',
-                                color: darkColor,
-                              ),
-                            ),
-                          )),
-                    )),
+                          height: 45,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Material(
+                              color: greyColor.withOpacity(.5),
+                              borderRadius: BorderRadius.circular(10),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(10),
+                                onTap: () {
+                                  Get.back();
+                                },
+                                child: Center(
+                                  child: CustomText(
+                                    text: 'Cancel',
+                                    color: darkColor,
+                                  ),
+                                ),
+                              )),
+                        )),
                   ],
                 )
               ],

@@ -2,6 +2,7 @@ import 'package:comp1640_web/helpers/page_404.dart';
 import 'package:comp1640_web/pages/admin/admin_home.dart';
 import 'package:comp1640_web/pages/admin/thread_manage.dart';
 import 'package:comp1640_web/pages/profile.dart';
+import 'package:comp1640_web/pages/staff/my_threads.dart';
 import 'package:comp1640_web/pages/staff/post_page.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +21,10 @@ const profilePageRoute = '/profile';
 const dashboardDisplayName = 'DashBoard';
 const dashboardPageRoute = '/dash';
 
-const threadDisplayName = 'Thread manage';
-const threadPageRoute = '/threadManage';
+const threadManageDisplayName = 'Thread manage';
+const threadDisplayStaffName = 'Threads';
+const threadsPageRoute = '/threads';
+const threadManagePageRoute = '/threadManage';
 
 class MenuItem {
   final String name;
@@ -37,20 +40,28 @@ List<MenuItem> checkRoleShowCategory(role) {
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
         MenuItem(dashboardDisplayName, dashboardPageRoute),
-        MenuItem(threadDisplayName, threadPageRoute),
+        MenuItem(threadManageDisplayName, threadManagePageRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
     case 'manager':
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
-        MenuItem(threadDisplayName, threadPageRoute),
+        MenuItem(threadManageDisplayName, threadManagePageRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
-    case 'student':
+    case 'coordinator':
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(dashboardDisplayName, dashboardPageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    case 'staff':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(threadDisplayStaffName, threadsPageRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
@@ -67,8 +78,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case dashboardPageRoute:
       return _getPageRoute(const AdminHome());
-    case threadPageRoute:
+    case threadManagePageRoute:
       return _getPageRoute(const ThreadManage());
+    case threadsPageRoute:
+      return _getPageRoute(const MyThreads());
     case homePageRoute:
       return _getPageRoute(const Home());
     case profilePageRoute:

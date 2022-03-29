@@ -50,8 +50,9 @@ class PostController extends GetxController {
   Future callListForChart({String threadSlug}) async {
     try {
       isLoadingChart(true);
+      print(threadController.slugChartSelected.value);
       final data = await PostData.getAllPostByThread(
-          threadSlug ?? threadController.slugSelected.value);
+          threadSlug ?? threadController.slugChartSelected.value);
       if (data.code == 200) {
         postListChartController.assignAll(data?.data);
       } else {
@@ -62,20 +63,23 @@ class PostController extends GetxController {
     }
   }
 
-  List<PostItem> get mostCommentsInPosts {
-    return postListChartController
-      ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
-  }
+  // List<PostItem> get mostCommentsInPosts {
+  //   return postListChartController
+  //     ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
+  // }
 
   List<charts.Series<PostItem, int>> get commentsAndPostsChart {
-    List<int> listInt = [];
-    listInt = mostCommentsInPosts.map((e) => e.comments.length).toList();
+    List<PostItem> lt = postListChartController.take(5).toList()
+      ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
     return [
       charts.Series<PostItem, int>(
         id: 'Ideas&Comment',
         colorFn: (PostItem postItem, count) {
           var post = postItem.comments.length;
-          var postMax = listInt.reduce(max);
+          var postMax = postListChartController
+              .take(5)
+              .map((m) => m.comments.length)
+              .reduce(max);
           if (post == postMax) {
             // max
             return charts.ColorUtil.fromDartColor(primaryColor2);
@@ -88,11 +92,12 @@ class PostController extends GetxController {
             return charts.ColorUtil.fromDartColor(redColor);
           }
         },
-        domainFn: (PostItem post, _) => post.createdAt ?? 0,
-        measureFn: (PostItem post, _) => post.comments.length ?? 0,
+        domainFn: (PostItem post, _) => post.createdAt,
+        measureFn: (PostItem post, _) =>
+            post.comments.isEmpty ? 1 : post.comments.length,
         labelAccessorFn: (PostItem post, _) =>
-            '${post.title}: ${post.comments.length.toString()} comments',
-        data: mostCommentsInPosts,
+            '${post.title}: ${post.comments.isEmpty ? '0' : post.comments.length.toString()} comments',
+        data: lt,
       ),
     ];
   }

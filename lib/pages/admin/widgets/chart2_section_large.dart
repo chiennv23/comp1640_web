@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
@@ -5,121 +7,119 @@ import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/pages/admin/widgets/circle_chart.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
-class Chart2SectionLarger extends StatefulWidget {
+class Chart2SectionLarger extends StatelessWidget {
   const Chart2SectionLarger({Key key}) : super(key: key);
 
   @override
-  State<Chart2SectionLarger> createState() => _Chart2SectionLargerState();
-}
-
-class _Chart2SectionLargerState extends State<Chart2SectionLarger> {
-  ThreadController threadController = Get.find();
-  PostController postController = Get.find();
-
-  Widget showChangeThread() {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          margin: const EdgeInsets.all(20.0),
-          width: ResponsiveWidget.isSmallScreen(context)
-              ? MediaQuery.of(context).size.width
-              : MediaQuery.of(context).size.width / 3,
-          height: 130.0 * threadController.ThreadList.length,
-          decoration: BoxDecoration(
-              color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CustomText(
-                text: 'Change thread',
-                size: 20,
-                weight: FontWeight.bold,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: threadController.ThreadList.length,
-                  itemBuilder: (context, i) {
-                    final item = threadController.ThreadList[i];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      onTap: () {
-                        threadController.threadChartChoose(
-                          thread: item.topic,
-                          slug: item.slug,
-                        );
-                        postController.callListForChart(threadSlug: item.slug);
-                        Get.back(result: item.topic);
-                      },
-                      title: CustomText(
-                        text: item.topic,
-                      ),
-                      trailing:
-                          threadController.threadSelected.value == item.topic
-                              ? Icon(
-                                  Icons.check_rounded,
-                                  color: primaryColor2,
-                                )
-                              : const SizedBox(
-                                  width: 1,
-                                  height: 1,
-                                ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider(
-                      height: 1.0,
-                      thickness: 1.0,
-                      color: primaryColor,
-                    );
-                  },
+  Widget build(BuildContext context) {
+    ThreadController threadController = Get.find();
+    PostController postController = Get.find();
+    Widget showChangeThread(
+        ThreadController threadController, PostController postController) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(20.0),
+            margin: const EdgeInsets.all(20.0),
+            width: ResponsiveWidget.isSmallScreen(context)
+                ? MediaQuery.of(context).size.width
+                : MediaQuery.of(context).size.width / 3,
+            height: 130.0 * threadController.ThreadList.length,
+            decoration: BoxDecoration(
+                color: spaceColor, borderRadius: BorderRadius.circular(12.0)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomText(
+                  text: 'Change thread',
+                  size: 20,
+                  weight: FontWeight.bold,
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Material(
-                      color: active,
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: InkWell(
+                const SizedBox(
+                  height: 5,
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: threadController.ThreadList.length,
+                    itemBuilder: (context, i) {
+                      final item = threadController.ThreadList[i];
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
                         onTap: () {
-                          Get.back(
-                              result: threadController.threadSelected.value);
+                          threadController.threadChartChoose(
+                            thread: item.topic,
+                            slug: item.slug,
+                          );
+                          postController.callListForChart(
+                              threadSlug: item.slug);
+                          Get.back(result: item.topic);
                         },
+                        title: CustomText(
+                          text: item.topic,
+                        ),
+                        trailing: threadController.threadChartSelected.value ==
+                                item.topic
+                            ? Icon(
+                                Icons.check_rounded,
+                                color: primaryColor2,
+                              )
+                            : const SizedBox(
+                                width: 1,
+                                height: 1,
+                              ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        height: 1.0,
+                        thickness: 1.0,
+                        color: primaryColor,
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Material(
+                        color: active,
                         borderRadius: BorderRadius.circular(8.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(10.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0)),
-                          child: const CustomText(
-                            text: "Cancel",
-                            color: Colors.white,
+                        child: InkWell(
+                          onTap: () {
+                            Get.back(
+                                result:
+                                    threadController.threadChartSelected.value);
+                          },
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(10.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: const CustomText(
+                              text: "Cancel",
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.only(bottom: 30),
@@ -128,7 +128,7 @@ class _Chart2SectionLargerState extends State<Chart2SectionLarger> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-              offset: Offset(0, 6),
+              offset: const Offset(0, 6),
               color: greyColor.withOpacity(.1),
               blurRadius: 12)
         ],
@@ -162,8 +162,9 @@ class _Chart2SectionLargerState extends State<Chart2SectionLarger> {
                                 message: 'Choose Thread',
                                 child: InkWell(
                                   onTap: () async {
-                                    threadController.threadSelected.value =
-                                        await Get.dialog(showChangeThread());
+                                    threadController.threadChartSelected.value =
+                                        await Get.dialog(showChangeThread(
+                                            threadController, postController));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(5.0),
@@ -174,12 +175,12 @@ class _Chart2SectionLargerState extends State<Chart2SectionLarger> {
                                     ),
                                     child: CustomText(
                                       text: threadController
-                                                  .threadSelected.value ==
+                                                  .threadChartSelected.value ==
                                               ''
                                           ? threadController
                                               .ThreadList?.first?.topic
                                           : threadController
-                                              .threadSelected.value,
+                                              .threadChartSelected.value,
                                       size: ResponsiveWidget.isSmallScreen(
                                               context)
                                           ? 16
@@ -248,7 +249,7 @@ class _Chart2SectionLargerState extends State<Chart2SectionLarger> {
                                     fit: StackFit.loose,
                                     children: [
                                       PieOutsideLabelChart.withSampleData(),
-                                      CustomText(
+                                      const CustomText(
                                         text: 'No ideas in thread',
                                       )
                                     ],

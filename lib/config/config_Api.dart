@@ -110,3 +110,6 @@ String urlUpdateThread({String threadSlug}) {
 String urlDeleteThread({String threadSlug}) {
   return '$urlApi/threads/delete/$threadSlug';
 }
+
+///TODO MANAGE
+String urlGetAllManageThread = '$urlApi/manage/threads';

@@ -14,6 +14,7 @@ import 'package:comp1640_web/modules/posts/views/post_create.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
@@ -480,8 +481,7 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ))
-                  : AnimatedContainer(
-                      duration: const Duration(microseconds: 500),
+                  : Container(
                       padding: const EdgeInsets.only(left: 24.0, right: 24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,6 +523,8 @@ class _HomeState extends State<Home> {
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
               firstChild: Container(
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                 child: Column(
                   children: [

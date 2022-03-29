@@ -183,9 +183,9 @@ class _CreateCommentState extends State<CreateComment> {
                   onPressed: () {
                     Get.back();
                   },
-                  child: const CustomText(
+                  child: CustomText(
                     text: "Cancel",
-                    color: Colors.white,
+                    color: active,
                   ),
                 ),
             ],
