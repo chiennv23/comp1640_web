@@ -4,6 +4,7 @@ import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/threads/view/edit_thread_manage.dart';
 import 'package:comp1640_web/modules/threads/view/thread_create.dart';
 import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/modules/threads/view/thread_view.dart';
@@ -311,7 +312,7 @@ class _ThreadManageState extends State<ThreadManage> {
   }
 
   void showEdit(item) {
-    Get.dialog(ThreadCreate(
+    Get.dialog(EditThreadManage(
       item: item,
     ));
   }
