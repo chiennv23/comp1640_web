@@ -1,20 +1,30 @@
-import 'package:comp1640_web/constant/route/routeString.dart';
-import 'package:comp1640_web/constant/route/route_navigate.dart';
-import 'package:comp1640_web/modules/login/views/login.dart';
-import 'package:comp1640_web/welcomepage.dart';
+import 'package:comp1640_web/helpers/page_404.dart';
+import 'package:comp1640_web/pages/admin/admin_home.dart';
+import 'package:comp1640_web/pages/admin/thread_manage.dart';
+import 'package:comp1640_web/pages/profile.dart';
+import 'package:comp1640_web/pages/staff/my_threads.dart';
+import 'package:comp1640_web/pages/staff/post_page.dart';
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
-
-// routes
 const rootRoute = '/';
 const loginPageRoute = '/login';
-const homePageRoute = '/home';
-const profilePageRoute = '/profile';
-// DisplayName
 const logOutDisplayName = 'Log Out';
-const homeDisplayName = 'Home';
+
+// Student
+const homeDisplayName = 'Ideas';
+const homePageRoute = '/home';
+
 const profileDisplayName = 'Profile';
+const profilePageRoute = '/profile';
+
+// admin
+const dashboardDisplayName = 'DashBoard';
+const dashboardPageRoute = '/dash';
+
+const threadManageDisplayName = 'Thread manage';
+const threadDisplayStaffName = 'Threads';
+const threadsPageRoute = '/threads';
+const threadManagePageRoute = '/threadManage';
 
 class MenuItem {
   final String name;
@@ -23,82 +33,64 @@ class MenuItem {
   MenuItem(this.name, this.route);
 }
 
-List<MenuItem> sideMenuItemRoutes = [
-  MenuItem(homeDisplayName, homePageRoute),
-  MenuItem(profileDisplayName, profilePageRoute),
-  MenuItem(logOutDisplayName, loginPageRoute),
-];
+List<MenuItem> checkRoleShowCategory(role) {
+  List<MenuItem> listAction = [];
+  switch (role) {
+    case 'admin':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(dashboardDisplayName, dashboardPageRoute),
+        MenuItem(threadManageDisplayName, threadManagePageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    case 'manager':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(threadManageDisplayName, threadManagePageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    case 'coordinator':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(dashboardDisplayName, dashboardPageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    case 'staff':
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(threadDisplayStaffName, threadsPageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+    default:
+      return listAction = [
+        MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(profileDisplayName, profilePageRoute),
+        MenuItem(logOutDisplayName, loginPageRoute),
+      ];
+  }
+}
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case homeDisplayName:
-      return _getPageRoute(Home());
-    case profileDisplayName:
-      return _getPageRoute(Home());
-
+    case dashboardPageRoute:
+      return _getPageRoute(const AdminHome());
+    case threadManagePageRoute:
+      return _getPageRoute(const ThreadManage());
+    case threadsPageRoute:
+      return _getPageRoute(const MyThreads());
+    case homePageRoute:
+      return _getPageRoute(const Home());
+    case profilePageRoute:
+      return _getPageRoute(const Profile());
     default:
-      return _getPageRoute(Home());
+      return _getPageRoute(const PageNotFound());
   }
 }
 
 PageRoute _getPageRoute(Widget child) {
   return MaterialPageRoute(builder: (context) => child);
-}
-
-class Path {
-  const Path(this.pattern, this.builder);
-
-  /// A RegEx string for route matching.
-  final String pattern;
-
-  /// The builder for the associated pattern route. The first argument is the
-  /// [BuildContext] and the second argument is a RegEx match if it is
-  /// included inside of the pattern.
-  final Widget Function(BuildContext, String) builder;
-}
-
-class RouteConfiguration {
-  /// List of [Path] to for route matching. When a named route is pushed with
-  /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]
-  /// in the list below. As soon as there is a match, the associated builder
-  /// will be returned. This means that the paths higher up in the list will
-  /// take priority.
-  static List<Path> paths = [
-    Path(
-      r'^' + ArticlePage.baseRoute + r'/([\w-]+)$',
-      (context, match) => Article.getArticlePage(match),
-    ),
-    Path(
-      r'^' + OverviewPage.route,
-      (context, match) => OverviewPage(),
-    ),
-    Path(
-      r'^' + loginPageRoute,
-      (context, match) => Login(),
-    ),
-    Path(
-      r'^' + homePageRoute,
-      (context, match) => Home(),
-    ),
-  ];
-
-  /// The route generator callback used when the app is navigated to a named
-  /// route. Set it on the [MaterialApp.onGenerateRoute] or
-  /// [WidgetsApp.onGenerateRoute] to make use of the [paths] for route
-  /// matching.
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    for (Path path in paths) {
-      final regExpPattern = RegExp(path.pattern);
-      if (regExpPattern.hasMatch(settings.name)) {
-        final firstMatch = regExpPattern.firstMatch(settings.name);
-        final match = (firstMatch.groupCount == 1) ? firstMatch.group(1) : null;
-        return MaterialPageRoute<void>(
-          builder: (context) => path.builder(context, match),
-          settings: settings,
-        );
-      }
-    }
-    // If no match was found, we let [WidgetsApp.onUnknownRoute] handle it.
-    return null;
-  }
 }

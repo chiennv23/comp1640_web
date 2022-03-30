@@ -1,7 +1,22 @@
+import 'dart:convert';
+
 import 'package:comp1640_web/constant/route/route_navigate.dart';
+import 'package:comp1640_web/main.dart';
 import 'package:flutter/material.dart';
 
-void snackBarMessage(String title) {
-  ScaffoldMessenger.of(CoreRoutes.instance.navigatorKey.currentState.context)
-      .showSnackBar(SnackBar(content: Text(title)));
+void snackBarMessage(
+    {String title, Color backGroundColor}) {
+  rootScaffoldMessengerKey.currentState.showSnackBar(SnackBar(
+    content: Text(title),
+    backgroundColor: backGroundColor,
+  ));
+}
+
+void snackBarMessageError(String messageResponse) {
+  Map<String, dynamic> ms = json.decode(messageResponse);
+  snackBarMessage(title: ms['error'], backGroundColor: Colors.red);
+}
+
+void snackBarMessageError401(String messageResponse) {
+  snackBarMessage(title: messageResponse, backGroundColor: Colors.red);
 }
