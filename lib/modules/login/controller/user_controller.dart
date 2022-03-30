@@ -4,7 +4,6 @@ import 'package:comp1640_web/modules/login/controller/login_controller.dart';
 import 'package:comp1640_web/modules/login/models/user_items.dart';
 import 'package:get/get.dart';
 
-UserController userController = UserController.instance;
 
 class UserController extends GetxController {
   static UserController instance = Get.find();

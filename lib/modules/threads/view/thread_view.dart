@@ -10,7 +10,9 @@ import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Widget ThreadView(ThreadItem item) => Container(
+import 'edit_thread_manage.dart';
+
+Widget ThreadView(ThreadItem item, {bool checkStaff = false}) => Container(
       width: 500,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -96,6 +98,19 @@ Widget ThreadView(ThreadItem item) => Container(
             ),
             trailing: Text(DatetimeConvert.dMy_hm(item.deadlineComment)),
           ),
+          ListTile(
+            title: const CustomText(
+              text: "Status",
+              color: darkColor,
+              size: 16,
+              weight: FontWeight.bold,
+            ),
+            trailing: CustomText(
+              text: item.approved ? 'Approved' : 'Not yet',
+              color: item.approved ? successColor : orangeColor,
+              weight: FontWeight.w600,
+            ),
+          ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Row(
@@ -106,7 +121,13 @@ Widget ThreadView(ThreadItem item) => Container(
                   message: 'Edit',
                   child: IconButton(
                       onPressed: () {
-                        Get.dialog(ThreadCreate(
+                        if (checkStaff) {
+                          Get.dialog(ThreadCreate(
+                            item: item,
+                          ));
+                          return;
+                        }
+                        Get.dialog(EditThreadManage(
                           item: item,
                         ));
                       },
@@ -123,13 +144,30 @@ Widget ThreadView(ThreadItem item) => Container(
                   child: IconButton(
                       onPressed: () {
                         ThreadController threadController = Get.find();
+                        if (checkStaff) {
+                          Get.dialog(
+                            Center(
+                              child: Container(
+                                width: 300,
+                                child: deleteDialog(
+                                    deleteOnTap: () {
+                                      threadController.deleteThread(item.slug);
+                                      Get.back();
+                                    },
+                                    controller: threadController),
+                              ),
+                            ),
+                          );
+                          return;
+                        }
                         Get.dialog(
                           Center(
                             child: Container(
                               width: 300,
                               child: deleteDialog(
                                   deleteOnTap: () {
-                                    threadController.deleteThread(item.slug);
+                                    threadController
+                                        .deleteThreadManage(item.slug);
                                     Get.back();
                                   },
                                   controller: threadController),

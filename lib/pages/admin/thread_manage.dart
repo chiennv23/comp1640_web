@@ -21,10 +21,18 @@ class ThreadManage extends StatefulWidget {
 }
 
 class _ThreadManageState extends State<ThreadManage> {
+  ThreadController threadController = Get.find();
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      threadController.callListManageThread();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    ThreadController threadController = Get.find();
-
     return Column(
       children: [
         Obx(
@@ -300,7 +308,7 @@ class _ThreadManageState extends State<ThreadManage> {
       builder: (context) => Dialog(
         child: deleteDialog(
             deleteOnTap: () {
-              threadController.deleteThread(item.slug);
+              threadController.deleteThreadManage(item.slug);
             },
             controller: threadController),
       ),
@@ -308,7 +316,9 @@ class _ThreadManageState extends State<ThreadManage> {
   }
 
   void showCreate() {
-    Get.dialog(ThreadCreate());
+    Get.dialog(ThreadCreate(
+      checkRoleStaff: false,
+    ));
   }
 
   void showEdit(item) {

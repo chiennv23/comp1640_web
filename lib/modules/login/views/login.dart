@@ -99,9 +99,7 @@ class _LoginState extends State<Login>
                           ),
                         ),
                       Container(
-                        padding: EdgeInsets.only(
-                            top: 35,
-                            left: 24),
+                        padding: EdgeInsets.only(top: 35, left: 24),
                         width: 200,
                         child: TabBar(
                             controller: tabController,
@@ -162,17 +160,16 @@ class _LoginState extends State<Login>
             TextFormField(
               controller: emailLoginController,
               validator: (email) {
-                if (isEmailValid(email) &
-                    email.split('@')[1].contains('feedback.com')) {
+                if (isEmailValid(email)) {
                   return null;
                 } else {
-                  return 'Error invalid email@feedback.com';
+                  return 'Error invalid email@gmail.com';
                 }
               },
               decoration: InputDecoration(
                   focusColor: primaryColor2.withOpacity(.4),
                   labelText: "Email",
-                  hintText: "abc@feedback.com",
+                  hintText: "abc@gmail.com",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),
             ),
@@ -312,16 +309,16 @@ class _LoginState extends State<Login>
                     controller: emailSignUpController,
                     validator: (email) {
                       if (isEmailValid(email) &
-                          email.split('@')[1].contains('feedback.com')) {
+                          email.split('@')[1].contains('gmail.com')) {
                         return null;
                       } else {
-                        return 'Error invalid email@feedback.com';
+                        return 'Error invalid email@gmail.com';
                       }
                     },
                     decoration: InputDecoration(
                         focusColor: primaryColor2.withOpacity(.4),
                         labelText: "Email",
-                        hintText: "abc@feedback.com",
+                        hintText: "abc@gmail.com",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   ),

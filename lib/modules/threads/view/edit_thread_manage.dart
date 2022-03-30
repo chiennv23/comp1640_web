@@ -28,14 +28,22 @@ class _EditThreadManageState extends State<EditThreadManage> {
   int deadlineComment = DateTime.now().millisecondsSinceEpoch;
   DateTime initDateIdea = DateTime.now();
   DateTime initDateComment = DateTime.now();
+  bool checkApprovethread = false;
 
   @override
   void initState() {
     if (widget.item != null) {
-      titleController.text = widget.item.topic;
-      contentController.text = widget.item.description;
-      initDateIdea = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea);
-      initDateComment = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment);
+      initDateIdea =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea);
+      initDateComment =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment);
+      deadlineIdea =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea)
+              .millisecondsSinceEpoch;
+      deadlineComment =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment)
+              .millisecondsSinceEpoch;
+      checkApprovethread = widget.item.approved;
     }
     super.initState();
   }
@@ -44,6 +52,7 @@ class _EditThreadManageState extends State<EditThreadManage> {
   Widget build(BuildContext context) {
     ThreadController threadController = Get.find();
     final px = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -59,50 +68,13 @@ class _EditThreadManageState extends State<EditThreadManage> {
             child: Column(
               children: [
                 CustomText(
-                  text: '${(widget.item != null) ? 'Edit' : 'Create'} thread:',
+                  text:
+                      'Change status ${widget.item.topic} thread of ${widget.item.creator.username}:',
                   size: 20,
                   weight: FontWeight.bold,
                 ),
                 const SizedBox(
                   height: 20,
-                ),
-                TextFormField(
-                  controller: titleController,
-                  validator: (title) {
-                    if (title.trim().isNotEmpty) {
-                      return null;
-                    } else {
-                      return 'Enter title';
-                    }
-                  },
-                  decoration: InputDecoration(
-                      labelText: "Title",
-                      hintText: "",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20))),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  controller: contentController,
-                  validator: (content) {
-                    if (content.trim().isNotEmpty) {
-                      return null;
-                    } else {
-                      return 'Enter content';
-                    }
-                  },
-                  minLines: 1,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                      labelText: "Content",
-                      hintText: "",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20))),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 const CustomText(
                   text: 'Deadline for all ideas:',
@@ -130,10 +102,14 @@ class _EditThreadManageState extends State<EditThreadManage> {
                     });
                   },
                   validator: (val) {
-                    print(val);
                     return null;
                   },
-                  onSaved: (val) => print(val),
+                  onSaved: (val) {
+                    setState(() {
+                      deadlineIdea =
+                          DateTime.tryParse(val).millisecondsSinceEpoch;
+                    });
+                  },
                 ),
                 const SizedBox(
                   height: 10,
@@ -164,10 +140,46 @@ class _EditThreadManageState extends State<EditThreadManage> {
                     });
                   },
                   validator: (val) {
-                    print(val);
                     return null;
                   },
-                  onSaved: (val) => print(val),
+                  onSaved: (val) {
+                    setState(() {
+                      deadlineComment =
+                          DateTime.tryParse(val).millisecondsSinceEpoch;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    const CustomText(
+                      text: 'Approve for thread: ',
+                    ),
+                    Checkbox(
+                        value: checkApprovethread,
+                        onChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          setState(() {
+                            checkApprovethread = value;
+                          });
+                        }),
+                    InkWell(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        setState(() {
+                          checkApprovethread = !checkApprovethread;
+                        });
+                      },
+                      child: const CustomText(
+                        text: "Approve",
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
@@ -177,80 +189,75 @@ class _EditThreadManageState extends State<EditThreadManage> {
                   children: [
                     Expanded(
                         child: Container(
-                          height: 45,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Material(
-                            color: primaryColor2,
+                      height: 45,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Material(
+                        color: primaryColor2,
+                        borderRadius: BorderRadius.circular(10),
+                        child: InkWell(
                             borderRadius: BorderRadius.circular(10),
-                            child: InkWell(
-                                borderRadius: BorderRadius.circular(10),
-                                onTap: () async {
-                                  setState(() {
-                                    hasAutoValidation = true;
-                                  });
-                                  if (!formGlobalKey.currentState.validate()) {
-                                    return;
-                                  }
-                                  if (widget.item != null) {
-                                    threadController.editThread(
-                                      sid: widget.item.sId,
-                                      slug: widget.item.slug,
-                                      topic: titleController.text,
-                                      desc: contentController.text,
-                                      deadlineIdea: deadlineIdea,
-                                      deadlineComment: deadlineComment,
-                                    );
-                                    return;
-                                  }
-                                  threadController.createThread(
-                                    title: titleController.text,
-                                    content: contentController.text,
-                                    deadlineIdea: deadlineIdea,
-                                    deadlineComment: deadlineComment,
-                                  );
-                                },
-                                child: Obx(
-                                      () => threadController.isLoadingAction.value
-                                      ? SpinKitThreeBounce(
-                                    color: spaceColor,
-                                    size: 25,
-                                  )
-                                      : Center(
-                                    child: CustomText(
-                                      text: widget.item != null
-                                          ? 'Edit'
-                                          : 'Create',
+                            onTap: () async {
+                              setState(() {
+                                hasAutoValidation = true;
+                              });
+                              if (!formGlobalKey.currentState.validate()) {
+                                return;
+                              }
+                              if (widget.item != null) {
+                                print(DateTime.fromMillisecondsSinceEpoch(
+                                    deadlineIdea));
+                                print(DateTime.fromMillisecondsSinceEpoch(
+                                    deadlineComment));
+                                threadController.editThreadManage(
+                                  sid: widget.item.sId,
+                                  slug: widget.item.slug,
+                                  deadlineIdea: deadlineIdea,
+                                  deadlineComment: deadlineComment,
+                                  checkApprove: checkApprovethread,
+                                );
+                                return;
+                              }
+                            },
+                            child: Obx(
+                              () => threadController.isLoadingAction.value
+                                  ? SpinKitThreeBounce(
                                       color: spaceColor,
+                                      size: 25,
+                                    )
+                                  : Center(
+                                      child: CustomText(
+                                        text: 'Change',
+                                        color: spaceColor,
+                                      ),
                                     ),
-                                  ),
-                                )),
-                          ),
-                        )),
+                            )),
+                      ),
+                    )),
                     const SizedBox(
                       width: 8,
                     ),
                     Expanded(
                         child: Container(
-                          height: 45,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Material(
-                              color: greyColor.withOpacity(.5),
-                              borderRadius: BorderRadius.circular(10),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(10),
-                                onTap: () {
-                                  Get.back();
-                                },
-                                child: Center(
-                                  child: CustomText(
-                                    text: 'Cancel',
-                                    color: darkColor,
-                                  ),
-                                ),
-                              )),
-                        )),
+                      height: 45,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Material(
+                          color: greyColor.withOpacity(.5),
+                          borderRadius: BorderRadius.circular(10),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(10),
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: const Center(
+                              child: CustomText(
+                                text: 'Cancel',
+                                color: darkColor,
+                              ),
+                            ),
+                          )),
+                    )),
                   ],
                 )
               ],

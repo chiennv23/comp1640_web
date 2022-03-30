@@ -13,7 +13,8 @@ class ThreadCreate extends StatefulWidget {
   final ThreadItem item;
   final bool checkRoleStaff;
 
-  const ThreadCreate({Key key, this.item, this.checkRoleStaff}) : super(key: key);
+  const ThreadCreate({Key key, this.item, this.checkRoleStaff})
+      : super(key: key);
 
   @override
   State<ThreadCreate> createState() => _ThreadCreateState();
@@ -35,8 +36,16 @@ class _ThreadCreateState extends State<ThreadCreate> {
     if (widget.item != null) {
       titleController.text = widget.item.topic;
       contentController.text = widget.item.description;
-      initDateIdea = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea);
-      initDateComment = DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment);
+      initDateIdea =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea);
+      initDateComment =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment);
+      deadlineIdea =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineIdea)
+              .millisecondsSinceEpoch;
+      deadlineComment =
+          DateTime.fromMillisecondsSinceEpoch(widget.item.deadlineComment)
+              .millisecondsSinceEpoch;
     }
     super.initState();
   }
@@ -205,11 +214,11 @@ class _ThreadCreateState extends State<ThreadCreate> {
                                 return;
                               }
                               threadController.createThread(
-                                title: titleController.text,
-                                content: contentController.text,
-                                deadlineIdea: deadlineIdea,
-                                deadlineComment: deadlineComment,checkStaff: widget.checkRoleStaff
-                              );
+                                  title: titleController.text,
+                                  content: contentController.text,
+                                  deadlineIdea: deadlineIdea,
+                                  deadlineComment: deadlineComment,
+                                  checkStaff: widget.checkRoleStaff);
                             },
                             child: Obx(
                               () => threadController.isLoadingAction.value

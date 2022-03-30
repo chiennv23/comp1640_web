@@ -49,6 +49,17 @@ class ThreadData {
     return response;
   }
 
+  static Future<BasicResponse> deleteThreadManage(String threadSlug) async {
+    final response = await BaseDA.delete(
+        urlDeleteThreadofmanage(threadSlug: threadSlug),
+        {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Thread deleted.');
+    }
+    return response;
+  }
+
   static Future<BasicResponse> editThread(
       {String threadSlug,
       String topic,
@@ -66,6 +77,26 @@ class ThreadData {
         (json) => ThreadItem.fromJson(json));
     if (response.code == 200) {
       print('Thread edited.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse<ThreadItem>> editThreadManage({
+    String threadSlug,
+    int deadlineIdea,
+    int deadlineComment,
+    bool checkApproveThread,
+  }) async {
+    final response = await BaseDA.put(
+        urlUpdateThreadofmanage(threadSlug: threadSlug),
+        {
+          "postDeadline": deadlineIdea,
+          "commentDeadline": deadlineComment,
+          "approved": checkApproveThread
+        },
+        (json) => ThreadItem.fromJson(json));
+    if (response.code == 200) {
+      print('Thread manage edited.');
     }
     return response;
   }

@@ -72,6 +72,11 @@ class ThreadController extends GetxController {
     return [..._threadList];
   }
 
+  List<ThreadItem> get myThreadList {
+
+    // return [..._threadList].where((element) => element.creator.username);
+  }
+
   List<ThreadItem> get threadManageList {
     return [..._threadManageList];
   }
@@ -184,17 +189,17 @@ class ThreadController extends GetxController {
           title, content, deadlineIdea, deadlineComment);
       if (data.code == 200) {
         print(data.data);
-        _threadManageList.insert(0, data.data);
         if (checkStaff) {
+          _threadList.insert(0, data.data);
           snackBarMessage(
               title:
                   'Create successful! Waiting for Admin or Manager approved your thread',
               backGroundColor: successColor);
         } else {
+          _threadManageList.insert(0, data.data);
           snackBarMessage(
               title: 'Create successful!', backGroundColor: successColor);
         }
-
         Get.back();
         update();
       }
@@ -248,6 +253,68 @@ class ThreadController extends GetxController {
       }
     } catch (e) {
       print('delete thread error $e');
+    } finally {
+      loadingAction(false);
+    }
+  }
+
+  editThreadManage(
+      {String sid,
+      String slug,
+      int deadlineIdea,
+      int deadlineComment,
+      bool checkApprove}) async {
+    try {
+      loadingAction(true);
+      final data = await ThreadData.editThreadManage(
+        threadSlug: slug,
+        deadlineIdea: deadlineIdea,
+        deadlineComment: deadlineComment,
+        checkApproveThread: checkApprove,
+      );
+      if (data.code == 200) {
+        _threadManageList[
+                _threadManageList.indexWhere((element) => element.sId == sid)]
+            .approved = data.data.approved;
+        _threadManageList[
+                _threadManageList.indexWhere((element) => element.sId == sid)]
+            .deadlineIdea = data.data.deadlineIdea;
+        _threadManageList[
+                _threadManageList.indexWhere((element) => element.sId == sid)]
+            .deadlineComment = data.data.deadlineComment;
+        _threadManageList.refresh();
+        if (data.data.approved) {
+          _threadList.insert(0, data.data);
+        }
+        snackBarMessage(
+            title: 'Edit successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      }
+    } catch (e) {
+      print('edit thread manage error $e');
+    } finally {
+      loadingAction(false);
+    }
+  }
+
+  deleteThreadManage(String threadSLug) async {
+    try {
+      loadingAction(true);
+      final data = await ThreadData.deleteThreadManage(threadSLug);
+      if (data.code == 200) {
+        _threadManageList.removeWhere((element) => element.slug == threadSLug);
+        _threadManageList.refresh();
+        if (_threadList.any((element) => element.slug == threadSLug)) {
+          _threadList.removeWhere((element) => element.slug == threadSLug);
+        }
+        snackBarMessage(
+            title: 'Delete successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      }
+    } catch (r) {
+      print('delete thread error $r');
     } finally {
       loadingAction(false);
     }

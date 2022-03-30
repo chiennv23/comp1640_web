@@ -21,8 +21,8 @@ const profilePageRoute = '/profile';
 const dashboardDisplayName = 'DashBoard';
 const dashboardPageRoute = '/dash';
 
-const threadManageDisplayName = 'Thread manage';
-const threadDisplayStaffName = 'Threads';
+const threadManageDisplayName = 'Manage Thread';
+const threadDisplayStaffName = 'My Threads';
 const threadsPageRoute = '/threads';
 const threadManagePageRoute = '/threadManage';
 

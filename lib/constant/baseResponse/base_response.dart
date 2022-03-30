@@ -226,7 +226,30 @@ class BaseDA {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode != 200) {
         print('fail!');
+        if (response.statusCode == 401) {
+          print('fail authen.');
 
+          var rs = await postRefreshToken();
+          if (rs.statusCode == 200) {
+            token =
+                SharedPreferencesHelper.instance.getString(key: 'accessToken');
+            headers = <String, String>{
+              'Content-type': 'application/json',
+              'Authorization': 'Bearer $token',
+            };
+            final response = await http.get(
+              Uri.parse(url),
+              headers: headers,
+            );
+            if (response.statusCode == 200) {
+              print(json.encode(jsonDecode(response.body)));
+              var b = BasicResponse<T>();
+              b.data = fromJson(jsonDecode(response.body));
+              b.code = 200;
+              return b;
+            }
+          }
+        }
         var responseFail = BasicResponse();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
@@ -248,7 +271,7 @@ class BaseDA {
     try {
       var headers = <String, String>{};
       var token =
-      SharedPreferencesHelper.instance.getString(key: 'accessToken');
+          SharedPreferencesHelper.instance.getString(key: 'accessToken');
       if (token != null) {
         headers = <String, String>{
           'Content-type': 'application/json',
@@ -262,7 +285,30 @@ class BaseDA {
       final response = await http.get(Uri.parse(url), headers: headers);
       if (response.statusCode != 200) {
         print('fail!');
+        if (response.statusCode == 401) {
+          print('fail authen.');
 
+          var rs = await postRefreshToken();
+          if (rs.statusCode == 200) {
+            token =
+                SharedPreferencesHelper.instance.getString(key: 'accessToken');
+            headers = <String, String>{
+              'Content-type': 'application/json',
+              'Authorization': 'Bearer $token',
+            };
+            final response = await http.get(
+              Uri.parse(url),
+              headers: headers,
+            );
+            if (response.statusCode == 200) {
+              print(json.encode(jsonDecode(response.body)));
+              var b = BasicResponse<T>();
+              b.data = fromJson(jsonDecode(response.body));
+              b.code = 200;
+              return b;
+            }
+          }
+        }
         var responseFail = BasicResponse();
         responseFail.code = response.statusCode;
         responseFail.message = response.body;
