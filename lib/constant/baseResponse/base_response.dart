@@ -225,7 +225,7 @@ class BaseDA {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll(headers);
     request.fields.addAll(obj);
-    if (bytes != null && fileName != null) {
+    if (bytes != null && fileName != '' && mimeType != '') {
       print(fileName);
       String mim1 = mimeType.split('/')[0];
       String mim2 = mimeType.split('/')[1];
@@ -252,7 +252,88 @@ class BaseDA {
           var request = http.MultipartRequest('POST', Uri.parse(url));
           request.headers.addAll(headers);
           request.fields.addAll(obj);
-          if (bytes != null && fileName != null) {
+          if (bytes != null && fileName != '' && mimeType != '') {
+            print(fileName);
+            String mim1 = mimeType.split('/')[0];
+            String mim2 = mimeType.split('/')[1];
+            print(mim2);
+            List<int> list = bytes.cast();
+            request.files.add(http.MultipartFile.fromBytes('files', list,
+                filename: fileName, contentType: MediaType(mim1, mim2)));
+          }
+
+          var response = await request.send();
+          if (response.statusCode == 200) {
+            var b = BasicResponse<T>();
+            final res = await http.Response.fromStream(response);
+            b.data = fromJson(jsonDecode(res.body));
+            b.code = 200;
+            return b;
+          }
+        }
+      }
+      // final res = await http.Response.fromStream(response);
+      var responseFail = BasicResponse<T>();
+      responseFail.code = response.statusCode;
+      // responseFail.message = res.body;
+      // snackBarMessageError(responseFail.message);
+      return responseFail;
+    } else {
+      var b = BasicResponse<T>();
+      final res = await http.Response.fromStream(response);
+      b.data = fromJson(jsonDecode(res.body));
+      b.code = 200;
+      return b;
+    }
+    // } catch (e) {
+    //   print(e);
+    // }
+  }static Future<BasicResponse<T>> putFormData<T>({
+    String url,
+    Uint8List bytes,
+    String fileName,
+    String mimeType,
+    Map<String, String> obj,
+    T Function(Object json) fromJson,
+  }) async {
+    // try {
+    var token = SharedPreferencesHelper.instance.getString(key: 'accessToken');
+    var headers = <String, String>{
+      'Content-type': 'multipart/form-data',
+      'Authorization': 'Bearer $token',
+    };
+
+    var request = http.MultipartRequest('PUT', Uri.parse(url));
+    request.headers.addAll(headers);
+    request.fields.addAll(obj);
+    if (bytes != null && fileName != '' && mimeType != '') {
+      print(fileName);
+      String mim1 = mimeType.split('/')[0];
+      String mim2 = mimeType.split('/')[1];
+      print(mim2);
+      List<int> list = bytes.cast();
+      request.files.add(http.MultipartFile.fromBytes('files', list,
+          filename: fileName, contentType: MediaType(mim1, mim2)));
+    }
+
+    var response = await request.send();
+    if (response.statusCode != 200) {
+      print('fail!');
+      print(response.statusCode.toString());
+      if (response.statusCode == 401) {
+        print('fail authen.');
+        var rs = await postRefreshToken();
+        if (rs.statusCode == 200) {
+          token =
+              SharedPreferencesHelper.instance.getString(key: 'accessToken');
+          headers = <String, String>{
+            'Content-type': 'multipart/form-data',
+            'Authorization': 'Bearer $token',
+          };
+          var request = http.MultipartRequest('PUT', Uri.parse(url));
+          request.headers.addAll(headers);
+          request.fields.addAll(obj);
+          if (bytes != null && fileName != '' && mimeType != '') {
             print(fileName);
             String mim1 = mimeType.split('/')[0];
             String mim2 = mimeType.split('/')[1];

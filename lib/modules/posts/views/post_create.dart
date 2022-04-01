@@ -42,6 +42,7 @@ class _PostCreateState extends State<PostCreate> {
   bool checkAnonymous = false;
   Uint8List bytesFile;
   FilePickerResult pickRs;
+  File_Data_Model file;
 
   @override
   void initState() {
@@ -50,13 +51,18 @@ class _PostCreateState extends State<PostCreate> {
       contentController.text = widget.item.content;
       checkAnonymous = widget.item.anonymous;
       if (widget.item.files.isNotEmpty) {
-        this.file.name = widget.item.files.first.url.split('/').last;
+        final droppedFile = File_Data_Model(
+          name: widget.item.files.first.url.split('/').last,
+          mime: null,
+          bytes: null,
+        );
+        setState(() {
+          file = droppedFile;
+        });
       }
     }
     super.initState();
   }
-
-  File_Data_Model file;
 
   bool checkFileFunc(String nameCheck) {
     test(String value) => value.contains(nameCheck);
@@ -283,47 +289,36 @@ class _PostCreateState extends State<PostCreate> {
                                         .validate()) {
                                       return;
                                     }
-                                    // if (widget.item != null) {
-                                    //   postController.editIdea(
-                                    //     title: titleController.text,
-                                    //     content: contentController.text,
-                                    //     postSlug: widget.item.slug,
-                                    //     threadSlug: widget.threadSlug,
-                                    //     anonymous: checkAnonymous,
-                                    //   );
-                                    //   return;
-                                    // }
-                                    // postController.createIdea(
-                                    //   title: titleController.text,
-                                    //   content: contentController.text,
-                                    //   threadSlug: widget.threadSlug,
-                                    //   anonymous: checkAnonymous,
-                                    // );
-                                    // Uint8List data = pickRs.files.single.bytes;
                                     String fileN;
-                                    if (file != null) {
+                                    if (bytesFile != null) {
                                       fileN = file.name;
                                     } else {
                                       fileN = '';
                                     }
-                                    // print(fileN);
-                                    // print(bytesFile);
-                                    // print(pickRs.files.single.path);
+                                    // Uint8List data = pickRs.files.single.bytes;
+                                    if (widget.item != null) {
+                                      postController.editIdea(
+                                          title: titleController.text,
+                                          content: contentController.text,
+                                          postSlug: widget.item.slug,
+                                          threadSlug: widget.threadSlug,
+                                          anonymous: checkAnonymous,
+                                          mimeType: bytesFile != null
+                                              ? file.mime
+                                              : '',
+                                          bytes: bytesFile,
+                                          fileName:
+                                              bytesFile != null ? fileN : '');
+                                      return;
+                                    }
                                     postController.createIdeaFormData(
                                         threadSlug: widget.threadSlug,
                                         title: titleController.text,
                                         content: contentController.text,
                                         anonymous: checkAnonymous,
-                                        mimeType: file.mime,
+                                        mimeType: file != null ? file.mime : '',
                                         bytes: bytesFile,
                                         fileName: fileN);
-                                    // await PostData.createPostFormData(
-                                    //     threadSlug: widget.threadSlug,
-                                    //     title: titleController.text,
-                                    //     content: contentController.text,
-                                    //     anonymous: checkAnonymous,
-                                    //     bytes: data,
-                                    //     fileName: fileN);
                                   },
                             child: postController.isLoadingAction.value
                                 ? SpinKitThreeBounce(

@@ -41,7 +41,8 @@ class PostData {
     var response = await BaseDA.postFormData(
         url: urlCreateNewPost(threadSlug),
         fileName: fileName,
-        bytes: bytes,mimeType: mimeType,
+        bytes: bytes,
+        mimeType: mimeType,
         obj: {
           'title': title,
           'content': content,
@@ -54,12 +55,27 @@ class PostData {
     return response;
   }
 
-  static Future<BasicResponse> editPost(String threadSlug, String postSlug,
-      String title, String content, bool anonymous) async {
-    var response = await BaseDA.put(
-        urlUpdatePost(threadSlug: threadSlug, postSlug: postSlug),
-        {'title': title, 'content': content, 'anonymous': anonymous},
-        (json) => PostItem.fromJson(json));
+  static Future<BasicResponse> editPost(
+    String threadSlug,
+    String postSlug,
+    String title,
+    String content,
+    bool anonymous,
+    Uint8List bytes,
+    String fileName,
+    String mimeType,
+  ) async {
+    var response = await BaseDA.putFormData(
+        url: urlUpdatePost(threadSlug: threadSlug, postSlug: postSlug),
+        fileName: fileName,
+        bytes: bytes,
+        mimeType: mimeType,
+        obj: {
+          'title': title,
+          'content': content,
+          'anonymous': anonymous.toString()
+        },
+        fromJson: (json) => PostItem.fromJson(json));
     if (response.code == 200) {
       print('Edit post done.');
     }

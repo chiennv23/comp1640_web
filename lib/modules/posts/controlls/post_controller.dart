@@ -220,20 +220,22 @@ class PostController extends GetxController {
     final data = await PostData.createPostFormData(
         threadSlug: threadSlug,
         title: title,
-        content: content,mimeType: mimeType,
+        content: content,
+        mimeType: mimeType,
         anonymous: anonymous,
         bytes: bytes,
         fileName: fileName);
     if (data.code == 200) {
       loadingAction(false);
-      print( data.data);
+      print(data.data);
       postListController.insert(0, data.data);
       await Get.dialog(
         Center(
           child: SizedBox(
             width: 300,
             child: successDialog(
-                title: 'Congratulation!', subTitle: 'You created successful new idea'),
+                title: 'Congratulation!',
+                subTitle: 'You created successful new idea'),
           ),
         ),
       );
@@ -254,23 +256,24 @@ class PostController extends GetxController {
       {String threadSlug,
       String postSlug,
       String title,
+      Uint8List bytes,
+      String fileName,
+      String mimeType,
       String content,
       bool anonymous}) async {
-    try {
-      loadingAction(true);
-      final data = await PostData.editPost(
-          threadSlug, postSlug, title, content, anonymous);
-      if (data.code == 200) {
-        postListController[postListController
-            .indexWhere((element) => element.slug == postSlug)] = data.data;
-        snackBarMessage(
-            title: 'Edit idea successful!', backGroundColor: successColor);
-        Get.back();
-        update();
-      }
-    } catch (e) {
-      print('Edit idea error $e');
-    } finally {
+    loadingAction(true);
+    final data = await PostData.editPost(threadSlug, postSlug, title, content,
+        anonymous, bytes, fileName, mimeType);
+    if (data.code == 200) {
+      loadingAction(false);
+
+      postListController[postListController
+          .indexWhere((element) => element.slug == postSlug)] = data.data;
+      snackBarMessage(
+          title: 'Edit idea successful!', backGroundColor: successColor);
+      Get.back();
+      update();
+    } else {
       loadingAction(false);
     }
   }
