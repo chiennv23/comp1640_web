@@ -98,19 +98,19 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
     final name = event.name;
 
     final mime = await controller.getFileMIME(event);
-    final byte = await controller.getFileSize(event);
+    final size = await controller.getFileSize(event);
     final file = await controller.getFileData(event);
 
     print('Name : $name');
-    print('Mime: $mime');
+    // print('Mime: $mime');
 
-    // print('Size : ${byte / (1024 * 1024)}');
+    // print('Size : $size');
 
     final droppedFile = File_Data_Model(
-      name: name,
-      mime: mime,
-      bytes: file,
-    );
+        name: name,
+        mime: mime,
+        bytes: file,
+        size: size.toString());
 
     widget.onDroppedFile(droppedFile);
     setState(() {

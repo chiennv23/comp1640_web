@@ -186,6 +186,34 @@ class _LoginState extends State<Login>
                   return 'Enter a valid password';
                 }
               },
+              onFieldSubmitted: (vl) {
+                setState(() {
+                  FocusScope.of(context).unfocus();
+                  hasAutoValidation1 = true;
+                  isLoading1 = true;
+                });
+                if (!formGlobalKey1.currentState.validate()) {
+                  setState(() {
+                    isLoading1 = false;
+                  });
+                  return;
+                }
+                if (rememberMe) {
+                  SharedPreferencesHelper.instance
+                      .setString(key: 'Email', val: emailLoginController.text);
+                } else {
+                  SharedPreferencesHelper.instance.removeKey(key: 'Email');
+                }
+                SharedPreferencesHelper.instance
+                    .setBool(key: 'rememberMe', val: rememberMe);
+                LoginController.signIn(
+                        emailLoginController.text, passLoginController.text)
+                    .whenComplete(() => setState(() {
+                          isLoading1 = false;
+                          hasAutoValidation1 = false;
+                          passLoginController.text = '';
+                        }));
+              },
               decoration: InputDecoration(
                   focusColor: primaryColor2.withOpacity(.4),
                   suffixIcon: IconButton(
@@ -308,8 +336,7 @@ class _LoginState extends State<Login>
                   child: TextFormField(
                     controller: emailSignUpController,
                     validator: (email) {
-                      if (isEmailValid(email) &
-                          email.split('@')[1].contains('gmail.com')) {
+                      if (isEmailValid(email)) {
                         return null;
                       } else {
                         return 'Error invalid email@gmail.com';

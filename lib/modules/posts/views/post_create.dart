@@ -177,6 +177,11 @@ class _PostCreateState extends State<PostCreate> {
                               }),
                             ),
                           ),
+                          if (file != null && int.parse(file.size) > 10000000)
+                            CustomText(
+                              text: 'Only using file less 10MB size',
+                              color: redColor,
+                            ),
                           if (file != null &&
                               !checkFileFunc(
                                   file.name.toLowerCase().split('.').last))
@@ -189,6 +194,7 @@ class _PostCreateState extends State<PostCreate> {
                             height: 10,
                           ),
                           if (file != null &&
+                              int.parse(file.size) < 10000000 &&
                               checkFileFunc(
                                   file.name.toLowerCase().split('.').last))
                             Container(
@@ -288,6 +294,17 @@ class _PostCreateState extends State<PostCreate> {
                                     if (!formGlobalKey.currentState
                                         .validate()) {
                                       return;
+                                    }
+                                    if (bytesFile != null &&
+                                            int.parse(file.size) > 10000000 ||
+                                        bytesFile != null &&
+                                            !checkFileFunc(file.name
+                                                .toLowerCase()
+                                                .split('.')
+                                                .last)) {
+                                      setState(() {
+                                        bytesFile = null;
+                                      });
                                     }
                                     String fileN;
                                     if (bytesFile != null) {

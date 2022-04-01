@@ -61,8 +61,6 @@ class LoginController {
       snackBarMessage(
           title: 'Welcome to Idea System, $userName',
           backGroundColor: Colors.green);
-    } else {
-      snackBarMessageError(response.message);
     }
     return response;
   }
@@ -92,8 +90,6 @@ class LoginController {
       snackBarMessage(
           title: 'Successfully registered with email $email. Sign in now!',
           backGroundColor: Colors.green);
-    } else {
-      snackBarMessageError(response.message);
     }
     return response;
   }
