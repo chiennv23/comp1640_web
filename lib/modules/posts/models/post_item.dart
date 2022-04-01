@@ -8,6 +8,7 @@ class PostItem {
   String content;
   Creator author;
   String slug;
+  List<Files> files;
   List<String> upvotes;
   List<String> downvotes;
   List<Comment> comments;
@@ -24,6 +25,7 @@ class PostItem {
     this.content,
     this.author,
     this.slug,
+    this.files,
     this.upvotes,
     this.downvotes,
     this.comments,
@@ -38,6 +40,12 @@ class PostItem {
     thread = json['thread'] != null ? Thread.fromJson(json['thread']) : null;
     title = json['title'];
     content = json['content'];
+    if (json['files'] != null) {
+      files = <Files>[];
+      json['files'].forEach((v) {
+        files.add(Files.fromJson(v));
+      });
+    }
     author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     slug = json['slug'];
     upvotes = json['upvotes'].cast<String>();
@@ -110,5 +118,70 @@ class Thread {
     creator =
         json['creator'] != null ? Creator.fromJson(json['creator']) : null;
     slug = json['slug'];
+  }
+}
+
+class Files {
+  String assetId;
+  String publicId;
+  int version;
+  String versionId;
+  String signature;
+  int width;
+  int height;
+  String format;
+  String resourceType;
+  String createdAt;
+  int bytes;
+  String type;
+  String etag;
+  bool placeholder;
+  String url;
+  String secureUrl;
+  String originalFilename;
+  String originalExtension;
+  String apiKey;
+
+  Files(
+      {this.assetId,
+      this.publicId,
+      this.version,
+      this.versionId,
+      this.signature,
+      this.width,
+      this.height,
+      this.format,
+      this.resourceType,
+      this.createdAt,
+      this.bytes,
+      this.type,
+      this.etag,
+      this.placeholder,
+      this.url,
+      this.secureUrl,
+      this.originalFilename,
+      this.originalExtension,
+      this.apiKey});
+
+  Files.fromJson(Map<String, dynamic> json) {
+    assetId = json['asset_id'];
+    publicId = json['public_id'];
+    version = json['version'];
+    versionId = json['version_id'];
+    signature = json['signature'];
+    width = json['width'];
+    height = json['height'];
+    format = json['format'];
+    resourceType = json['resource_type'];
+    createdAt = json['created_at'];
+    bytes = json['bytes'];
+    type = json['type'];
+    etag = json['etag'];
+    placeholder = json['placeholder'];
+    url = json['url'];
+    secureUrl = json['secure_url'];
+    originalFilename = json['original_filename'];
+    originalExtension = json['original_extension'];
+    apiKey = json['api_key'];
   }
 }

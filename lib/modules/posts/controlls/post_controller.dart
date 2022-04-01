@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
@@ -8,7 +9,9 @@ import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
+import 'package:comp1640_web/modules/threads/view/create_success.dart';
 import 'package:comp1640_web/utils/pick_file.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -204,24 +207,47 @@ class PostController extends GetxController {
 
   bool loadingAction(bool loading) => isLoadingAction.value = loading;
 
-  createIdea(
-      {String threadSlug, String title, String content, bool anonymous}) async {
-    try {
-      loadingAction(true);
-      final data =
-          await PostData.createPost(threadSlug, title, content, anonymous);
-      if (data.code == 200) {
-        postListController.insert(0, data.data);
-        snackBarMessage(
-            title: 'Create idea successful!', backGroundColor: successColor);
-        Get.back();
-        update();
-      }
-    } catch (e) {
-      print('create idea error $e');
-    } finally {
+  createIdeaFormData(
+      {String threadSlug,
+      String title,
+      Uint8List bytes,
+      String fileName,
+      String mimeType,
+      String content,
+      bool anonymous}) async {
+    // try {
+    loadingAction(true);
+    final data = await PostData.createPostFormData(
+        threadSlug: threadSlug,
+        title: title,
+        content: content,mimeType: mimeType,
+        anonymous: anonymous,
+        bytes: bytes,
+        fileName: fileName);
+    if (data.code == 200) {
+      loadingAction(false);
+      print( data.data);
+      postListController.insert(0, data.data);
+      await Get.dialog(
+        Center(
+          child: SizedBox(
+            width: 300,
+            child: successDialog(
+                title: 'Congratulation!', subTitle: 'You created successful new idea'),
+          ),
+        ),
+      );
+      snackBarMessage(
+          title: 'Create idea successful!', backGroundColor: successColor);
+      update();
+    } else {
       loadingAction(false);
     }
+    // } catch (e) {
+    //   print('create idea error $e');
+    // } finally {
+    //   loadingAction(false);
+    // }
   }
 
   editIdea(

@@ -5,6 +5,8 @@ import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
+import 'package:comp1640_web/modules/threads/view/create_success.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -73,8 +75,12 @@ class ThreadController extends GetxController {
   }
 
   List<ThreadItem> get myThreadList {
-
-    // return [..._threadList].where((element) => element.creator.username);
+    var name = SharedPreferencesHelper.instance.getString(key: 'UserName');
+    var email = SharedPreferencesHelper.instance.getString(key: 'Email');
+    return [..._threadList]
+        .where((element) =>
+            element.creator.username == name && element.creator.email == email)
+        .toList();
   }
 
   List<ThreadItem> get threadManageList {
@@ -188,9 +194,18 @@ class ThreadController extends GetxController {
       final data = await ThreadData.createThread(
           title, content, deadlineIdea, deadlineComment);
       if (data.code == 200) {
+        loadingAction(false);
         print(data.data);
         if (checkStaff) {
-          _threadList.insert(0, data.data);
+          // _threadList.insert(0, data.data);
+          await Get.dialog(
+            Center(
+              child: SizedBox(
+                width: 300,
+                child: successDialog(),
+              ),
+            ),
+          );
           snackBarMessage(
               title:
                   'Create successful! Waiting for Admin or Manager approved your thread',
@@ -199,8 +214,8 @@ class ThreadController extends GetxController {
           _threadManageList.insert(0, data.data);
           snackBarMessage(
               title: 'Create successful!', backGroundColor: successColor);
+          Get.back();
         }
-        Get.back();
         update();
       }
     } catch (e) {

@@ -1,11 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/baseResponse/base_response.dart';
-import 'package:comp1640_web/constant/style.dart';
-import 'package:comp1640_web/modules/comments/models/comment_item.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
-import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PostData {
@@ -31,6 +30,30 @@ class PostData {
     return response;
   }
 
+  static Future<BasicResponse<PostItem>> createPostFormData(
+      {String threadSlug,
+      Uint8List bytes,
+      String fileName,
+      String mimeType,
+      String title,
+      String content,
+      bool anonymous}) async {
+    var response = await BaseDA.postFormData(
+        url: urlCreateNewPost(threadSlug),
+        fileName: fileName,
+        bytes: bytes,mimeType: mimeType,
+        obj: {
+          'title': title,
+          'content': content,
+          'anonymous': anonymous.toString()
+        },
+        fromJson: (json) => PostItem.fromJson(json));
+    if (response.code == 200) {
+      print('create post form data done.');
+    }
+    return response;
+  }
+
   static Future<BasicResponse> editPost(String threadSlug, String postSlug,
       String title, String content, bool anonymous) async {
     var response = await BaseDA.put(
@@ -43,8 +66,10 @@ class PostData {
     return response;
   }
 
-  static Future<BasicResponse> deletePost(String threadSlug, String postSlug,
-      ) async {
+  static Future<BasicResponse> deletePost(
+    String threadSlug,
+    String postSlug,
+  ) async {
     var response = await BaseDA.delete(
         urlDeletePost(threadSlug: threadSlug, postSlug: postSlug),
         {},

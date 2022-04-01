@@ -156,7 +156,7 @@ class _MyThreadsState extends State<MyThreads> {
                       ),
                       DataColumn2(
                         label: CustomText(
-                          text: "Expiration idea date",
+                          text: "Expiration idea",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -165,12 +165,21 @@ class _MyThreadsState extends State<MyThreads> {
                       ),
                       DataColumn2(
                         label: CustomText(
-                          text: "Expiration comment date",
+                          text: "Expiration comment",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
                         size: ColumnSize.L,
+                      ),
+                      DataColumn2(
+                        label: CustomText(
+                          text: "Status",
+                          color: darkColor,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
+                        size: ColumnSize.S,
                       ),
                       DataColumn2(
                         label: CustomText(
@@ -185,9 +194,10 @@ class _MyThreadsState extends State<MyThreads> {
                     rows: threadController.isLoadingFirst.value
                         ? [dataRowLoading()]
                         : List<DataRow>.generate(
-                            threadController.ThreadList.length ?? 0,
+                            threadController.myThreadList.length ?? 0,
                             (index) {
-                              final item = threadController.ThreadList.reversed
+                              final item = threadController
+                                  .myThreadList.reversed
                                   .toList()[index];
                               return DataRow2(
                                 cells: [
@@ -207,6 +217,14 @@ class _MyThreadsState extends State<MyThreads> {
                                   DataCell(CustomText(
                                       text: DatetimeConvert.dMy_hm(
                                           item.deadlineComment))),
+                                  DataCell(CustomText(
+                                    text:
+                                        item.approved ? 'Approved' : 'Not yet',
+                                    color: item.approved
+                                        ? successColor
+                                        : orangeColor,
+                                    weight: FontWeight.w600,
+                                  )),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -302,7 +320,7 @@ class _MyThreadsState extends State<MyThreads> {
 
   DataRow dataRowLoading() => DataRow(cells: [
         ...List<DataCell>.generate(
-          7,
+          8,
           (index) => const DataCell(CustomText(text: 'loading')),
         ),
         DataCell(

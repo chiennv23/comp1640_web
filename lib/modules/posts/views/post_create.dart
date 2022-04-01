@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:comp1640_web/constant/style.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
+import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/utils/DropZoneFile/drop_zone_widget.dart';
@@ -10,6 +12,7 @@ import 'package:comp1640_web/utils/DropZoneFile/model/file_drop_item.dart';
 import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -37,6 +40,8 @@ class _PostCreateState extends State<PostCreate> {
   bool hasAutoValidation = false;
   bool checkFile = false;
   bool checkAnonymous = false;
+  Uint8List bytesFile;
+  FilePickerResult pickRs;
 
   @override
   void initState() {
@@ -157,8 +162,10 @@ class _PostCreateState extends State<PostCreate> {
                           SizedBox(
                             height: 150,
                             child: DropZoneWidget(
-                              onDroppedFile: (file) =>
-                                  setState(() => this.file = file),
+                              onDroppedFile: (file) => setState(() {
+                                this.file = file;
+                                bytesFile = file.bytes;
+                              }),
                             ),
                           ),
                           if (file != null &&
@@ -192,11 +199,15 @@ class _PostCreateState extends State<PostCreate> {
                                 color: primaryColor2,
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     setState(() {
                                       checkFile = true;
                                     });
-                                    pickFile();
+                                    await pickFile(onDroppedFile: (rs) {
+                                      setState(() {
+                                        pickRs = rs;
+                                      });
+                                    });
                                   },
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Container(
@@ -268,22 +279,50 @@ class _PostCreateState extends State<PostCreate> {
                                         .validate()) {
                                       return;
                                     }
-                                    if (widget.item != null) {
-                                      postController.editIdea(
+                                    // if (widget.item != null) {
+                                    //   postController.editIdea(
+                                    //     title: titleController.text,
+                                    //     content: contentController.text,
+                                    //     postSlug: widget.item.slug,
+                                    //     threadSlug: widget.threadSlug,
+                                    //     anonymous: checkAnonymous,
+                                    //   );
+                                    //   return;
+                                    // }
+                                    // postController.createIdea(
+                                    //   title: titleController.text,
+                                    //   content: contentController.text,
+                                    //   threadSlug: widget.threadSlug,
+                                    //   anonymous: checkAnonymous,
+                                    // );
+                                    // Uint8List data = pickRs.files.single.bytes;
+                                    String fileN;
+                                    if (file != null) {
+                                      fileN = file.name
+                                          .toLowerCase()
+                                          .split('.')
+                                          .last;
+                                    } else {
+                                      fileN = '';
+                                    }
+                                    // print(fileN);
+                                    // print(data);
+                                    // print(pickRs.files.single.path);
+                                    postController.createIdeaFormData(
+                                        threadSlug: widget.threadSlug,
                                         title: titleController.text,
                                         content: contentController.text,
-                                        postSlug: widget.item.slug,
-                                        threadSlug: widget.threadSlug,
                                         anonymous: checkAnonymous,
-                                      );
-                                      return;
-                                    }
-                                    postController.createIdea(
-                                      title: titleController.text,
-                                      content: contentController.text,
-                                      threadSlug: widget.threadSlug,
-                                      anonymous: checkAnonymous,
-                                    );
+                                        mimeType: file.mime,
+                                        bytes: bytesFile,
+                                        fileName: fileN);
+                                    // await PostData.createPostFormData(
+                                    //     threadSlug: widget.threadSlug,
+                                    //     title: titleController.text,
+                                    //     content: contentController.text,
+                                    //     anonymous: checkAnonymous,
+                                    //     bytes: data,
+                                    //     fileName: fileN);
                                   },
                             child: postController.isLoadingAction.value
                                 ? SpinKitThreeBounce(

@@ -103,16 +103,13 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
 
     print('Name : $name');
     print('Mime: $mime');
-    // print('file: #file');
-    var f = File.fromRawPath(file);
-    print(f.path);
 
-    print('Size : ${byte / (1024 * 1024)}');
+    // print('Size : ${byte / (1024 * 1024)}');
 
     final droppedFile = File_Data_Model(
       name: name,
       mime: mime,
-      bytes: byte,
+      bytes: file,
     );
 
     widget.onDroppedFile(droppedFile);

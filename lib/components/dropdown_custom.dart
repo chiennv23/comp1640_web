@@ -8,6 +8,7 @@ import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomButtonTest extends StatefulWidget {
   final PostItem itemPost;
@@ -44,7 +45,11 @@ class _CustomButtonTestState extends State<CustomButtonTest> {
             .toList(),
         onChanged: (value) {
           MenuItems.onChanged(
-              context, value as MenuItem, widget.itemPost, widget.threadSlug);
+            context,
+            value as MenuItem,
+            widget.itemPost,
+            widget.threadSlug,
+          );
         },
         itemHeight: 35,
         itemPadding: const EdgeInsets.only(left: 16, right: 16),
@@ -95,8 +100,12 @@ class MenuItems {
     );
   }
 
-  static onChanged(BuildContext context, MenuItem item, PostItem itemPost,
-      String threadSlug) {
+  static onChanged(
+    BuildContext context,
+    MenuItem item,
+    PostItem itemPost,
+    String threadSlug,
+  ) {
     PostController postController = Get.find();
     ThreadController threadController = Get.find();
 
@@ -114,7 +123,11 @@ class MenuItems {
               );
         break;
       case MenuItems.download:
-        //Do something
+        if (itemPost.files.isNotEmpty) {
+          launch(
+            itemPost.files.first.url,
+          );
+        }
         break;
       case MenuItems.delete:
         threadController.checkDeadlineCreateIdea

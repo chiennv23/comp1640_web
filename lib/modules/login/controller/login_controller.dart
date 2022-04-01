@@ -32,14 +32,16 @@ class LoginController {
     if (response.code == 200) {
       SharedPreferencesHelper.instance
           .setString(key: 'accessToken', val: response.data.accessToken);
-      var token =
-          SharedPreferencesHelper.instance.getString(key: 'accessToken');
+      // var token =
+      //     SharedPreferencesHelper.instance.getString(key: 'accessToken');
       SharedPreferencesHelper.instance
           .setString(key: 'refreshToken', val: response.data.refreshToken);
-      Get.put(UserController());
+      Get.lazyPut(() => UserController());
       Get.put(ThreadController());
       SharedPreferencesHelper.instance
           .setString(key: 'UserName', val: response.data.user.username);
+      SharedPreferencesHelper.instance
+          .setString(key: 'Email', val: response.data.user.email);
       SharedPreferencesHelper.instance
           .setString(key: 'nameSlug', val: response.data.user.slug);
       SharedPreferencesHelper.instance

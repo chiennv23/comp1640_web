@@ -16,6 +16,7 @@ import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -393,6 +394,50 @@ class _HomeState extends State<Home> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            if (item.files.isNotEmpty)
+              (item.files.first.url.split('.').last == 'png' ||
+                      item.files.first.url.split('.').last == 'jpg' ||
+                      item.files.first.url.split('.').last == 'jpeg')
+                  ? Hero(
+                      tag: 'imageView',
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                        height: 100,
+                        child: InkWell(
+                          onTap: () => showViewImage(item.files.first.url),
+                          child: Image.network(
+                            item.files.first.url,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                      child: Row(
+                        children: [
+                          CustomText(
+                            text: 'Attachment: ',
+                            maxLine: 1,
+                            color: primaryColor2,
+                          ),
+                          Tooltip(
+                            message: 'Click to download',
+                            child: TextButton(
+                              child: CustomText(
+                                text: item.files.first.url.split('/').last,
+                                maxLine: 2,
+                                color: primaryColor2,
+                              ),
+                              onPressed: () async {
+                                await launch(
+                                  item.files.first.url,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Row(
@@ -558,6 +603,28 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  void showViewImage(String url) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        child: viewImage(url),
+      ),
+    );
+    // Get.dialog(ThreadView());
+  }
+
+  Widget viewImage(String url) {
+    return Hero(
+        tag: 'imageView',
+        child: Container(
+          height: MediaQuery.of(context).size.height / 2,
+          padding: const EdgeInsets.all(20),
+          width: MediaQuery.of(context).size.width / 3,
+          child: Image.network(url),
+        ));
   }
 
   void showComment(item) {
