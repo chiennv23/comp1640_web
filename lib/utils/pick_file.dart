@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 List<String> allowFileList = [
   'pdf',
+  'zip',
   'doc',
   'docx',
   'jpg',

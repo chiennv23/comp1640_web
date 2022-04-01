@@ -49,6 +49,9 @@ class _PostCreateState extends State<PostCreate> {
       titleController.text = widget.item.title;
       contentController.text = widget.item.content;
       checkAnonymous = widget.item.anonymous;
+      if (widget.item.files.isNotEmpty) {
+        this.file.name = widget.item.files.first.url.split('/').last;
+      }
     }
     super.initState();
   }
@@ -172,7 +175,8 @@ class _PostCreateState extends State<PostCreate> {
                               !checkFileFunc(
                                   file.name.toLowerCase().split('.').last))
                             CustomText(
-                              text: 'Only using file type: pdf, doc, docx',
+                              text:
+                                  'Only using file type: pdf, docx, doc, png, jpg, jpeg, zip',
                               color: redColor,
                             ),
                           const SizedBox(
@@ -185,7 +189,7 @@ class _PostCreateState extends State<PostCreate> {
                               padding: const EdgeInsets.only(top: 10),
                               child: CustomText(
                                 maxLine: 2,
-                                text: 'FileName: ${file.name}',
+                                text: 'Attachment: ${file.name}',
                               ),
                             ),
                         ],
@@ -246,7 +250,7 @@ class _PostCreateState extends State<PostCreate> {
                                 padding: const EdgeInsets.only(top: 10),
                                 child: CustomText(
                                   text:
-                                      'FileName: ${postController.fileName.value}',
+                                      'Attachment: ${postController.fileName.value}',
                                 ),
                               ),
                             ),
@@ -298,15 +302,12 @@ class _PostCreateState extends State<PostCreate> {
                                     // Uint8List data = pickRs.files.single.bytes;
                                     String fileN;
                                     if (file != null) {
-                                      fileN = file.name
-                                          .toLowerCase()
-                                          .split('.')
-                                          .last;
+                                      fileN = file.name;
                                     } else {
                                       fileN = '';
                                     }
                                     // print(fileN);
-                                    // print(data);
+                                    // print(bytesFile);
                                     // print(pickRs.files.single.path);
                                     postController.createIdeaFormData(
                                         threadSlug: widget.threadSlug,

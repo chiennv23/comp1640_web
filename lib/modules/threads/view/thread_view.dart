@@ -18,10 +18,13 @@ Widget ThreadView(ThreadItem item, {bool checkStaff = false}) => Container(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
-            text: 'View ${item.topic} thread:',
-            size: 20,
-            weight: FontWeight.bold,
+          Container(
+            padding: const EdgeInsets.only(left: 16, top: 20, bottom: 10),
+            child: CustomText(
+              text: 'View ${item.topic} thread:',
+              size: 20,
+              weight: FontWeight.bold,
+            ),
           ),
           ListTile(
             title: const CustomText(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:comp1640_web/components/dropdown_custom.dart';
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
@@ -407,6 +408,10 @@ class _HomeState extends State<Home> {
                           onTap: () => showViewImage(item.files.first.url),
                           child: Image.network(
                             item.files.first.url,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace stackTrace) {
+                              return const Text('Error show image 😢');
+                            },
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -623,7 +628,11 @@ class _HomeState extends State<Home> {
           height: MediaQuery.of(context).size.height / 2,
           padding: const EdgeInsets.all(20),
           width: MediaQuery.of(context).size.width / 3,
-          child: Image.network(url),
+          child: CachedNetworkImage(
+            imageUrl: url,
+            useOldImageOnUrlChange: true,
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
         ));
   }
 
