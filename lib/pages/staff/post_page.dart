@@ -391,7 +391,7 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Text(
                 item.content ?? '',
-                maxLines: 4,
+                maxLines: 100,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

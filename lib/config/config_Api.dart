@@ -115,49 +115,49 @@ String urlDeleteThread({String threadSlug}) {
 String urlGetAllManageThread = '$urlApi/manage/threads';
 
 //get thread by slug
-String urlGetThreadbySlug({String threadSlug}){
+String urlGetThreadbySlug({String threadSlug}) {
   return '$urlApi/manage/threads/{threadSlug}';
 }
 
 //updatethreadbuslug
-String urlUpdateThreadofmanage({String threadSlug}){
+String urlUpdateThreadofmanage({String threadSlug}) {
   return '$urlApi/manage/threads/update/$threadSlug';
 }
 
-String urlDeleteThreadofmanage({String threadSlug}){
+String urlDeleteThreadofmanage({String threadSlug}) {
   return '$urlApi/manage/threads/delete/$threadSlug';
 }
 
 String urlGetallPost = '$urlApi/manage/posts';
 
-String urlGetPostSlug({String postSlug}){
+String urlGetPostSlug({String postSlug}) {
   return '$urlApi/manage/posts/$postSlug';
 }
 
-String urlDeletePosts({String postSlug}){
+String urlDeletePosts({String postSlug}) {
   return '$urlApi/manage/posts/deletes/$postSlug';
 }
 
 String urlGetAllcomment = '$urlApi/manage/comments';
 
-String urlGetCommentslug({String commentSlug}){
+String urlGetCommentslug({String commentSlug}) {
   return '$urlApi/manage/comments/$commentSlug';
 }
 
-String urlDeletecommentslug({String commentSlug}){
+String urlDeletecommentslug({String commentSlug}) {
   return '$urlApi/manage/comments/delete/$commentSlug';
 }
 
-String urlGetallUser = '$urlApi/manage/comments';
+String urlGetallUser = '$urlApi/manage/users';
 
-String urlGetuserbySlug ({String userSlug}){
+String urlGetuserbySlug({String userSlug}) {
   return '$urlApi/manage/users/$userSlug';
 }
 
-String urlUpdateUser({String userSlug}){
+String urlUpdateUser({String userSlug}) {
   return '$urlApi/manage/users/update/$userSlug';
 }
 
-// String urlDeleteUsers ({String userSLug}){
-//   return '$urlApi/manage/user/delete/$userSlug';
-// }
+String urlDeleteUsers({String userSLug}) {
+  return '$urlApi/manage/users/delete/$userSLug';
+}

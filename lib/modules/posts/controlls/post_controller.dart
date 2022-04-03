@@ -23,6 +23,7 @@ class PostController extends GetxController {
   RxBool isLoadingChart = false.obs;
   final postListController = <PostItem>[].obs;
   final postListChartController = <PostItem>[].obs;
+  final postListManageController = <PostItem>[].obs;
   var fileName = ''.obs;
 
   @override
@@ -63,6 +64,20 @@ class PostController extends GetxController {
       }
     } finally {
       isLoadingChart(false);
+    }
+  }
+
+  Future callListForManage() async {
+    try {
+      loadingAction(true);
+      final data = await PostData.getAllPostByManage();
+      if (data.code == 200) {
+        postListManageController.assignAll(data?.data);
+      } else {
+        snackBarMessageError(data.message);
+      }
+    } finally {
+      loadingAction(false);
     }
   }
 
@@ -119,7 +134,7 @@ class PostController extends GetxController {
         postL.add(post);
       });
     });
-    return postL;
+    return postL.take(10).toList();
   }
 
   List<charts.Series<Posts, String>> get postAndLikesChart {
@@ -161,7 +176,8 @@ class PostController extends GetxController {
         postL.add(post);
       });
     });
-    return postL;
+    return postL.take(10).toList();
+    ;
   }
 
   List<charts.Series<Posts, String>> get postAndDisLikesChart {
@@ -360,5 +376,27 @@ class PostController extends GetxController {
           .oneClickAction = false;
     }
     print(disListLike.length);
+  }
+
+  deletePostofmanage(String postSlug) async {
+    try {
+      loadingAction(true);
+      final data = await PostData.deletePostofManage(postSlug);
+      if (data.code == 200) {
+        postListController.removeWhere((element) => element.slug == postSlug);
+        postListController.refresh();
+        if (postListController.any((element) => element.slug == postSlug)) {
+          postListController.removeWhere((element) => element.slug == postSlug);
+        }
+        snackBarMessage(
+            title: 'Delete successful!', backGroundColor: successColor);
+        Get.back();
+        update();
+      }
+    } catch (r) {
+      print('delete post error $r');
+    } finally {
+      loadingAction(false);
+    }
   }
 }

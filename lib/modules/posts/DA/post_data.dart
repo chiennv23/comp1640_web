@@ -18,6 +18,15 @@ class PostData {
     return response;
   }
 
+  static Future<BasicResponse<List<PostItem>>> getAllPostByManage() async {
+    final response = await BaseDA.getList(
+        urlGetallPost, (json) => PostItem.fromJsonToList(json));
+    if (response.code == 200) {
+      print('List manage posts done...${response.data.length}');
+    }
+    return response;
+  }
+
   static Future<BasicResponse> createPost(
       String threadSlug, String title, String content, bool anonymous) async {
     var response = await BaseDA.post(
@@ -92,6 +101,17 @@ class PostData {
         (json) => BasicResponse.fromJson(json));
     if (response.code == 200) {
       print('Del post done.');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> deletePostofManage(
+    String postSlug,
+  ) async {
+    var response = await BaseDA.delete(urlDeletePosts(postSlug: postSlug), {},
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('Delele post done.');
     }
     return response;
   }

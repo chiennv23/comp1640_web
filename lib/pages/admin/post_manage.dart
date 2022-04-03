@@ -1,39 +1,38 @@
-import 'package:comp1640_web/components/snackbar_messenger.dart';
-import 'package:comp1640_web/constant/style.dart';
-import 'package:comp1640_web/helpers/datetime_convert.dart';
-import 'package:comp1640_web/helpers/menu_controller.dart';
-import 'package:comp1640_web/helpers/reponsive_pages.dart';
-import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
-import 'package:comp1640_web/modules/threads/view/edit_thread_manage.dart';
-import 'package:comp1640_web/modules/threads/view/thread_create.dart';
+import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
-import 'package:comp1640_web/modules/threads/view/thread_view.dart';
+import 'package:comp1640_web/utils/export_csv.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ThreadManage extends StatefulWidget {
-  const ThreadManage({Key key}) : super(key: key);
+import '../../constant/style.dart';
+import '../../helpers/datetime_convert.dart';
+import '../../helpers/menu_controller.dart';
+import '../../helpers/reponsive_pages.dart';
+import 'package:comp1640_web/modules/posts/views/post_view.dart';
+
+class PostManage extends StatefulWidget {
+  const PostManage({Key key}) : super(key: key);
 
   @override
-  State<ThreadManage> createState() => _ThreadManageState();
+  State<PostManage> createState() => _PostManageState();
 }
 
-class _ThreadManageState extends State<ThreadManage> {
-  ThreadController threadController = Get.find();
+class _PostManageState extends State<PostManage> {
+  PostController postController = Get.find();
+  ExportCSV exportCSV = ExportCSV();
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
-      threadController.callListManageThread();
-    });
+    postController.callListForManage();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(
+        child: Column(
       children: [
         Obx(
           () => Row(
@@ -61,7 +60,7 @@ class _ThreadManageState extends State<ThreadManage> {
                     borderRadius: BorderRadius.circular(8.0),
                     child: InkWell(
                       onTap: () {
-                        threadController.callListManageThread();
+                        // manageController.onInit();
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -79,58 +78,65 @@ class _ThreadManageState extends State<ThreadManage> {
                   const SizedBox(
                     width: 20,
                   ),
-                  Material(
-                    color: active,
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: InkWell(
-                      onTap: showCreate,
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0)),
-                        child: const CustomText(
-                          text: "Add New",
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: active.withOpacity(.4), width: .5),
-                  boxShadow: [
-                    BoxShadow(
-                        offset: const Offset(0, 6),
-                        color: greyColor.withOpacity(.1),
-                        blurRadius: 12)
-                  ],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 30, top: 15.0),
-                child: Obx(
-                  () => DataTable2(
+              Obx(
+                () => Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border:
+                        Border.all(color: active.withOpacity(.4), width: .5),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: const Offset(0, 6),
+                          color: greyColor.withOpacity(.1),
+                          blurRadius: 12)
+                    ],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(bottom: 30, top: 15.0),
+                  child: DataTable2(
                     columnSpacing: 12,
                     horizontalMargin: 12,
                     minWidth: 600,
                     columns: const [
                       DataColumn2(
                         label: CustomText(
-                          text: "Topic",
+                          text: "ID",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
-                        size: ColumnSize.L,
+                        size: ColumnSize.S,
+                      ),
+                      DataColumn(
+                        label: CustomText(
+                          text: "Email",
+                          color: darkColor,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
+                      ),
+                      DataColumn(
+                        label: CustomText(
+                          text: "Title of Idea",
+                          color: darkColor,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
+                      ),
+                      DataColumn(
+                        label: CustomText(
+                          text: "Thread",
+                          color: darkColor,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
                       ),
                       DataColumn2(
                         label: CustomText(
-                          text: "Description",
+                          text: "Attachment",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -139,92 +145,55 @@ class _ThreadManageState extends State<ThreadManage> {
                       ),
                       DataColumn(
                         label: CustomText(
-                          text: "Creator",
+                          text: "Create Date",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
                       ),
-
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Create date",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Expiration idea",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Expiration comment",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Status",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.S,
-                      ),
-                      DataColumn2(
+                      // DataColumn(
+                      //   label: CustomText(
+                      //     text: "Update Date",
+                      //     color: darkColor,
+                      //     size: 16,
+                      //     weight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      DataColumn(
                         label: CustomText(
                           text: "Action",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
-                        size: ColumnSize.L,
                       ),
                     ],
-                    rows: threadController.isLoadingFirst.value
+                    rows: postController.isLoadingAction.value
                         ? [dataRowLoading()]
                         : List<DataRow>.generate(
-                            threadController.threadManageList.length ?? 0,
+                            postController.postListManageController.length ?? 0,
                             (index) {
-                              final item = threadController
-                                  .threadManageList.reversed
-                                  .toList()[index];
+                              final item = postController.postListManageController[index];
                               return DataRow2(
                                 cells: [
-                                  DataCell(CustomText(text: item.topic ?? '')),
                                   DataCell(
-                                      CustomText(text: item.description ?? '')),
+                                      CustomText(text: '${index + 1}' ?? '')),
                                   DataCell(CustomText(
-                                      text: item.creator.email ?? '')),
-
+                                      text: item.author.email ?? '')),
+                                  DataCell(CustomText(text: item.title ?? '')),
+                                  DataCell(CustomText(
+                                      text: item.thread.topic ?? '')),
+                                  DataCell(CustomText(
+                                      text: item.thread.topic ?? '')),
                                   DataCell(CustomText(
                                       text: DatetimeConvert.dMy_hm(
                                           item.createdAt))),
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.deadlineIdea))),
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.deadlineComment))),
-                                  DataCell(CustomText(
-                                    text:
-                                        item.approved ? 'Approved' : 'Not yet',
-                                    color: item.approved
-                                        ? successColor
-                                        : orangeColor,
-                                    weight: FontWeight.w600,
-                                  )),
+                                  // // DataCell(CustomText(
+                                  //     text: 'DatetimeConvert.dMy_hm('
+                                  //         'item.createdAt)')),
+                                  // DataCell(CustomText(
+                                  //     text: 'DatetimeConvert.dMy_hm('
+                                  //         'item.updatedAt)')),
                                   DataCell(
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -242,23 +211,25 @@ class _ThreadManageState extends State<ThreadManage> {
                                         ),
                                         Flexible(
                                           child: Tooltip(
-                                            message: 'Edit',
-                                            child: IconButton(
-                                                onPressed: () => showEdit(item),
-                                                icon: Icon(
-                                                  Icons.edit_rounded,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Tooltip(
                                             message: 'Delete',
                                             child: IconButton(
                                                 onPressed: () =>
                                                     showDelete(item),
                                                 icon: Icon(
                                                   Icons.delete_rounded,
+                                                  color: primaryColor2,
+                                                )),
+                                          ),
+                                        ),
+                                        Flexible(
+                                          child: Tooltip(
+                                            message: 'Download file zip',
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  exportCSV.generateCSV();
+                                                },
+                                                icon: Icon(
+                                                  Icons.download,
                                                   color: primaryColor2,
                                                 )),
                                           ),
@@ -272,12 +243,12 @@ class _ThreadManageState extends State<ThreadManage> {
                           ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ],
-    );
+    ));
   }
 
   void showView(item) {
@@ -285,42 +256,30 @@ class _ThreadManageState extends State<ThreadManage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: ThreadView(item),
+        child: PostView(item),
       ),
     );
     // Get.dialog(ThreadView());
   }
 
   void showDelete(item) {
-    ThreadController threadController = Get.find();
+    PostController postController = Get.find();
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
         child: deleteDialog(
             deleteOnTap: () {
-              threadController.deleteThreadManage(item.slug);
+              postController.deletePostofmanage(item.slug);
             },
-            controller: threadController),
+            controller: postController),
       ),
     );
   }
 
-  void showCreate() {
-    Get.dialog(ThreadCreate(
-      checkRoleStaff: false,
-    ));
-  }
-
-  void showEdit(item) {
-    Get.dialog(EditThreadManage(
-      item: item,
-    ));
-  }
-
   DataRow dataRowLoading() => DataRow(cells: [
         ...List<DataCell>.generate(
-          7,
+          6,
           (index) => const DataCell(CustomText(text: 'loading')),
         ),
         DataCell(
@@ -340,22 +299,22 @@ class _ThreadManageState extends State<ThreadManage> {
               ),
               Flexible(
                 child: Tooltip(
-                  message: 'Edit',
+                  message: 'Delete',
                   child: IconButton(
                       onPressed: () {},
                       icon: Icon(
-                        Icons.edit_rounded,
+                        Icons.delete_rounded,
                         color: primaryColor2,
                       )),
                 ),
               ),
               Flexible(
                 child: Tooltip(
-                  message: 'Delete',
+                  message: 'Download',
                   child: IconButton(
                       onPressed: () {},
                       icon: Icon(
-                        Icons.delete_rounded,
+                        Icons.edit_rounded,
                         color: primaryColor2,
                       )),
                 ),

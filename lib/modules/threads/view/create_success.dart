@@ -46,6 +46,7 @@ Widget successDialog({
                     size: 14,
                     maxLine: 2,
                     text: subTitle,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

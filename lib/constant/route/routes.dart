@@ -1,6 +1,8 @@
 import 'package:comp1640_web/helpers/page_404.dart';
 import 'package:comp1640_web/pages/admin/admin_home.dart';
+import 'package:comp1640_web/pages/admin/post_manage.dart';
 import 'package:comp1640_web/pages/admin/thread_manage.dart';
+import 'package:comp1640_web/pages/admin/user_manage.dart';
 import 'package:comp1640_web/pages/profile.dart';
 import 'package:comp1640_web/pages/staff/my_threads.dart';
 import 'package:comp1640_web/pages/staff/post_page.dart';
@@ -21,10 +23,17 @@ const profilePageRoute = '/profile';
 const dashboardDisplayName = 'DashBoard';
 const dashboardPageRoute = '/dash';
 
-const threadManageDisplayName = 'Manage Thread';
+const threadManageDisplayName = 'Manage Threads';
 const threadDisplayStaffName = 'My Threads';
 const threadsPageRoute = '/threads';
 const threadManagePageRoute = '/threadManage';
+
+// user
+const manageUser = 'Manage Users';
+const manageUserRoute = '/managerUser';
+
+const managePost = 'Manage Ideas';
+const managePostRoute = '/managerIdea';
 
 class MenuItem {
   final String name;
@@ -41,13 +50,17 @@ List<MenuItem> checkRoleShowCategory(role) {
         MenuItem(homeDisplayName, homePageRoute),
         MenuItem(dashboardDisplayName, dashboardPageRoute),
         MenuItem(threadManageDisplayName, threadManagePageRoute),
+        MenuItem(manageUser, manageUserRoute),
+        MenuItem(managePost, managePostRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
     case 'manager':
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
+        MenuItem(dashboardDisplayName, dashboardPageRoute),
         MenuItem(threadManageDisplayName, threadManagePageRoute),
+        MenuItem(managePost, managePostRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];
@@ -80,6 +93,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(const AdminHome());
     case threadManagePageRoute:
       return _getPageRoute(const ThreadManage());
+    case managePostRoute:
+      return _getPageRoute(const PostManage());
+    case manageUserRoute:
+      return _getPageRoute(const ManageUser());
     case threadsPageRoute:
       return _getPageRoute(const MyThreads());
     case homePageRoute:

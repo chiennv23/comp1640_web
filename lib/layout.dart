@@ -1,3 +1,4 @@
+import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:comp1640_web/widgets/large_screen.dart';
 import 'package:comp1640_web/widgets/side_menu.dart';
 import 'package:comp1640_web/widgets/top_nav.dart';
@@ -17,6 +18,7 @@ class SiteLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => UserController());
+    Get.lazyPut(() => ManageUserController());
     Get.put(ThreadController());
     String userName =
         SharedPreferencesHelper.instance.getString(key: 'UserName');

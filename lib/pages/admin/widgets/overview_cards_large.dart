@@ -1,4 +1,5 @@
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ class OverviewCardsLargeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     ThreadController threadController = Get.find();
+    ManageUserController manangeController = Get.find();
 
     return Obx(
       () => Row(
@@ -35,7 +37,9 @@ class OverviewCardsLargeScreen extends StatelessWidget {
           ),
           InfoCard(
             title: "All Accounts",
-            value: "2",
+            value: manangeController.isLoadingFirst.value
+                ? '...'
+                : manangeController.listUserLength.toString(),
             topColor: Colors.redAccent,
           ),
           SizedBox(
@@ -43,7 +47,9 @@ class OverviewCardsLargeScreen extends StatelessWidget {
           ),
           InfoCard(
             title: "All",
-            value: "32",
+            value: manangeController.isLoadingFirst.value
+                ? '...'
+                : "${threadController.ThreadList.length + threadController.AllPostInThread + manangeController.listUserLength}",
           ),
         ],
       ),
