@@ -1,4 +1,5 @@
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'info_card_small.dart';
@@ -8,6 +9,7 @@ class OverviewCardsSmallScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     ThreadController threadController = Get.find();
+    ManageUserController manangeController = Get.find();
 
     return Container(
         height: 400,
@@ -34,14 +36,18 @@ class OverviewCardsSmallScreen extends StatelessWidget {
               ),
               InfoCardSmall(
                 title: "All Accounts",
-                value: "2",
+                value: manangeController.isLoadingFirst.value
+                    ? '...'
+                    : manangeController.listUserLength.toString(),
               ),
               SizedBox(
                 width: _width / 64,
               ),
               InfoCardSmall(
                 title: "All",
-                value: "32",
+                value: manangeController.isLoadingFirst.value
+                    ? '...'
+                    : "${threadController.ThreadList.length + threadController.AllPostInThread + manangeController.listUserLength}",
               ),
             ],
           ),

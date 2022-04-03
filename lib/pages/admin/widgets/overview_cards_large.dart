@@ -49,7 +49,7 @@ class OverviewCardsLargeScreen extends StatelessWidget {
             title: "All",
             value: manangeController.isLoadingFirst.value
                 ? '...'
-                : "${threadController.ThreadList.length + threadController.AllPostInThread + manangeController.listUserLength}",
+                : "${manangeController.allItemsLength}",
           ),
         ],
       ),

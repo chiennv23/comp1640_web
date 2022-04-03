@@ -1,6 +1,7 @@
 import 'dart:js';
 import 'dart:math';
 
+import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/view/create_success.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ import '../../../constant/style.dart';
 import '../../../helpers/storageKeys_helper.dart';
 
 class ManageUserController extends GetxController {
+  ThreadController threadController = Get.find();
   RxBool isLoadingFirst = true.obs;
   RxBool isLoadingAction = false.obs;
   final _userList = <manageuser_item>[].obs;
@@ -45,6 +47,7 @@ class ManageUserController extends GetxController {
   }
 
   int get listUserLength => _userList.length;
+  int get allItemsLength => _userList.length + threadController.ThreadList.length + threadController.AllPostInThread ;
 
   List<manageuser_item> sortListByRole(String role) {
     if (role == 'All roles') {

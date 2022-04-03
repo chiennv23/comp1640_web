@@ -3,6 +3,7 @@ import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/threads/DA/thread_data.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
+import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_small.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
@@ -28,12 +29,14 @@ class _AdminHomeState extends State<AdminHome>
   @override
   void initState() {
     postController.callListForChart();
-
+    postController.callListForManage();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    ManageUserController manageUserController = Get.find();
+
     return Column(
       children: [
         Obx(

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 Widget successDialog({
   String title = 'Waiting!!',
   String subTitle = 'Waiting for Admin or Manager approved your thread',
+  Function back, bool noBack = false
 }) =>
     Container(
       width: 300,
@@ -56,13 +57,14 @@ Widget successDialog({
                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   children: [
+                    if(!noBack)
                     Expanded(
                       child: Material(
                           color: successColor,
                           borderRadius: BorderRadius.circular(10),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(10),
-                            onTap: () {
+                            onTap: back ?? () {
                               Get.back();
                               Get.back();
                             },

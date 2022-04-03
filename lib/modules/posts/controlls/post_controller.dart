@@ -128,12 +128,14 @@ class PostController extends GetxController {
     ThreadController threadController = Get.find();
     var listThread = [...threadController.ThreadList];
     List<Posts> postL = [];
-    listThread.forEach((thread) {
-      thread.posts.sort((a, b) => b.upvotes.length - a.upvotes.length);
-      thread.posts.forEach((post) {
+    for (var i = 0; i < listThread.length; i++) {
+      listThread[i]
+          .posts
+          .sort((a, b) => b.upvotes.length.compareTo(a.upvotes.length));
+      for (var post in listThread[i].posts) {
         postL.add(post);
-      });
-    });
+      }
+    }
     return postL.take(10).toList();
   }
 
@@ -177,7 +179,6 @@ class PostController extends GetxController {
       });
     });
     return postL.take(10).toList();
-    ;
   }
 
   List<charts.Series<Posts, String>> get postAndDisLikesChart {
@@ -328,23 +329,27 @@ class PostController extends GetxController {
     String postSlug,
   }) async {
     var listLike = postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .upvotes;
     listLike.add('like');
     postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .oneClickAction = false;
     postListController.refresh();
 
     final data = await PostData.likePost(threadSlug, postSlug);
     if (data.code != 200) {
       postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .oneClickAction = true;
       if (listLike.isNotEmpty) listLike.removeLast();
     } else {
       postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .oneClickAction = false;
     }
     print(listLike.length);
@@ -357,22 +362,26 @@ class PostController extends GetxController {
     String postSlug,
   }) async {
     var disListLike = postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .downvotes;
     disListLike.add('dislike');
     postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .oneClickAction = false;
     postListController.refresh();
     final data = await PostData.disLikePost(threadSlug, postSlug);
     if (data.code != 200) {
       postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .oneClickAction = true;
       if (disListLike.isNotEmpty) disListLike.removeLast();
     } else {
       postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .oneClickAction = false;
     }
     print(disListLike.length);

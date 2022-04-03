@@ -212,9 +212,19 @@ class ThreadController extends GetxController {
               backGroundColor: successColor);
         } else {
           _threadManageList.insert(0, data.data);
+          await Get.dialog(
+            Center(
+              child: SizedBox(
+                width: 300,
+                child: successDialog(
+                  title: 'Successfully!',
+                  subTitle: 'Create successful new thread',
+                ),
+              ),
+            ),
+          );
           snackBarMessage(
               title: 'Create successful!', backGroundColor: successColor);
-          Get.back();
         }
         update();
       }

@@ -467,7 +467,6 @@ class BaseDA {
               headers: headers,
             );
             if (response.statusCode == 200) {
-              print(json.encode(jsonDecode(response.body)));
               var b = BasicResponse<T>();
               b.data = fromJson(jsonDecode(response.body));
               b.code = 200;

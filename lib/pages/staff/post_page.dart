@@ -417,32 +417,60 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     )
-                  : Container(
-                      padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: 'Attachment: ',
-                            maxLine: 1,
-                            color: primaryColor2,
-                          ),
-                          Tooltip(
-                            message: 'Click to download',
-                            child: TextButton(
-                              child: CustomText(
-                                text: item.files.first.url.split('/').last,
-                                maxLine: 2,
+                  : ResponsiveWidget.isSmallScreen(context)
+                      ? Container(
+                          padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text: '  Attachment: ',
+                                maxLine: 1,
                                 color: primaryColor2,
                               ),
-                              onPressed: () async {
-                                await launch(
-                                  item.files.first.url,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      )),
+                              Tooltip(
+                                message: 'Click to download',
+                                child: TextButton(
+                                  child: CustomText(
+                                    text: item.files.first.url.split('/').last,
+                                    maxLine: 2,
+                                    color: primaryColor2,
+                                  ),
+                                  onPressed: () async {
+                                    await launch(
+                                      item.files.first.url,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ))
+                      : Container(
+                          padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                          child: Row(
+                            children: [
+                              CustomText(
+                                text: 'Attachment: ',
+                                maxLine: 1,
+                                color: primaryColor2,
+                              ),
+                              Tooltip(
+                                message: 'Click to download',
+                                child: TextButton(
+                                  child: CustomText(
+                                    text: item.files.first.url.split('/').last,
+                                    maxLine: 2,
+                                    color: primaryColor2,
+                                  ),
+                                  onPressed: () async {
+                                    await launch(
+                                      item.files.first.url,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          )),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Row(

@@ -1,10 +1,13 @@
+import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
+import 'package:comp1640_web/modules/threads/view/create_success.dart';
 import 'package:comp1640_web/modules/threads/view/thread_delete.dart';
 import 'package:comp1640_web/utils/export_csv.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../constant/style.dart';
 import '../../helpers/datetime_convert.dart';
@@ -54,13 +57,14 @@ class _PostManageState extends State<PostManage> {
           child: ListView(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Material(
                     color: primaryColor2,
                     borderRadius: BorderRadius.circular(8.0),
                     child: InkWell(
                       onTap: () {
-                        // manageController.onInit();
+                        postController.callListForManage();
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -75,8 +79,58 @@ class _PostManageState extends State<PostManage> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 20,
+                  Obx(
+                    () => Row(
+                      children: [
+                        // Material(
+                        //   color: primaryColor2,
+                        //   borderRadius: BorderRadius.circular(8.0),
+                        //   child: InkWell(
+                        //     onTap: postController.isLoadingAction.value
+                        //         ? null
+                        //         : () {
+                        //             // manageController.onInit();
+                        //           },
+                        //     borderRadius: BorderRadius.circular(8.0),
+                        //     child: Container(
+                        //       padding: const EdgeInsets.all(10.0),
+                        //       alignment: Alignment.center,
+                        //       decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(8.0)),
+                        //       child: const CustomText(
+                        //         text: "Export attachments",
+                        //         color: Colors.white,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Material(
+                          color: primaryColor2,
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: InkWell(
+                            onTap: postController.isLoadingAction.value
+                                ? null
+                                : () async {
+                                    await PostData.exportCSV();
+                                  },
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: const CustomText(
+                                text: "Export data CSV",
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -103,20 +157,21 @@ class _PostManageState extends State<PostManage> {
                     columns: const [
                       DataColumn2(
                         label: CustomText(
-                          text: "ID",
+                          text: "STT",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
                         size: ColumnSize.S,
                       ),
-                      DataColumn(
+                      DataColumn2(
                         label: CustomText(
-                          text: "Email",
+                          text: "UserName",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.L,
                       ),
                       DataColumn(
                         label: CustomText(
@@ -159,13 +214,14 @@ class _PostManageState extends State<PostManage> {
                       //     weight: FontWeight.bold,
                       //   ),
                       // ),
-                      DataColumn(
+                      DataColumn2(
                         label: CustomText(
                           text: "Action",
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
                         ),
+                        size: ColumnSize.S,
                       ),
                     ],
                     rows: postController.isLoadingAction.value
@@ -173,18 +229,40 @@ class _PostManageState extends State<PostManage> {
                         : List<DataRow>.generate(
                             postController.postListManageController.length ?? 0,
                             (index) {
-                              final item = postController.postListManageController[index];
+                              final item = postController
+                                  .postListManageController[index];
                               return DataRow2(
                                 cells: [
                                   DataCell(
                                       CustomText(text: '${index + 1}' ?? '')),
                                   DataCell(CustomText(
-                                      text: item.author.email ?? '')),
+                                      text: item.author.username ?? '')),
                                   DataCell(CustomText(text: item.title ?? '')),
                                   DataCell(CustomText(
                                       text: item.thread.topic ?? '')),
-                                  DataCell(CustomText(
-                                      text: item.thread.topic ?? '')),
+                                  DataCell(
+                                    Tooltip(
+                                      message: item.files.isEmpty
+                                          ? ''
+                                          : item.files.first.url
+                                              .split('/')
+                                              .last,
+                                      child: CustomText(
+                                        text: item.files.isEmpty
+                                            ? ''
+                                            : item.files.first.url
+                                                .split('/')
+                                                .last,
+                                        maxLine: 2,
+                                        color: primaryColor2,
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      await launch(
+                                        item.files.first.url,
+                                      );
+                                    },
+                                  ),
                                   DataCell(CustomText(
                                       text: DatetimeConvert.dMy_hm(
                                           item.createdAt))),
@@ -221,19 +299,19 @@ class _PostManageState extends State<PostManage> {
                                                 )),
                                           ),
                                         ),
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'Download file zip',
-                                            child: IconButton(
-                                                onPressed: () {
-                                                  exportCSV.generateCSV();
-                                                },
-                                                icon: Icon(
-                                                  Icons.download,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
+                                        // Flexible(
+                                        //   child: Tooltip(
+                                        //     message: 'Download file zip',
+                                        //     child: IconButton(
+                                        //         onPressed: () {
+                                        //           exportCSV.generateCSV();
+                                        //         },
+                                        //         icon: Icon(
+                                        //           Icons.download,
+                                        //           color: primaryColor2,
+                                        //         )),
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -308,17 +386,17 @@ class _PostManageState extends State<PostManage> {
                       )),
                 ),
               ),
-              Flexible(
-                child: Tooltip(
-                  message: 'Download',
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.edit_rounded,
-                        color: primaryColor2,
-                      )),
-                ),
-              ),
+              // Flexible(
+              //   child: Tooltip(
+              //     message: 'Download',
+              //     child: IconButton(
+              //         onPressed: () {},
+              //         icon: Icon(
+              //           Icons.edit_rounded,
+              //           color: primaryColor2,
+              //         )),
+              //   ),
+              // ),
             ],
           ),
         ),

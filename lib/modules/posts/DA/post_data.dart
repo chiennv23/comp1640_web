@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/baseResponse/base_response.dart';
-import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
+import 'package:comp1640_web/modules/threads/view/create_success.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostData {
   static Future<BasicResponse> getAllPostByThread(String threadSlug) async {
@@ -23,6 +26,31 @@ class PostData {
         urlGetallPost, (json) => PostItem.fromJsonToList(json));
     if (response.code == 200) {
       print('List manage posts done...${response.data.length}');
+    }
+    return response;
+  }
+
+  static Future<BasicResponse> exportCSV() async {
+    final response =
+        await BaseDA.get(exportDataCSV, (json) => Files.fromJson(json));
+    if (response.code == 200) {
+      print('export csv done');
+      await launch(
+        response.data.url,
+      );
+      await Get.dialog(
+        Center(
+          child: SizedBox(
+            width: 300,
+            child: successDialog(
+                title: 'Successfully!',
+                subTitle: 'Export Data CSV done',
+                back: () {
+                  Get.back();
+                }),
+          ),
+        ),
+      );
     }
     return response;
   }

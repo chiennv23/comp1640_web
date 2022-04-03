@@ -1,3 +1,4 @@
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:comp1640_web/modules/user/model/manageuser_item.dart';
 import 'package:comp1640_web/modules/user/view/delete_user.dart';
@@ -26,6 +27,8 @@ class ManageUser extends StatefulWidget {
 
 class _ManageUserState extends State<ManageUser> {
   String dropdownValue = 'All roles';
+  var nameSlugLogin =
+      SharedPreferencesHelper.instance.getString(key: 'nameSlug');
 
   @override
   Widget build(BuildContext context) {
@@ -251,30 +254,32 @@ class _ManageUserState extends State<ManageUser> {
                                                   )),
                                             ),
                                           ),
-                                          Flexible(
-                                            child: Tooltip(
-                                              message: 'Edit',
-                                              child: IconButton(
-                                                  onPressed: () =>
-                                                      showEdit(item),
-                                                  icon: Icon(
-                                                    Icons.edit_rounded,
-                                                    color: primaryColor2,
-                                                  )),
+                                          if (item.slug != nameSlugLogin)
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'Edit',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showEdit(item),
+                                                    icon: Icon(
+                                                      Icons.edit_rounded,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
                                             ),
-                                          ),
-                                          Flexible(
-                                            child: Tooltip(
-                                              message: 'Delete',
-                                              child: IconButton(
-                                                  onPressed: () =>
-                                                      showDelete(item),
-                                                  icon: Icon(
-                                                    Icons.delete_rounded,
-                                                    color: primaryColor2,
-                                                  )),
+                                          if (item.slug != nameSlugLogin)
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'Delete',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showDelete(item),
+                                                    icon: Icon(
+                                                      Icons.delete_rounded,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),

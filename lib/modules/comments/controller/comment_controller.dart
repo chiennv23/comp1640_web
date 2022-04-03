@@ -72,31 +72,31 @@ class CommentController extends GetxController {
     String cmtSlug,
   }) async {
     var listLike = postController.postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere((element) => element.title == title && element.slug == postSlug)
         .comments
-        .firstWhere((e) => e.content == content)
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .upvotes;
     listLike.add('like');
     postController.postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere((element) => element.title == title&& element.slug == postSlug)
         .comments
-        .firstWhere((e) => e.content == content)
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .oneClickActionCmt = false;
     postController.postListController.refresh();
 
     final data = await CommentData.likeComment(threadSlug, postSlug, cmtSlug);
     if (data.code != 200) {
       postController.postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere((element) => element.title == title&& element.slug == postSlug)
           .comments
-          .firstWhere((e) => e.content == content)
+          .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = true;
       if (listLike.isNotEmpty) listLike.removeLast();
     } else {
       postController.postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere((element) => element.title == title&& element.slug == postSlug)
           .comments
-          .firstWhere((e) => e.content == content)
+          .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = false;
     }
     print(listLike.length);
@@ -111,16 +111,18 @@ class CommentController extends GetxController {
     String cmtSlug,
   }) async {
     var disListLike = postController.postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .comments
-        .firstWhere((e) => e.content == content)
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .downvotes;
     disListLike.add('dislike');
     print(disListLike.length);
     postController.postListController
-        .firstWhere((element) => element.title == title)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .comments
-        .firstWhere((e) => e.content == content)
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .oneClickActionCmt = false;
     postController.postListController.refresh();
 
@@ -128,16 +130,18 @@ class CommentController extends GetxController {
         await CommentData.disLikeComment(threadSlug, postSlug, cmtSlug);
     if (data.code != 200) {
       postController.postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .comments
-          .firstWhere((e) => e.content == content)
+          .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = true;
       if (disListLike.isNotEmpty) disListLike.removeLast();
     } else {
       postController.postListController
-          .firstWhere((element) => element.title == title)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .comments
-          .firstWhere((e) => e.content == content)
+          .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = false;
     }
   }
