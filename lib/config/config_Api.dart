@@ -135,8 +135,8 @@ String urlGetPostSlug({String postSlug}) {
   return '$urlApi/manage/posts/$postSlug';
 }
 
-String urlDeletePosts({String postSlug}) {
-  return '$urlApi/manage/posts/deletes/$postSlug';
+String urlDeletePostMange({String postSlug}) {
+  return '$urlApi/manage/posts/delete/$postSlug';
 }
 
 String urlGetAllcomment = '$urlApi/manage/comments';

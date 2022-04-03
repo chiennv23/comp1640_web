@@ -19,6 +19,7 @@ class PostController extends GetxController {
   ThreadController threadController = Get.find();
 
   RxBool isLoadingFirst = false.obs;
+  RxBool isLoadingManage = false.obs;
   RxBool isLoadingAction = false.obs;
   RxBool isLoadingChart = false.obs;
   final postListController = <PostItem>[].obs;
@@ -69,7 +70,7 @@ class PostController extends GetxController {
 
   Future callListForManage() async {
     try {
-      loadingAction(true);
+      isLoadingManage(true);
       final data = await PostData.getAllPostByManage();
       if (data.code == 200) {
         postListManageController.assignAll(data?.data);
@@ -77,7 +78,7 @@ class PostController extends GetxController {
         snackBarMessageError(data.message);
       }
     } finally {
-      loadingAction(false);
+      isLoadingManage(false);
     }
   }
 
@@ -392,10 +393,10 @@ class PostController extends GetxController {
       loadingAction(true);
       final data = await PostData.deletePostofManage(postSlug);
       if (data.code == 200) {
-        postListController.removeWhere((element) => element.slug == postSlug);
-        postListController.refresh();
-        if (postListController.any((element) => element.slug == postSlug)) {
-          postListController.removeWhere((element) => element.slug == postSlug);
+        if (postListManageController
+            .any((element) => element.slug == postSlug)) {
+          postListManageController
+              .removeWhere((element) => element.slug == postSlug);
         }
         snackBarMessage(
             title: 'Delete successful!', backGroundColor: successColor);

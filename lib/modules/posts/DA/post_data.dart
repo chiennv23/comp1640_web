@@ -136,10 +136,10 @@ class PostData {
   static Future<BasicResponse> deletePostofManage(
     String postSlug,
   ) async {
-    var response = await BaseDA.delete(urlDeletePosts(postSlug: postSlug), {},
+    var response = await BaseDA.delete(urlDeletePostMange(postSlug: postSlug), {},
         (json) => BasicResponse.fromJson(json));
     if (response.code == 200) {
-      print('Delele post done.');
+      print('Delele post manage done.');
     }
     return response;
   }

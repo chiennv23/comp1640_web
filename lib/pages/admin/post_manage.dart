@@ -111,7 +111,7 @@ class _PostManageState extends State<PostManage> {
                           color: primaryColor2,
                           borderRadius: BorderRadius.circular(8.0),
                           child: InkWell(
-                            onTap: postController.isLoadingAction.value
+                            onTap: postController.isLoadingManage.value
                                 ? null
                                 : () async {
                                     await PostData.exportCSV();
@@ -224,7 +224,7 @@ class _PostManageState extends State<PostManage> {
                         size: ColumnSize.S,
                       ),
                     ],
-                    rows: postController.isLoadingAction.value
+                    rows: postController.isLoadingManage.value
                         ? [dataRowLoading()]
                         : List<DataRow>.generate(
                             postController.postListManageController.length ?? 0,
