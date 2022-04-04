@@ -13,17 +13,21 @@ import 'package:get/get.dart';
 import 'package:comp1640_web/modules/user/DA/user_data.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 
-
-Widget UserView(manageuser_item item, {bool checkStaff = false}) => Container(
+Widget UserView(manageuser_item item, String nameSlugLogin,
+        {bool checkStaff = false}) =>
+    Container(
       width: 500,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
-            text: 'View Infomation of User Account',
-            size: 20,
-            weight: FontWeight.bold,
+          Container(
+            padding: const EdgeInsets.only(left: 16, top: 20, bottom: 10),
+            child: const CustomText(
+              text: 'View Infomation of User Account',
+              size: 20,
+              weight: FontWeight.bold,
+            ),
           ),
           ListTile(
             title: const CustomText(
@@ -73,7 +77,6 @@ Widget UserView(manageuser_item item, {bool checkStaff = false}) => Container(
             ),
             trailing: Text(DatetimeConvert.dMy_hm(item.createdAt)),
           ),
-    
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Row(
@@ -102,47 +105,49 @@ Widget UserView(manageuser_item item, {bool checkStaff = false}) => Container(
                 const SizedBox(
                   width: 15,
                 ),
-                Tooltip(
-                  message: 'Delete',
-                  child: IconButton(
-                      onPressed: () {
-                        ManageUserController manageController = Get.find();
-                        if (checkStaff) {
+                if (item.slug != nameSlugLogin)
+                  Tooltip(
+                    message: 'Delete',
+                    child: IconButton(
+                        onPressed: () {
+                          ManageUserController manageController = Get.find();
+                          if (checkStaff) {
+                            Get.dialog(
+                              Center(
+                                child: Container(
+                                  width: 300,
+                                  child: deleteDialog(
+                                      deleteOnTap: () {
+                                        manageController
+                                            .deleteUserofmanage(item.slug);
+                                        Get.back();
+                                      },
+                                      controller: manageController),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
                           Get.dialog(
                             Center(
                               child: Container(
                                 width: 300,
                                 child: deleteDialog(
                                     deleteOnTap: () {
-                                      manageController.deleteUserofmanage(item.slug);
+                                      manageController
+                                          .deleteUserofmanage(item.slug);
                                       Get.back();
                                     },
                                     controller: manageController),
                               ),
                             ),
                           );
-                          return;
-                        }
-                        Get.dialog(
-                          Center(
-                            child: Container(
-                              width: 300,
-                              child: deleteDialog(
-                                  deleteOnTap: () {
-                                    manageController
-                                        .deleteUserofmanage(item.slug);
-                                    Get.back();
-                                  },
-                                  controller: manageController),
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.delete_rounded,
-                        color: primaryColor2,
-                      )),
-                ),
+                        },
+                        icon: Icon(
+                          Icons.delete_rounded,
+                          color: primaryColor2,
+                        )),
+                  ),
                 const SizedBox(
                   width: 25,
                 ),

@@ -130,6 +130,7 @@ String urlDeleteThreadofmanage({String threadSlug}) {
 
 String urlGetallPost = '$urlApi/manage/posts';
 String exportDataCSV = '$urlApi/manage/posts/export-csv';
+String exportAttachments = '$urlApi/manage/posts/export-attachments';
 
 String urlGetPostSlug({String postSlug}) {
   return '$urlApi/manage/posts/$postSlug';

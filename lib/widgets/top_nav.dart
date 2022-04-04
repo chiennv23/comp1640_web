@@ -36,29 +36,29 @@ AppBar topNavigationBar(BuildContext context, GlobalKey<ScaffoldState> key,Strin
                 weight: FontWeight.bold,
               )),
           Expanded(child: Container()),
-          Stack(
-            children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.notifications,
-                    color: darkColor.withOpacity(.4),
-                  ),
-                  onPressed: () {}),
-              Positioned(
-                top: 7,
-                right: 7,
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      color: active,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: lightColor, width: 2)),
-                ),
-              )
-            ],
-          ),
+          // Stack(
+          //   children: [
+          //     IconButton(
+          //         icon: Icon(
+          //           Icons.notifications,
+          //           color: darkColor.withOpacity(.4),
+          //         ),
+          //         onPressed: () {}),
+          //     Positioned(
+          //       top: 7,
+          //       right: 7,
+          //       child: Container(
+          //         width: 12,
+          //         height: 12,
+          //         padding: const EdgeInsets.all(4),
+          //         decoration: BoxDecoration(
+          //             color: active,
+          //             borderRadius: BorderRadius.circular(30),
+          //             border: Border.all(color: lightColor, width: 2)),
+          //       ),
+          //     )
+          //   ],
+          // ),
           const SizedBox(
             width: 24,
           ),

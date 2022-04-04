@@ -6,6 +6,8 @@ import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_small.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart3_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/col_chart.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_small.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart1_section_large.dart';
@@ -35,8 +37,6 @@ class _AdminHomeState extends State<AdminHome>
 
   @override
   Widget build(BuildContext context) {
-    ManageUserController manageUserController = Get.find();
-
     return Column(
       children: [
         Obx(
@@ -71,6 +71,7 @@ class _AdminHomeState extends State<AdminHome>
               Chart2SectionLarger()
             else
               Chart2SectionSmall(),
+            Chart3SectionLarger()
           ],
         ))
       ],

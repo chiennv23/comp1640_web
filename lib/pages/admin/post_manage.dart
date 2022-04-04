@@ -6,6 +6,7 @@ import 'package:comp1640_web/utils/export_csv.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,7 +25,8 @@ class PostManage extends StatefulWidget {
 
 class _PostManageState extends State<PostManage> {
   PostController postController = Get.find();
-  ExportCSV exportCSV = ExportCSV();
+  bool isLoadingAtt = false;
+  bool isLoadingCSV = false;
 
   @override
   void initState() {
@@ -82,28 +84,43 @@ class _PostManageState extends State<PostManage> {
                   Obx(
                     () => Row(
                       children: [
-                        // Material(
-                        //   color: primaryColor2,
-                        //   borderRadius: BorderRadius.circular(8.0),
-                        //   child: InkWell(
-                        //     onTap: postController.isLoadingAction.value
-                        //         ? null
-                        //         : () {
-                        //             // manageController.onInit();
-                        //           },
-                        //     borderRadius: BorderRadius.circular(8.0),
-                        //     child: Container(
-                        //       padding: const EdgeInsets.all(10.0),
-                        //       alignment: Alignment.center,
-                        //       decoration: BoxDecoration(
-                        //           borderRadius: BorderRadius.circular(8.0)),
-                        //       child: const CustomText(
-                        //         text: "Export attachments",
-                        //         color: Colors.white,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
+                        Material(
+                          color: primaryColor2,
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: InkWell(
+                            onTap: postController.isLoadingAction.value
+                                ? null
+                                : isLoadingAtt
+                                    ? null
+                                    : () async {
+                                        setState(() {
+                                          isLoadingAtt = true;
+                                        });
+                                        await PostData.exportDataAttachments()
+                                            .whenComplete(() {
+                                          setState(() {
+                                            isLoadingAtt = false;
+                                          });
+                                        });
+                                      },
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: isLoadingAtt
+                                  ? SpinKitThreeBounce(
+                                      color: spaceColor,
+                                      size: 25,
+                                    )
+                                  : const CustomText(
+                                      text: "Export attachments",
+                                      color: Colors.white,
+                                    ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           width: 15,
                         ),
@@ -113,19 +130,34 @@ class _PostManageState extends State<PostManage> {
                           child: InkWell(
                             onTap: postController.isLoadingManage.value
                                 ? null
-                                : () async {
-                                    await PostData.exportCSV();
-                                  },
+                                : isLoadingCSV
+                                    ? null
+                                    : () async {
+                                        setState(() {
+                                          isLoadingCSV = true;
+                                        });
+                                        await PostData.exportCSV()
+                                            .whenComplete(() {
+                                          setState(() {
+                                            isLoadingCSV = false;
+                                          });
+                                        });
+                                      },
                             borderRadius: BorderRadius.circular(8.0),
                             child: Container(
                               padding: const EdgeInsets.all(10.0),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0)),
-                              child: const CustomText(
-                                text: "Export data CSV",
-                                color: Colors.white,
-                              ),
+                              child: isLoadingCSV
+                                  ? SpinKitThreeBounce(
+                                      color: spaceColor,
+                                      size: 25,
+                                    )
+                                  : const CustomText(
+                                      text: "Export data CSV",
+                                      color: Colors.white,
+                                    ),
                             ),
                           ),
                         ),

@@ -10,6 +10,7 @@ import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:comp1640_web/modules/threads/view/create_success.dart';
+import 'package:comp1640_web/pages/admin/widgets/col_chart.dart';
 import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -86,6 +87,41 @@ class PostController extends GetxController {
   //   return postListChartController
   //     ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
   // }
+  List<charts.Series<OrdinalSales, String>> yearsAndPostsChart() {
+
+    int getLengthIdeaByYear(int year) {
+      return postListManageController
+          .where((p0) =>
+              DateTime.fromMillisecondsSinceEpoch(p0.createdAt).year ==
+              DateTime.fromMillisecondsSinceEpoch(
+                          DateTime.now().millisecondsSinceEpoch)
+                      .year -
+                  year)
+          .length;
+    }
+
+    final data = [
+      OrdinalSales(
+          (DateTime.now().year - 3).toString(), getLengthIdeaByYear(3)),
+      OrdinalSales(
+          (DateTime.now().year - 2).toString(), getLengthIdeaByYear(2)),
+      OrdinalSales(
+          (DateTime.now().year - 1).toString(), getLengthIdeaByYear(1)),
+      OrdinalSales((DateTime.now().year).toString(), getLengthIdeaByYear(0)),
+    ];
+
+    return [
+      charts.Series<OrdinalSales, String>(
+        id: 'Years&Ideas',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (OrdinalSales sales, _) => sales.year,
+        measureFn: (OrdinalSales sales, _) => sales.sales,
+        labelAccessorFn: (OrdinalSales sales, _) =>
+            '${sales.sales.toString()} ideas',
+        data: data,
+      )
+    ];
+  }
 
   List<charts.Series<PostItem, int>> get commentsAndPostsChart {
     List<PostItem> lt = postListChartController.take(5).toList()
@@ -245,15 +281,20 @@ class PostController extends GetxController {
         fileName: fileName);
     if (data.code == 200) {
       loadingAction(false);
-      print(data.data);
       postListController.insert(0, data.data);
       await Get.dialog(
         Center(
           child: SizedBox(
             width: 300,
             child: successDialog(
-                title: 'Congratulation!',
-                subTitle: 'You created successful new idea'),
+              title: 'Congratulation!',
+              subTitle: 'You created successful new idea',
+              back: () {
+                Get.back();
+                Get.back();
+                Get.back();
+              },
+            ),
           ),
         ),
       );

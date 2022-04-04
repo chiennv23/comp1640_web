@@ -30,6 +30,31 @@ class PostData {
     return response;
   }
 
+  static Future<BasicResponse> exportDataAttachments() async {
+    final response =
+        await BaseDA.get(exportAttachments, (json) => Files.fromJson(json));
+    if (response.code == 200) {
+      print('export att done');
+      await launch(
+        response.data.url,
+      );
+      await Get.dialog(
+        Center(
+          child: SizedBox(
+            width: 300,
+            child: successDialog(
+                title: 'Successfully!',
+                subTitle: 'Export Data attachments',
+                back: () {
+                  Get.back();
+                }),
+          ),
+        ),
+      );
+    }
+    return response;
+  }
+
   static Future<BasicResponse> exportCSV() async {
     final response =
         await BaseDA.get(exportDataCSV, (json) => Files.fromJson(json));
@@ -136,8 +161,8 @@ class PostData {
   static Future<BasicResponse> deletePostofManage(
     String postSlug,
   ) async {
-    var response = await BaseDA.delete(urlDeletePostMange(postSlug: postSlug), {},
-        (json) => BasicResponse.fromJson(json));
+    var response = await BaseDA.delete(urlDeletePostMange(postSlug: postSlug),
+        {}, (json) => BasicResponse.fromJson(json));
     if (response.code == 200) {
       print('Delele post manage done.');
     }

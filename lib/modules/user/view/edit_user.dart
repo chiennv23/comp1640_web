@@ -162,10 +162,14 @@ class _EditUserManageState extends State<EditUserManage> {
                                 return;
                               }
                               if (widget.item != null) {
-                                manangeController.editUserManage(
-                                    sid: widget.item.sId,
-                                    slug: widget.item.slug,
-                                    role: dropdownValue);
+                                if (dropdownValue == widget.item.role) {
+                                  Get.back();
+                                } else {
+                                  manangeController.editUserManage(
+                                      sid: widget.item.sId,
+                                      slug: widget.item.slug,
+                                      role: dropdownValue);
+                                }
                                 return;
                               }
                             },

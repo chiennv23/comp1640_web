@@ -1,3 +1,4 @@
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class OverviewCardsLargeScreen extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width;
     ThreadController threadController = Get.find();
     ManageUserController manangeController = Get.find();
+    var role = SharedPreferencesHelper.instance.getString(key: 'Role');
 
     return Obx(
       () => Row(
@@ -35,22 +37,24 @@ class OverviewCardsLargeScreen extends StatelessWidget {
           SizedBox(
             width: _width / 64,
           ),
-          InfoCard(
-            title: "All Accounts",
-            value: manangeController.isLoadingFirst.value
-                ? '...'
-                : manangeController.listUserLength.toString(),
-            topColor: Colors.redAccent,
-          ),
+          if (role == 'admin')
+            InfoCard(
+              title: "All Accounts",
+              value: manangeController.isLoadingFirst.value
+                  ? '...'
+                  : manangeController.listUserLength.toString(),
+              topColor: Colors.redAccent,
+            ),
           SizedBox(
             width: _width / 64,
           ),
-          InfoCard(
-            title: "All",
-            value: manangeController.isLoadingFirst.value
-                ? '...'
-                : "${manangeController.allItemsLength}",
-          ),
+          if (role == 'admin')
+            InfoCard(
+              title: "All",
+              value: manangeController.isLoadingFirst.value
+                  ? '...'
+                  : "${manangeController.allItemsLength}",
+            ),
         ],
       ),
     );

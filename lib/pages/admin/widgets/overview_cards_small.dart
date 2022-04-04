@@ -1,3 +1,4 @@
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class OverviewCardsSmallScreen extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width;
     ThreadController threadController = Get.find();
     ManageUserController manangeController = Get.find();
+    var role = SharedPreferencesHelper.instance.getString(key: 'Role');
 
     return Container(
         height: 400,
@@ -34,21 +36,23 @@ class OverviewCardsSmallScreen extends StatelessWidget {
               SizedBox(
                 width: _width / 64,
               ),
-              InfoCardSmall(
-                title: "All Accounts",
-                value: manangeController.isLoadingFirst.value
-                    ? '...'
-                    : manangeController.listUserLength.toString(),
-              ),
+              if (role == 'admin')
+                InfoCardSmall(
+                  title: "All Accounts",
+                  value: manangeController.isLoadingFirst.value
+                      ? '...'
+                      : manangeController.listUserLength.toString(),
+                ),
               SizedBox(
                 width: _width / 64,
               ),
-              InfoCardSmall(
-                title: "All",
-                value: manangeController.isLoadingFirst.value
-                    ? '...'
-                    : "${threadController.ThreadList.length + threadController.AllPostInThread + manangeController.listUserLength}",
-              ),
+              if (role == 'admin')
+                InfoCardSmall(
+                  title: "All",
+                  value: manangeController.isLoadingFirst.value
+                      ? '...'
+                      : "${threadController.ThreadList.length + threadController.AllPostInThread + manangeController.listUserLength}",
+                ),
             ],
           ),
         ));

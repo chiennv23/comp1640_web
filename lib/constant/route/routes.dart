@@ -67,7 +67,6 @@ List<MenuItem> checkRoleShowCategory(role) {
     case 'coordinator':
       return listAction = [
         MenuItem(homeDisplayName, homePageRoute),
-        MenuItem(dashboardDisplayName, dashboardPageRoute),
         MenuItem(profileDisplayName, profilePageRoute),
         MenuItem(logOutDisplayName, loginPageRoute),
       ];

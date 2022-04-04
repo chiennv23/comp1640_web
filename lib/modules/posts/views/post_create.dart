@@ -6,6 +6,7 @@ import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
+import 'package:comp1640_web/modules/posts/views/term_policy_dialog.dart';
 import 'package:comp1640_web/utils/DropZoneFile/drop_zone_widget.dart';
 import 'package:comp1640_web/utils/DropZoneFile/dropped_file.dart';
 import 'package:comp1640_web/utils/DropZoneFile/model/file_drop_item.dart';
@@ -328,14 +329,32 @@ class _PostCreateState extends State<PostCreate> {
                                               bytesFile != null ? fileN : '');
                                       return;
                                     }
-                                    postController.createIdeaFormData(
-                                        threadSlug: widget.threadSlug,
-                                        title: titleController.text,
-                                        content: contentController.text,
-                                        anonymous: checkAnonymous,
-                                        mimeType: file != null ? file.mime : '',
-                                        bytes: bytesFile,
-                                        fileName: fileN);
+                                    final wid =
+                                        MediaQuery.of(context).size.width;
+                                    final hei =
+                                        MediaQuery.of(context).size.height;
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => Dialog(
+                                        child: Container(
+                                          height: hei / 1.5,
+                                          width: ResponsiveWidget.isSmallScreen(
+                                                  context)
+                                              ? wid - 100
+                                              : wid / 3,
+                                          child: TermAndPolicy(
+                                              threadSlug: widget.threadSlug,
+                                              title: titleController.text,
+                                              content: contentController.text,
+                                              anonymous: checkAnonymous,
+                                              mimeType:
+                                                  file != null ? file.mime : '',
+                                              bytes: bytesFile,
+                                              fileName: fileN),
+                                        ),
+                                      ),
+                                    );
                                   },
                             child: postController.isLoadingAction.value
                                 ? SpinKitThreeBounce(

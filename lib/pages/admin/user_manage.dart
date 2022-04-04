@@ -309,7 +309,7 @@ class _ManageUserState extends State<ManageUser> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: UserView(item),
+        child: UserView(item, nameSlugLogin),
       ),
     );
     // Get.dialog(ThreadView());
