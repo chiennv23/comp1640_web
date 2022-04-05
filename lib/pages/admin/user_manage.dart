@@ -1,6 +1,5 @@
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart';
-import 'package:comp1640_web/modules/user/model/manageuser_item.dart';
 import 'package:comp1640_web/modules/user/view/delete_user.dart';
 import 'package:comp1640_web/modules/user/view/manage_user_view.dart';
 import 'package:data_table_2/paginated_data_table_2.dart';
@@ -12,10 +11,6 @@ import '../../helpers/datetime_convert.dart';
 import '../../helpers/menu_controller.dart';
 import '../../helpers/reponsive_pages.dart';
 import '../../widgets/custom_text.dart';
-import '../../modules/posts/controlls/post_controller.dart';
-import '../../modules/threads/controller/thread_controller.dart';
-import 'package:comp1640_web/modules/user/DA/user_data.dart';
-import 'package:comp1640_web/modules/login/controller/user_controller.dart';
 import 'package:comp1640_web/modules/user/view/edit_user.dart';
 
 class ManageUser extends StatefulWidget {
@@ -29,6 +24,7 @@ class _ManageUserState extends State<ManageUser> {
   String dropdownValue = 'All roles';
   var nameSlugLogin =
       SharedPreferencesHelper.instance.getString(key: 'nameSlug');
+  int indexPage = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +58,9 @@ class _ManageUserState extends State<ManageUser> {
                     child: InkWell(
                       onTap: () {
                         manageController.onInit();
+                        setState(() {
+                          indexPage = 1;
+                        });
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -93,6 +92,7 @@ class _ManageUserState extends State<ManageUser> {
                     ),
                     onChanged: (String newValue) {
                       setState(() {
+                        indexPage = 1;
                         dropdownValue = newValue;
                       });
                     },
@@ -128,165 +128,233 @@ class _ManageUserState extends State<ManageUser> {
                     ),
                     padding: const EdgeInsets.all(16),
                     margin: const EdgeInsets.only(bottom: 30, top: 15.0),
-                    child: DataTable2(
-                      columnSpacing: 12,
-                      horizontalMargin: 12,
-                      minWidth: 600,
-                      columns: const [
-                        DataColumn2(
-                          label: CustomText(
-                            text: "STT",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.S,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Email",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.L,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Username",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.S,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Role",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.S,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Ideas",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.S,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Comments",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.S,
-                        ),
-                        DataColumn2(
-                          label: CustomText(
-                            text: "Create Date",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                          size: ColumnSize.M,
-                        ),
-                        DataColumn(
-                          label: CustomText(
-                            text: "Action",
-                            color: darkColor,
-                            size: 16,
-                            weight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                      rows: manageController.isLoadingFirst.value
-                          ? [dataRowLoading()]
-                          : List<DataRow>.generate(
-                              manageController
-                                      .sortListByRole(dropdownValue)
-                                      .length ??
-                                  0,
-                              (index) {
-                                final item = manageController
-                                    .sortListByRole(dropdownValue)[index];
-                                return DataRow2(
-                                  cells: [
-                                    DataCell(CustomText(text: '${index + 1}')),
-                                    DataCell(
-                                        CustomText(text: item.email ?? '')),
-                                    DataCell(
-                                        CustomText(text: item.username ?? '')),
-                                    DataCell(CustomText(
-                                      text: item.role ?? '',
-                                      color: item.role == 'admin'
-                                          ? active
-                                          : item.role == 'staff'
-                                              ? successColor
-                                              : orangeColor,
-                                    )),
-                                    DataCell(CustomText(
-                                        text: '${item.posts.length}' ?? '0')),
-                                    DataCell(CustomText(
-                                        text:
-                                            '${item.comments.length}' ?? '0')),
-                                    DataCell(CustomText(
-                                        text: DatetimeConvert.dMy_hm(
-                                            item.createdAt))),
-                                    DataCell(
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Flexible(
-                                            child: Tooltip(
-                                              message: 'View',
-                                              child: IconButton(
-                                                  onPressed: () =>
-                                                      showView(item),
-                                                  icon: Icon(
-                                                    Icons.visibility,
-                                                    color: primaryColor2,
-                                                  )),
-                                            ),
-                                          ),
-                                          if (item.slug != nameSlugLogin)
-                                            Flexible(
-                                              child: Tooltip(
-                                                message: 'Edit',
-                                                child: IconButton(
-                                                    onPressed: () =>
-                                                        showEdit(item),
-                                                    icon: Icon(
-                                                      Icons.edit_rounded,
-                                                      color: primaryColor2,
-                                                    )),
-                                              ),
-                                            ),
-                                          if (item.slug != nameSlugLogin)
-                                            Flexible(
-                                              child: Tooltip(
-                                                message: 'Delete',
-                                                child: IconButton(
-                                                    onPressed: () =>
-                                                        showDelete(item),
-                                                    icon: Icon(
-                                                      Icons.delete_rounded,
-                                                      color: primaryColor2,
-                                                    )),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
+                    child: Column(
+                      children: [
+                        DataTable2(
+                          columnSpacing: 12,
+                          horizontalMargin: 12,
+                          minWidth: 600,
+                          columns: const [
+                            DataColumn2(
+                              label: CustomText(
+                                text: "STT",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.S,
                             ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Email",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.L,
+                            ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Username",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.S,
+                            ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Role",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.S,
+                            ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Ideas",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.S,
+                            ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Comments",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.S,
+                            ),
+                            DataColumn2(
+                              label: CustomText(
+                                text: "Create Date",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              size: ColumnSize.M,
+                            ),
+                            DataColumn(
+                              label: CustomText(
+                                text: "Action",
+                                color: darkColor,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                          rows: manageController.isLoadingFirst.value
+                              ? [dataRowLoading()]
+                              : List<DataRow>.generate(
+                                  manageController
+                                          .sortListByRole(dropdownValue)
+                                          .skip((indexPage - 1) * 10)
+                                          .take(10)
+                                          .toList()
+                                          .length ??
+                                      0,
+                                  (index) {
+                                    final item = manageController
+                                        .sortListByRole(dropdownValue)
+                                        .skip((indexPage - 1) * 10)
+                                        .take(10)
+                                        .toList()[index];
+                                    return DataRow2(
+                                      cells: [
+                                        DataCell(CustomText(
+                                            text:
+                                                '${index + 1 + (indexPage - 1) * 10}' ??
+                                                    '')),
+                                        DataCell(
+                                            CustomText(text: item.email ?? '')),
+                                        DataCell(CustomText(
+                                            text: item.username ?? '')),
+                                        DataCell(CustomText(
+                                          text: item.role ?? '',
+                                          color: item.role == 'admin'
+                                              ? active
+                                              : item.role == 'staff'
+                                                  ? successColor
+                                                  : orangeColor,
+                                        )),
+                                        DataCell(CustomText(
+                                            text:
+                                                '${item.posts.length}' ?? '0')),
+                                        DataCell(CustomText(
+                                            text: '${item.comments.length}' ??
+                                                '0')),
+                                        DataCell(CustomText(
+                                            text: DatetimeConvert.dMy_hm(
+                                                item.createdAt))),
+                                        DataCell(
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Flexible(
+                                                child: Tooltip(
+                                                  message: 'View',
+                                                  child: IconButton(
+                                                      onPressed: () =>
+                                                          showView(item),
+                                                      icon: Icon(
+                                                        Icons.visibility,
+                                                        color: primaryColor2,
+                                                      )),
+                                                ),
+                                              ),
+                                              if (item.slug != nameSlugLogin)
+                                                Flexible(
+                                                  child: Tooltip(
+                                                    message: 'Edit',
+                                                    child: IconButton(
+                                                        onPressed: () =>
+                                                            showEdit(item),
+                                                        icon: Icon(
+                                                          Icons.edit_rounded,
+                                                          color: primaryColor2,
+                                                        )),
+                                                  ),
+                                                ),
+                                              if (item.slug != nameSlugLogin)
+                                                Flexible(
+                                                  child: Tooltip(
+                                                    message: 'Delete',
+                                                    child: IconButton(
+                                                        onPressed: () =>
+                                                            showDelete(item),
+                                                        icon: Icon(
+                                                          Icons.delete_rounded,
+                                                          color: primaryColor2,
+                                                        )),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                        ),
+                        if (manageController.isLoadingFirst.value == false)
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 15, top: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (indexPage > 2)
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          indexPage = 1;
+                                        });
+                                      },
+                                      child: CustomText(
+                                          weight: FontWeight.bold,
+                                          color: active,
+                                          text: 'Previous page 1')),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                if (indexPage != 1)
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          indexPage -= 1;
+                                        });
+                                      },
+                                      child: CustomText(
+                                          weight: FontWeight.bold,
+                                          color: active,
+                                          text:
+                                              'Previous page ${indexPage - 1}')),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                CustomText(
+                                  text: 'Page $indexPage',
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        indexPage += 1;
+                                      });
+                                    },
+                                    child: CustomText(
+                                        weight: FontWeight.bold,
+                                        color: active,
+                                        text: 'Next page ${indexPage + 1}')),
+                              ],
+                            ),
+                          )
+                      ],
                     ),
                   );
                 },

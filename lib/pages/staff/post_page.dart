@@ -27,6 +27,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int count = 5;
+
   @override
   void initState() {
     Get.put(ThreadController());
@@ -88,6 +90,7 @@ class _HomeState extends State<Home> {
                                       await Get.dialog(showChangeThread())
                                           .whenComplete(() {
                                     setState(() {
+                                      count = 5;
                                       for (var element
                                           in postController.postList) {
                                         element.checkComment = false;
@@ -190,12 +193,54 @@ class _HomeState extends State<Home> {
                                   : ListView.builder(
                                       padding: const EdgeInsets.only(
                                           top: 16, right: 24),
-                                      itemCount: postController.postList.length,
+                                      itemCount: postController.postList
+                                          .take(count)
+                                          .toList()
+                                          .length,
                                       itemBuilder: (context, i) {
-                                        final item = postController.postList[i];
-                                        return postCard(item,
-                                            threadSlug: threadController
-                                                .slugSelected.value);
+                                        final item = postController.postList
+                                            .take(count)
+                                            .toList()[i];
+                                        return Column(
+                                          children: [
+                                            postCard(item,
+                                                threadSlug: threadController
+                                                    .slugSelected.value),
+                                            if (postController
+                                                        .postList.length !=
+                                                    postController.postList
+                                                        .take(count)
+                                                        .toList()
+                                                        .length &&
+                                                i ==
+                                                    postController.postList
+                                                            .take(count)
+                                                            .toList()
+                                                            .length -
+                                                        1)
+                                              Container(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 25),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          count += 5;
+                                                          setState(() {});
+                                                        },
+                                                        child: CustomText(
+                                                            weight:
+                                                                FontWeight.bold,
+                                                            color: active,
+                                                            text:
+                                                                'See more ideas...'))
+                                                  ],
+                                                ),
+                                              )
+                                          ],
+                                        );
                                       }),
                         ),
                       ),
@@ -403,15 +448,16 @@ class _HomeState extends State<Home> {
                       tag: 'imageView',
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                        alignment: Alignment.center,
                         height: 100,
                         child: InkWell(
                           onTap: () => showViewImage(item.files.first.url),
-                          child: Image.network(
-                            item.files.first.url,
-                            errorBuilder: (BuildContext context,
-                                Object exception, StackTrace stackTrace) {
-                              return const Text('Error show image 😢');
-                            },
+                          child: CachedNetworkImage(
+                            imageUrl: item.files.first.url,
+                            alignment: Alignment.center,
+                            useOldImageOnUrlChange: true,
+                            errorWidget: (context, url, error) =>
+                                const Text('Error show image 😢'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -654,8 +700,9 @@ class _HomeState extends State<Home> {
         tag: 'imageView',
         child: Container(
           height: MediaQuery.of(context).size.height / 2,
-          padding: const EdgeInsets.all(20),
-          width: MediaQuery.of(context).size.width / 3,
+          margin: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          width: MediaQuery.of(context).size.width / 2.5,
           child: CachedNetworkImage(
             imageUrl: url,
             useOldImageOnUrlChange: true,

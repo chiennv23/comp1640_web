@@ -102,4 +102,27 @@ class LoginController {
     }
     return response;
   }
+
+  static Future<BasicResponse> editProfile({
+    String email,
+    String userName,
+    String oldPassword,
+    String newPass,
+    String confirmPass,
+  }) async {
+    var response = await BaseDA.put(
+        urlUpdateProfile,
+        {
+          "email": email,
+          "username": userName,
+          "oldPassword": oldPassword,
+          "password": newPass,
+          "confirmPassword": confirmPass
+        },
+        (json) => BasicResponse.fromJson(json));
+    if (response.code == 200) {
+      print('update prf done.');
+    }
+    return response;
+  }
 }

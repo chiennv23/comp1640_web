@@ -27,6 +27,7 @@ class _PostManageState extends State<PostManage> {
   PostController postController = Get.find();
   bool isLoadingAtt = false;
   bool isLoadingCSV = false;
+  int indexPage = 1;
 
   @override
   void initState() {
@@ -67,6 +68,9 @@ class _PostManageState extends State<PostManage> {
                     child: InkWell(
                       onTap: () {
                         postController.callListForManage();
+                        setState(() {
+                          indexPage = 1;
+                        });
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -182,175 +186,218 @@ class _PostManageState extends State<PostManage> {
                   ),
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.only(bottom: 30, top: 15.0),
-                  child: DataTable2(
-                    columnSpacing: 12,
-                    horizontalMargin: 12,
-                    minWidth: 600,
-                    columns: const [
-                      DataColumn2(
-                        label: CustomText(
-                          text: "STT",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.S,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "UserName",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn(
-                        label: CustomText(
-                          text: "Title of Idea",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                      ),
-                      DataColumn(
-                        label: CustomText(
-                          text: "Thread",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Attachment",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn(
-                        label: CustomText(
-                          text: "Create Date",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                      ),
-                      // DataColumn(
-                      //   label: CustomText(
-                      //     text: "Update Date",
-                      //     color: darkColor,
-                      //     size: 16,
-                      //     weight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Action",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.S,
-                      ),
-                    ],
-                    rows: postController.isLoadingManage.value
-                        ? [dataRowLoading()]
-                        : List<DataRow>.generate(
-                            postController.postListManageController.length ?? 0,
-                            (index) {
-                              final item = postController
-                                  .postListManageController[index];
-                              return DataRow2(
-                                cells: [
-                                  DataCell(
-                                      CustomText(text: '${index + 1}' ?? '')),
-                                  DataCell(CustomText(
-                                      text: item.author.username ?? '')),
-                                  DataCell(CustomText(text: item.title ?? '')),
-                                  DataCell(CustomText(
-                                      text: item.thread.topic ?? '')),
-                                  DataCell(
-                                    Tooltip(
-                                      message: item.files.isEmpty
-                                          ? ''
-                                          : item.files.first.url
-                                              .split('/')
-                                              .last,
-                                      child: CustomText(
-                                        text: item.files.isEmpty
-                                            ? ''
-                                            : item.files.first.url
-                                                .split('/')
-                                                .last,
-                                        maxLine: 2,
-                                        color: primaryColor2,
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      await launch(
-                                        item.files.first.url,
-                                      );
-                                    },
-                                  ),
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.createdAt))),
-                                  // // DataCell(CustomText(
-                                  //     text: 'DatetimeConvert.dMy_hm('
-                                  //         'item.createdAt)')),
-                                  // DataCell(CustomText(
-                                  //     text: 'DatetimeConvert.dMy_hm('
-                                  //         'item.updatedAt)')),
-                                  DataCell(
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'View',
-                                            child: IconButton(
-                                                onPressed: () => showView(item),
-                                                icon: Icon(
-                                                  Icons.visibility,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'Delete',
-                                            child: IconButton(
-                                                onPressed: () =>
-                                                    showDelete(item),
-                                                icon: Icon(
-                                                  Icons.delete_rounded,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                        // Flexible(
-                                        //   child: Tooltip(
-                                        //     message: 'Download file zip',
-                                        //     child: IconButton(
-                                        //         onPressed: () {
-                                        //           exportCSV.generateCSV();
-                                        //         },
-                                        //         icon: Icon(
-                                        //           Icons.download,
-                                        //           color: primaryColor2,
-                                        //         )),
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                  child: Column(
+                    children: [
+                      DataTable2(
+                        columnSpacing: 12,
+                        horizontalMargin: 12,
+                        minWidth: 600,
+                        columns: const [
+                          DataColumn2(
+                            label: CustomText(
+                              text: "STT",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.S,
                           ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "UserName",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn(
+                            label: CustomText(
+                              text: "Title of Idea",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                          ),
+                          DataColumn(
+                            label: CustomText(
+                              text: "Thread",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Attachment",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn(
+                            label: CustomText(
+                              text: "Create Date",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Action",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.S,
+                          ),
+                        ],
+                        rows: postController.isLoadingManage.value
+                            ? [dataRowLoading()]
+                            : List<DataRow>.generate(
+                                postController.postListManageController
+                                        .skip((indexPage - 1) * 10)
+                                        .take(10)
+                                        .toList()
+                                        .length ??
+                                    0,
+                                (index) {
+                                  final item = postController
+                                      .postListManageController
+                                      .skip((indexPage - 1) * 10)
+                                      .take(10)
+                                      .toList()[index];
+                                  return DataRow2(
+                                    cells: [
+                                      DataCell(CustomText(
+                                          text:
+                                              '${index + 1 + (indexPage - 1) * 10}' ??
+                                                  '')),
+                                      DataCell(CustomText(
+                                          text: item.author.username ?? '')),
+                                      DataCell(
+                                          CustomText(text: item.title ?? '')),
+                                      DataCell(CustomText(
+                                          text: item.thread.topic ?? '')),
+                                      DataCell(
+                                        Tooltip(
+                                          message: item.files.isEmpty
+                                              ? ''
+                                              : item.files.first.url
+                                                  .split('/')
+                                                  .last,
+                                          child: CustomText(
+                                            text: item.files.isEmpty
+                                                ? ''
+                                                : item.files.first.url
+                                                    .split('/')
+                                                    .last,
+                                            maxLine: 2,
+                                            color: primaryColor2,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await launch(
+                                            item.files.first.url,
+                                          );
+                                        },
+                                      ),
+                                      DataCell(CustomText(
+                                          text: DatetimeConvert.dMy_hm(
+                                              item.createdAt))),
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'View',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showView(item),
+                                                    icon: Icon(
+                                                      Icons.visibility,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'Delete',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showDelete(item),
+                                                    icon: Icon(
+                                                      Icons.delete_rounded,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                      ),
+                      if (postController.isLoadingManage.value == false)
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 15, top: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (indexPage > 2)
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        indexPage = 1;
+                                      });
+                                    },
+                                    child: CustomText(
+                                        weight: FontWeight.bold,
+                                        color: active,
+                                        text: 'Previous page 1')),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              if (indexPage != 1)
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        indexPage -= 1;
+                                      });
+                                    },
+                                    child: CustomText(
+                                        weight: FontWeight.bold,
+                                        color: active,
+                                        text:
+                                            'Previous page ${indexPage - 1}')),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              CustomText(
+                                text: 'Page $indexPage',
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      indexPage += 1;
+                                    });
+                                  },
+                                  child: CustomText(
+                                      weight: FontWeight.bold,
+                                      color: active,
+                                      text: 'Next page ${indexPage + 1}')),
+                            ],
+                          ),
+                        )
+                    ],
                   ),
                 ),
               ),
@@ -369,7 +416,6 @@ class _PostManageState extends State<PostManage> {
         child: PostView(item),
       ),
     );
-    // Get.dialog(ThreadView());
   }
 
   void showDelete(item) {

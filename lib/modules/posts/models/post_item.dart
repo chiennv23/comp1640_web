@@ -2,6 +2,7 @@ import 'package:comp1640_web/modules/comments/models/comment_item.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 
 class PostItem {
+  int indexSTT;
   String sId;
   Thread thread;
   String title;
@@ -19,6 +20,7 @@ class PostItem {
   bool checkComment;
 
   PostItem({
+    this.indexSTT = 0,
     this.sId,
     this.thread,
     this.title,
@@ -34,6 +36,8 @@ class PostItem {
     this.oneClickAction = true,
     this.checkComment = false,
   });
+
+  var index = 0;
 
   PostItem.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];

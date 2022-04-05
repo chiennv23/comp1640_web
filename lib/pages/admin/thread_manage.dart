@@ -22,6 +22,7 @@ class ThreadManage extends StatefulWidget {
 
 class _ThreadManageState extends State<ThreadManage> {
   ThreadController threadController = Get.find();
+  int indexPage = 1;
 
   @override
   void initState() {
@@ -62,6 +63,9 @@ class _ThreadManageState extends State<ThreadManage> {
                     child: InkWell(
                       onTap: () {
                         threadController.callListManageThread();
+                        setState(() {
+                          indexPage = 1;
+                        });
                       },
                       borderRadius: BorderRadius.circular(8.0),
                       child: Container(
@@ -114,162 +118,230 @@ class _ThreadManageState extends State<ThreadManage> {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.only(bottom: 30, top: 15.0),
                 child: Obx(
-                  () => DataTable2(
-                    columnSpacing: 12,
-                    horizontalMargin: 12,
-                    minWidth: 600,
-                    columns: const [
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Topic",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Description",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn(
-                        label: CustomText(
-                          text: "Creator",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                      ),
-
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Create date",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Expiration idea",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Expiration comment",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Status",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.S,
-                      ),
-                      DataColumn2(
-                        label: CustomText(
-                          text: "Action",
-                          color: darkColor,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                        size: ColumnSize.L,
-                      ),
-                    ],
-                    rows: threadController.isLoadingFirst.value
-                        ? [dataRowLoading()]
-                        : List<DataRow>.generate(
-                            threadController.threadManageList.length ?? 0,
-                            (index) {
-                              final item = threadController
-                                  .threadManageList.reversed
-                                  .toList()[index];
-                              return DataRow2(
-                                cells: [
-                                  DataCell(CustomText(text: item.topic ?? '')),
-                                  DataCell(
-                                      CustomText(text: item.description ?? '')),
-                                  DataCell(CustomText(
-                                      text: item.creator.email ?? '')),
-
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.createdAt))),
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.deadlineIdea))),
-                                  DataCell(CustomText(
-                                      text: DatetimeConvert.dMy_hm(
-                                          item.deadlineComment))),
-                                  DataCell(CustomText(
-                                    text:
-                                        item.approved ? 'Approved' : 'Not yet',
-                                    color: item.approved
-                                        ? successColor
-                                        : orangeColor,
-                                    weight: FontWeight.w600,
-                                  )),
-                                  DataCell(
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'View',
-                                            child: IconButton(
-                                                onPressed: () => showView(item),
-                                                icon: Icon(
-                                                  Icons.visibility,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'Edit',
-                                            child: IconButton(
-                                                onPressed: () => showEdit(item),
-                                                icon: Icon(
-                                                  Icons.edit_rounded,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Tooltip(
-                                            message: 'Delete',
-                                            child: IconButton(
-                                                onPressed: () =>
-                                                    showDelete(item),
-                                                icon: Icon(
-                                                  Icons.delete_rounded,
-                                                  color: primaryColor2,
-                                                )),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                  () => Column(
+                    children: [
+                      DataTable2(
+                        columnSpacing: 12,
+                        horizontalMargin: 12,
+                        minWidth: 600,
+                        columns: const [
+                          DataColumn2(
+                            label: CustomText(
+                              text: "STT",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.S,
                           ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Topic",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn(
+                            label: CustomText(
+                              text: "Creator",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Create date",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Expiration idea",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Expiration comment",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Status",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.S,
+                          ),
+                          DataColumn2(
+                            label: CustomText(
+                              text: "Action",
+                              color: darkColor,
+                              size: 16,
+                              weight: FontWeight.bold,
+                            ),
+                            size: ColumnSize.L,
+                          ),
+                        ],
+                        rows: threadController.isLoadingFirst.value
+                            ? [dataRowLoading()]
+                            : List<DataRow>.generate(
+                                threadController.threadManageList
+                                        .skip((indexPage - 1) * 10)
+                                        .take(10)
+                                        .toList()
+                                        .length ??
+                                    0,
+                                (index) {
+                                  final item = threadController.threadManageList
+                                      .skip((indexPage - 1) * 10)
+                                      .take(10)
+                                      .toList()[index];
+                                  return DataRow2(
+                                    cells: [
+                                      DataCell(CustomText(
+                                          text:
+                                              '${index + 1 + (indexPage - 1) * 10}' ??
+                                                  '')),
+                                      DataCell(
+                                          CustomText(text: item.topic ?? '')),
+                                      DataCell(CustomText(
+                                          text: item.creator.email ?? '')),
+                                      DataCell(CustomText(
+                                          text: DatetimeConvert.dMy_hm(
+                                              item.createdAt))),
+                                      DataCell(CustomText(
+                                          text: DatetimeConvert.dMy_hm(
+                                              item.deadlineIdea))),
+                                      DataCell(CustomText(
+                                          text: DatetimeConvert.dMy_hm(
+                                              item.deadlineComment))),
+                                      DataCell(CustomText(
+                                        text: item.approved
+                                            ? 'Approved'
+                                            : 'Not yet',
+                                        color: item.approved
+                                            ? successColor
+                                            : orangeColor,
+                                        weight: FontWeight.w600,
+                                      )),
+                                      DataCell(
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'View',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showView(item),
+                                                    icon: Icon(
+                                                      Icons.visibility,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'Edit',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showEdit(item),
+                                                    icon: Icon(
+                                                      Icons.edit_rounded,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Tooltip(
+                                                message: 'Delete',
+                                                child: IconButton(
+                                                    onPressed: () =>
+                                                        showDelete(item),
+                                                    icon: Icon(
+                                                      Icons.delete_rounded,
+                                                      color: primaryColor2,
+                                                    )),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                      ),
+                      if (threadController.isLoadingFirst.value == false)
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 15, top: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (indexPage > 2)
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        indexPage = 1;
+                                      });
+                                    },
+                                    child: CustomText(
+                                        weight: FontWeight.bold,
+                                        color: active,
+                                        text: 'Previous page 1')),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              if (indexPage != 1)
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        indexPage -= 1;
+                                      });
+                                    },
+                                    child: CustomText(
+                                        weight: FontWeight.bold,
+                                        color: active,
+                                        text:
+                                            'Previous page ${indexPage - 1}')),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              CustomText(
+                                text: 'Page $indexPage',
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      indexPage += 1;
+                                    });
+                                  },
+                                  child: CustomText(
+                                      weight: FontWeight.bold,
+                                      color: active,
+                                      text: 'Next page ${indexPage + 1}')),
+                            ],
+                          ),
+                        )
+                    ],
                   ),
                 ),
               )

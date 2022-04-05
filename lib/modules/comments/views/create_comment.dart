@@ -174,7 +174,7 @@ class _CreateCommentState extends State<CreateComment> {
                   });
                 },
                 child: const CustomText(
-                  text: "Anonymous comment",
+                  text: "Anonymous",
                 ),
               ),
               const Spacer(),

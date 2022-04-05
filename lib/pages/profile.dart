@@ -4,6 +4,7 @@ import 'package:comp1640_web/helpers/menu_controller.dart';
 import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/login/controller/user_controller.dart';
+import 'package:comp1640_web/modules/user/view/update_profile.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,8 +23,6 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     UserController userController = Get.find();
     return Obx(() {
-      var item = userController.userItem.value;
-
       return Column(
         children: [
           Row(
@@ -42,6 +41,52 @@ class _ProfileState extends State<Profile> {
           ),
           Flexible(
             child: ListView(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Material(
+                    color: active,
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        Get.dialog(UpdateProfile());
+                      },
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        child: const CustomText(
+                          text: "Update profile",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // const SizedBox(
+                  //   width: 20,
+                  // ),
+                  // Material(
+                  //   color: active,
+                  //   borderRadius: BorderRadius.circular(8.0),
+                  //   child: InkWell(
+                  //     onTap: () {},
+                  //     borderRadius: BorderRadius.circular(8.0),
+                  //     child: Container(
+                  //       padding: const EdgeInsets.all(10.0),
+                  //       alignment: Alignment.center,
+                  //       decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(8.0)),
+                  //       child: const CustomText(
+                  //         text: "Delete account",
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const CustomText(
@@ -51,7 +96,7 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: item.email,
+                        text: userController.userItem.value.email,
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,
@@ -66,7 +111,7 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: item.username,
+                        text: userController.userItem.value.username,
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,
@@ -81,7 +126,7 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: item.role,
+                        text: userController.userItem.value.role,
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,
@@ -96,7 +141,8 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: '${item.posts.length} posts created',
+                        text:
+                            '${userController.userItem.value.posts.length} posts created',
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,
@@ -111,7 +157,8 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: '${item.comments.length} comments created',
+                        text:
+                            '${userController.userItem.value.comments.length} comments created',
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,
@@ -127,7 +174,8 @@ class _ProfileState extends State<Profile> {
                   trailing: userController.loading.value
                       ? const Text('...')
                       : CustomText(
-                          text: '${item.threads.length} threads created',
+                          text:
+                              '${userController.userItem.value.threads.length} threads created',
                           color: darkColor,
                           size: 16,
                           weight: FontWeight.bold,
@@ -142,7 +190,8 @@ class _ProfileState extends State<Profile> {
                 trailing: userController.loading.value
                     ? const Text('...')
                     : CustomText(
-                        text: DatetimeConvert.dMy_hm(item.createdAt),
+                        text: DatetimeConvert.dMy_hm(
+                            userController.userItem.value.createdAt),
                         color: darkColor,
                         size: 16,
                         weight: FontWeight.bold,

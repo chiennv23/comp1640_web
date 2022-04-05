@@ -94,11 +94,11 @@ class _Chart1SectionSmallState extends State<Chart1SectionSmall> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText(
+                      const CustomText(
                         text: 'Change chart: ',
                       ),
                       Container(
-                        width: 220,
+                        width: 150,
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton2(
                             isExpanded: true,
@@ -129,7 +129,7 @@ class _Chart1SectionSmallState extends State<Chart1SectionSmall> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Material(
@@ -152,37 +152,41 @@ class _Chart1SectionSmallState extends State<Chart1SectionSmall> {
                             ),
                           ),
                         ),
-                        Spacer(),
-                        const CustomText(
-                          text: 'High',
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 5, right: 10),
-                          decoration: BoxDecoration(
-                              color: primaryColor2, shape: BoxShape.circle),
-                          width: 10,
-                          height: 10,
-                        ),
-                        const CustomText(
-                          text: 'Medium',
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 5, right: 10),
-                          decoration: BoxDecoration(
-                              color: orangeColor, shape: BoxShape.circle),
-                          width: 10,
-                          height: 10,
-                        ),
-                        const CustomText(
-                          text: 'Low',
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 5, right: 10),
-                          decoration: BoxDecoration(
-                              color: redColor, shape: BoxShape.circle),
-                          width: 10,
-                          height: 10,
-                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const CustomText(
+                              text: 'High',
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 5, right: 10),
+                              decoration: BoxDecoration(
+                                  color: primaryColor2, shape: BoxShape.circle),
+                              width: 10,
+                              height: 10,
+                            ),
+                            const CustomText(
+                              text: 'Medium',
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 5, right: 10),
+                              decoration: BoxDecoration(
+                                  color: orangeColor, shape: BoxShape.circle),
+                              width: 10,
+                              height: 10,
+                            ),
+                            const CustomText(
+                              text: 'Low',
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 5, right: 10),
+                              decoration: BoxDecoration(
+                                  color: redColor, shape: BoxShape.circle),
+                              width: 10,
+                              height: 10,
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

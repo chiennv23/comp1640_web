@@ -1,4 +1,5 @@
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/comments/controller/comment_controller.dart';
 import 'package:comp1640_web/modules/comments/views/create_comment.dart';
@@ -86,10 +87,16 @@ class _ShowCommentState extends State<ShowComment> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   IconButton(
-                                    iconSize: 14,
-                                    icon: const Icon(
+                                    iconSize:
+                                        ResponsiveWidget.isSmallScreen(context)
+                                            ? 7
+                                            : 14,
+                                    icon: Icon(
                                       Icons.thumb_up,
-                                      size: 16,
+                                      size: ResponsiveWidget.isSmallScreen(
+                                              context)
+                                          ? 10
+                                          : 16,
                                     ),
                                     tooltip: 'Like comment',
                                     onPressed: threadController
@@ -110,18 +117,34 @@ class _ShowCommentState extends State<ShowComment> {
                                             : null,
                                   ),
                                   Container(
-                                      padding: const EdgeInsets.only(left: 8),
+                                      padding: ResponsiveWidget.isSmallScreen(
+                                              context)
+                                          ? const EdgeInsets.only(left: 4)
+                                          : const EdgeInsets.only(left: 8),
                                       child: CustomText(
+                                        size: ResponsiveWidget.isSmallScreen(
+                                                context)
+                                            ? 12
+                                            : 16,
                                         text: '${item.upvotes.length}',
                                       )),
-                                  const SizedBox(
-                                    width: 24,
+                                  SizedBox(
+                                    width:
+                                        ResponsiveWidget.isSmallScreen(context)
+                                            ? 10
+                                            : 24,
                                   ),
                                   IconButton(
-                                    iconSize: 14,
-                                    icon: const Icon(
+                                    iconSize:
+                                        ResponsiveWidget.isSmallScreen(context)
+                                            ? 7
+                                            : 14,
+                                    icon: Icon(
                                       Icons.thumb_down,
-                                      size: 16,
+                                      size: ResponsiveWidget.isSmallScreen(
+                                              context)
+                                          ? 10
+                                          : 16,
                                     ),
                                     tooltip: 'Dislike comment',
                                     onPressed: threadController
@@ -143,8 +166,16 @@ class _ShowCommentState extends State<ShowComment> {
                                             : null,
                                   ),
                                   Container(
-                                      padding: const EdgeInsets.only(left: 8),
+                                      padding:
+                                          ResponsiveWidget.isSmallScreen(
+                                                  context)
+                                              ? const EdgeInsets.only(left: 4)
+                                              : const EdgeInsets.only(left: 8),
                                       child: CustomText(
+                                          size: ResponsiveWidget.isSmallScreen(
+                                                  context)
+                                              ? 12
+                                              : 16,
                                           text: '${item.downvotes.length}')),
                                 ],
                               ),
@@ -185,7 +216,10 @@ class _ShowCommentState extends State<ShowComment> {
                                               },
                                         child: CustomText(
                                           text: 'Edit',
-                                          size: 12,
+                                          size: ResponsiveWidget.isSmallScreen(
+                                                  context)
+                                              ? 8
+                                              : 12,
                                           color: active,
                                         )),
                                     TextButton(
@@ -195,7 +229,10 @@ class _ShowCommentState extends State<ShowComment> {
                                             : () => showDelete(item),
                                         child: CustomText(
                                           text: 'Delete',
-                                          size: 12,
+                                          size: ResponsiveWidget.isSmallScreen(
+                                                  context)
+                                              ? 8
+                                              : 12,
                                           color: redColor,
                                         )),
                                   ],
