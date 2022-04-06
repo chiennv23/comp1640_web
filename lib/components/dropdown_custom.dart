@@ -111,16 +111,19 @@ class MenuItems {
 
     switch (item) {
       case MenuItems.edit:
-        threadController.checkDeadlineCreateIdea
-            ? snackBarMessageError401(
-                'Idea was out of date. Can not do action in this idea')
-            : Get.dialog(
-                PostCreate(
-                  threadSlug: threadSlug,
-                  item: itemPost,
-                  thread: threadController.threadSelected.value,
-                ),
-              );
+        if (threadController.checkDeadlineCreateIdea) {
+          snackBarMessageError401(
+              'Idea was out of date. Can not do action in this idea');
+        } else {
+          Get.dialog(
+            PostCreate(
+              threadSlug: threadSlug,
+              item: itemPost,
+              thread: threadController.threadSelected.value,
+            ),
+          );
+        }
+
         break;
       case MenuItems.download:
         if (itemPost.files.isNotEmpty) {
@@ -130,21 +133,24 @@ class MenuItems {
         }
         break;
       case MenuItems.delete:
-        threadController.checkDeadlineCreateIdea
-            ? snackBarMessageError401(
-                'Idea was out of date. Can not do action in this idea')
-            : Get.dialog(
-                Center(
-                  child: SizedBox(
-                    width: 300,
-                    child: deleteDialog(
-                        deleteOnTap: () {
-                          postController.deleteIdea(threadSlug, itemPost.slug);
-                        },
-                        controller: postController),
-                  ),
-                ),
-              );
+        if (threadController.checkDeadlineCreateIdea) {
+          snackBarMessageError401(
+              'Idea was out of date. Can not do action in this idea');
+        } else {
+          Get.dialog(
+            Center(
+              child: SizedBox(
+                width: 300,
+                child: deleteDialog(
+                    deleteOnTap: () {
+                      postController.deleteIdea(threadSlug, itemPost.slug);
+                    },
+                    controller: postController),
+              ),
+            ),
+          );
+        }
+
         break;
     }
   }

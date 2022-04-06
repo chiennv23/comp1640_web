@@ -52,13 +52,13 @@ class _PostCreateState extends State<PostCreate> {
       contentController.text = widget.item.content;
       checkAnonymous = widget.item.anonymous;
       if (widget.item.files.isNotEmpty) {
-        final droppedFile = File_Data_Model(
-          name: widget.item.files.first.url.split('/').last,
-          mime: null,
-          bytes: null,
-        );
         setState(() {
-          file = droppedFile;
+          file = File_Data_Model(
+            name: widget.item.files.first.url.split('/').last,
+            mime: '',
+            bytes: bytesFile,
+            size: '0',
+          );
         });
       }
     }
