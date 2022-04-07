@@ -33,22 +33,22 @@ class SimpleBarChart extends StatelessWidget {
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<OrdinalSales, String>> _createSampleData() {
+  static List<charts.Series<YearValue, String>> _createSampleData() {
     final data = [
-      OrdinalSales((DateTime.now().year - 3).toString(), 0),
-      OrdinalSales((DateTime.now().year - 2).toString(), 0),
-      OrdinalSales((DateTime.now().year - 1).toString(), 0),
-      OrdinalSales((DateTime.now().year).toString(), 0),
+      YearValue((DateTime.now().year - 3).toString(), 0),
+      YearValue((DateTime.now().year - 2).toString(), 0),
+      YearValue((DateTime.now().year - 1).toString(), 0),
+      YearValue((DateTime.now().year).toString(), 0),
     ];
 
     return [
-      charts.Series<OrdinalSales, String>(
-        id: 'Sales',
+      charts.Series<YearValue, String>(
+        id: 'Ideas&Years',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        labelAccessorFn: (OrdinalSales sales, _) =>
-            '${sales.sales.toString()} ideas',
+        domainFn: (YearValue sales, _) => sales.year,
+        measureFn: (YearValue sales, _) => sales.value,
+        labelAccessorFn: (YearValue sales, _) =>
+            '${sales.value.toString()} ideas',
         data: data,
       )
     ];
@@ -56,9 +56,9 @@ class SimpleBarChart extends StatelessWidget {
 }
 
 /// Sample ordinal data type.
-class OrdinalSales {
+class YearValue {
   final String year;
-  final int sales;
+  final int value;
 
-  OrdinalSales(this.year, this.sales);
+  YearValue(this.year, this.value);
 }

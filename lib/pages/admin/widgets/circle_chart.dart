@@ -29,17 +29,17 @@ class PieOutsideLabelChart extends StatelessWidget {
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
+  static List<charts.Series<LinearValues, int>> _createSampleData() {
     final data = [
-      LinearSales(0, 100),
+      LinearValues(0, 100),
     ];
 
     return [
-      charts.Series<LinearSales, int>(
+      charts.Series<LinearValues, int>(
         id: 'Comments',
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(primaryColor),
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
+        domainFn: (LinearValues sales, _) => sales.day,
+        measureFn: (LinearValues sales, _) => sales.value,
         data: data,
       )
     ];
@@ -47,9 +47,9 @@ class PieOutsideLabelChart extends StatelessWidget {
 }
 
 /// Sample linear data type.
-class LinearSales {
-  final int year;
-  final int sales;
+class LinearValues {
+  final int day;
+  final int value;
 
-  LinearSales(this.year, this.sales);
+  LinearValues(this.day, this.value);
 }

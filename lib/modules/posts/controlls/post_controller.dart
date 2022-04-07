@@ -4,13 +4,16 @@ import 'dart:typed_data';
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/config/config_Api.dart';
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/datetime_convert.dart';
 import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/posts/DA/post_data.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
 import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
 import 'package:comp1640_web/modules/threads/model/thread_item.dart';
 import 'package:comp1640_web/modules/threads/view/create_success.dart';
+import 'package:comp1640_web/pages/admin/widgets/circle_chart.dart';
 import 'package:comp1640_web/pages/admin/widgets/col_chart.dart';
+import 'package:comp1640_web/pages/admin/widgets/line_chart.dart';
 import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -83,12 +86,25 @@ class PostController extends GetxController {
     }
   }
 
-  // List<PostItem> get mostCommentsInPosts {
-  //   return postListChartController
-  //     ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
-  // }
-  List<charts.Series<OrdinalSales, String>> yearsAndPostsChart() {
+  List<PostItem> sortMostLikeIdeas({String status, int take}) {
+    if (status == 'Default') {
+      return postListController.take(take).toList();
+    } else if (status == 'Popular ideas') {
+      return postListController.take(take).toList()
+        ..sort((a, b) => b.mostPoint.compareTo(a.mostPoint));
+    } else if (status == 'Most like') {
+      return postListController.take(take).toList()
+        ..sort((a, b) => b.upvotes.length.compareTo(a.upvotes.length));
+    } else if (status == 'Most dislike') {
+      return postListController.take(take).toList()
+        ..sort((a, b) => b.downvotes.length.compareTo(a.downvotes.length));
+    } else {
+      return postListController.take(take).toList()
+        ..sort((a, b) => b.comments.length.compareTo(a.comments.length));
+    }
+  }
 
+  List<charts.Series<YearValue, String>> yearsAndPostsChart() {
     int getLengthIdeaByYear(int year) {
       return postListManageController
           .where((p0) =>
@@ -101,25 +117,199 @@ class PostController extends GetxController {
     }
 
     final data = [
-      OrdinalSales(
-          (DateTime.now().year - 3).toString(), getLengthIdeaByYear(3)),
-      OrdinalSales(
-          (DateTime.now().year - 2).toString(), getLengthIdeaByYear(2)),
-      OrdinalSales(
-          (DateTime.now().year - 1).toString(), getLengthIdeaByYear(1)),
-      OrdinalSales((DateTime.now().year).toString(), getLengthIdeaByYear(0)),
+      YearValue((DateTime.now().year - 3).toString(), getLengthIdeaByYear(3)),
+      YearValue((DateTime.now().year - 2).toString(), getLengthIdeaByYear(2)),
+      YearValue((DateTime.now().year - 1).toString(), getLengthIdeaByYear(1)),
+      YearValue((DateTime.now().year).toString(), getLengthIdeaByYear(0)),
     ];
 
     return [
-      charts.Series<OrdinalSales, String>(
+      charts.Series<YearValue, String>(
         id: 'Years&Ideas',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (OrdinalSales sales, _) => sales.year,
-        measureFn: (OrdinalSales sales, _) => sales.sales,
-        labelAccessorFn: (OrdinalSales sales, _) =>
-            '${sales.sales.toString()} ideas',
+        domainFn: (YearValue sales, _) => sales.year,
+        measureFn: (YearValue sales, _) => sales.value,
+        labelAccessorFn: (YearValue sales, _) =>
+            '${sales.value.toString()} ideas',
         data: data,
       )
+    ];
+  }
+
+  List<charts.Series<LinearDate, DateTime>> lineIdeasCreates() {
+    final now = DateTime.now();
+    int lastWeek(int value) {
+      return DateTime(now.year, now.month, now.day + value)
+          .millisecondsSinceEpoch;
+    }
+
+    var nDayAgo6 = lastWeek(-6);
+    var nDayAgo5 = lastWeek(-5);
+    var nDayAgo4 = lastWeek(-4);
+    var nDayAgo3 = lastWeek(-3);
+    var nDayAgo2 = lastWeek(-2);
+    var nDayAgo1 = lastWeek(-1);
+    var nDay = lastWeek(-0);
+
+    int getIdeasByDay(int day) {
+      var listPostInDay = postListManageController.where((p0) =>
+          DateTime.fromMillisecondsSinceEpoch(p0.createdAt)
+              .isSameDate(DateTime.fromMillisecondsSinceEpoch(day)));
+      return listPostInDay.length;
+    }
+
+
+    final IDeas = [
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo6),
+          getIdeasByDay(nDayAgo6)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo5),
+          getIdeasByDay(nDayAgo5)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo4),
+          getIdeasByDay(nDayAgo4)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo3),
+          getIdeasByDay(nDayAgo3)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo2),
+          getIdeasByDay(nDayAgo2)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo1),
+          getIdeasByDay(nDayAgo1)),
+      LinearDate(
+          DateTime.fromMillisecondsSinceEpoch(nDay), getIdeasByDay(nDay)),
+    ];
+
+    return [
+      charts.Series<LinearDate, DateTime>(
+        id: 'IdeasByDay',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (LinearDate sales, _) => sales.day,
+        measureFn: (LinearDate sales, _) => sales.value,
+        data: IDeas,
+      ),
+    ];
+  }
+
+  List<charts.Series<LinearDate, DateTime>> lineLikeDislikeComment() {
+    final now = DateTime.now();
+    int lastWeek(int value) {
+      return DateTime(now.year, now.month, now.day + value)
+          .millisecondsSinceEpoch;
+    }
+
+    var nDayAgo6 = lastWeek(-6);
+    var nDayAgo5 = lastWeek(-5);
+    var nDayAgo4 = lastWeek(-4);
+    var nDayAgo3 = lastWeek(-3);
+    var nDayAgo2 = lastWeek(-2);
+    var nDayAgo1 = lastWeek(-1);
+    var nDay = lastWeek(-0);
+
+    int getLikesByDay(int day) {
+      var listPostInDay = postListManageController.where((p0) =>
+          DateTime.fromMillisecondsSinceEpoch(p0.createdAt)
+              .isSameDate(DateTime.fromMillisecondsSinceEpoch(day)));
+      int totalLike = 0;
+      for (var i in listPostInDay) {
+        totalLike += i.upvotes.length;
+      }
+      return totalLike;
+    }
+
+    int getDisLikesByDay(int day) {
+      var listPostInDay = postListManageController.where((p0) =>
+          DateTime.fromMillisecondsSinceEpoch(p0.createdAt)
+              .isSameDate(DateTime.fromMillisecondsSinceEpoch(day)));
+      int totalDisLike = 0;
+      for (var i in listPostInDay) {
+        totalDisLike += i.downvotes.length;
+        // print(totalDisLike);
+      }
+      return totalDisLike;
+    }
+
+    int getCommentsByDay(int day) {
+      var listPostInDay = postListManageController.where((p0) =>
+          DateTime.fromMillisecondsSinceEpoch(p0.createdAt)
+              .isSameDate(DateTime.fromMillisecondsSinceEpoch(day)));
+      int totalComment = 0;
+      for (var i in listPostInDay) {
+        totalComment += i.comments.length;
+        // print(totalComment);
+      }
+      return totalComment;
+    }
+
+    final likes = [
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo6),
+          getLikesByDay(nDayAgo6)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo5),
+          getLikesByDay(nDayAgo5)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo4),
+          getLikesByDay(nDayAgo4)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo3),
+          getLikesByDay(nDayAgo3)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo2),
+          getLikesByDay(nDayAgo2)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo1),
+          getLikesByDay(nDayAgo1)),
+      LinearDate(
+          DateTime.fromMillisecondsSinceEpoch(nDay), getLikesByDay(nDay)),
+    ];
+
+    var disLikes = [
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo6),
+          getDisLikesByDay(nDayAgo6)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo5),
+          getDisLikesByDay(nDayAgo5)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo4),
+          getDisLikesByDay(nDayAgo4)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo3),
+          getDisLikesByDay(nDayAgo3)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo2),
+          getDisLikesByDay(nDayAgo2)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo1),
+          getDisLikesByDay(nDayAgo1)),
+      LinearDate(
+          DateTime.fromMillisecondsSinceEpoch(nDay), getDisLikesByDay(nDay)),
+    ];
+
+    var comments = [
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo6),
+          getCommentsByDay(nDayAgo6)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo5),
+          getCommentsByDay(nDayAgo5)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo4),
+          getCommentsByDay(nDayAgo4)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo3),
+          getCommentsByDay(nDayAgo3)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo2),
+          getCommentsByDay(nDayAgo2)),
+      LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo1),
+          getCommentsByDay(nDayAgo1)),
+      LinearDate(
+          DateTime.fromMillisecondsSinceEpoch(nDay), getCommentsByDay(nDay)),
+    ];
+
+    return [
+      charts.Series<LinearDate, DateTime>(
+        id: 'Likes',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (LinearDate sales, _) => sales.day,
+        measureFn: (LinearDate sales, _) => sales.value,
+        data: likes,
+      ),
+      charts.Series<LinearDate, DateTime>(
+        id: 'Dislikes',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (LinearDate sales, _) => sales.day,
+        measureFn: (LinearDate sales, _) => sales.value,
+        data: disLikes,
+      ),
+      charts.Series<LinearDate, DateTime>(
+        id: 'Comments',
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+        domainFn: (LinearDate sales, _) => sales.day,
+        measureFn: (LinearDate sales, _) => sales.value,
+        data: comments,
+      ),
     ];
   }
 

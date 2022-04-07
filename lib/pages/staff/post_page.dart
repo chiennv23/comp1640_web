@@ -28,6 +28,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int count = 5;
+  String dropdownValue = 'Default';
 
   @override
   void initState() {
@@ -172,6 +173,43 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
+                        Spacer(),
+                        const CustomText(
+                          text: 'Sort by: ',
+                          size: 16,
+                        ),
+                        DropdownButton<String>(
+                          value: dropdownValue,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 8,
+                          style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            width: 20,
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              count = 5;
+                              for (var element in postController.postList) {
+                                element.checkComment = false;
+                              }
+                              dropdownValue = newValue;
+                            });
+                          },
+                          items: <String>[
+                            'Default',
+                            'Popular ideas',
+                            'Most like',
+                            'Most dislike',
+                            'Most comments',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -193,14 +231,16 @@ class _HomeState extends State<Home> {
                                   : ListView.builder(
                                       padding: const EdgeInsets.only(
                                           top: 16, right: 24),
-                                      itemCount: postController.postList
-                                          .take(count)
-                                          .toList()
+                                      itemCount: postController
+                                          .sortMostLikeIdeas(
+                                              status: dropdownValue,
+                                              take: count)
                                           .length,
                                       itemBuilder: (context, i) {
-                                        final item = postController.postList
-                                            .take(count)
-                                            .toList()[i];
+                                        final item =
+                                            postController.sortMostLikeIdeas(
+                                                status: dropdownValue,
+                                                take: count)[i];
                                         return Column(
                                           children: [
                                             postCard(item,
@@ -208,14 +248,18 @@ class _HomeState extends State<Home> {
                                                     .slugSelected.value),
                                             if (postController
                                                         .postList.length !=
-                                                    postController.postList
-                                                        .take(count)
-                                                        .toList()
+                                                    postController
+                                                        .sortMostLikeIdeas(
+                                                            status:
+                                                                dropdownValue,
+                                                            take: count)
                                                         .length &&
                                                 i ==
-                                                    postController.postList
-                                                            .take(count)
-                                                            .toList()
+                                                    postController
+                                                            .sortMostLikeIdeas(
+                                                                status:
+                                                                    dropdownValue,
+                                                                take: count)
                                                             .length -
                                                         1)
                                               Container(

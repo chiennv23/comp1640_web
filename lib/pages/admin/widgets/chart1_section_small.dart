@@ -196,39 +196,6 @@ class _Chart1SectionSmallState extends State<Chart1SectionSmall> {
                 ],
               ),
             ),
-
-            // Container(
-            //   height: 260,
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //     children: [
-            //       Row(
-            //         children: [
-            //           RevenueInfo(
-            //             title: "Toda\'s revenue",
-            //             amount: "230",
-            //           ),
-            //           RevenueInfo(
-            //             title: "Last 7 days",
-            //             amount: "1,100",
-            //           ),
-            //         ],
-            //       ),
-            //       Row(
-            //         children: [
-            //           RevenueInfo(
-            //             title: "Last 30 days",
-            //             amount: "3,230",
-            //           ),
-            //           RevenueInfo(
-            //             title: "Last 12 months",
-            //             amount: "11,300",
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),

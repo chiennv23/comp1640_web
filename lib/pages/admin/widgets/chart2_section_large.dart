@@ -137,7 +137,7 @@ class Chart2SectionLarger extends StatelessWidget {
       child: Column(
         children: [
           Container(
-              height: 300,
+              height: 350,
               child: Row(
                 children: [
                   Column(
@@ -232,33 +232,40 @@ class Chart2SectionLarger extends StatelessWidget {
                   ),
                   Obx(
                     () => Flexible(
-                        child: postController.isLoadingChart.value
-                            ? Stack(
-                                alignment: AlignmentDirectional.center,
-                                fit: StackFit.loose,
-                                children: [
-                                  PieOutsideLabelChart.withSampleData(),
-                                  SpinKitFadingCircle(
-                                    color: spaceColor,
-                                  )
-                                ],
-                              )
-                            : postController.postListChartController.isEmpty
-                                ? Stack(
-                                    alignment: AlignmentDirectional.center,
-                                    fit: StackFit.loose,
-                                    children: [
-                                      PieOutsideLabelChart.withSampleData(),
-                                      const CustomText(
-                                        text: 'No ideas in thread',
-                                      )
-                                    ],
-                                  )
-                                : PieOutsideLabelChart(
-                                    postController.commentsAndPostsChart)),
+                      child: Container(
+                          padding: const EdgeInsets.all(35.0),
+                          child: postController.isLoadingChart.value
+                              ? Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  fit: StackFit.loose,
+                                  children: [
+                                    PieOutsideLabelChart.withSampleData(),
+                                    SpinKitFadingCircle(
+                                      color: spaceColor,
+                                    )
+                                  ],
+                                )
+                              : postController.postListChartController.isEmpty
+                                  ? Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      fit: StackFit.loose,
+                                      children: [
+                                        PieOutsideLabelChart.withSampleData(),
+                                        const CustomText(
+                                          text: 'No ideas in thread',
+                                        )
+                                      ],
+                                    )
+                                  : PieOutsideLabelChart(
+                                      postController.commentsAndPostsChart)),
+                    ),
                   ),
                 ],
-              ))
+              )),
+          const CustomText(
+            text: 'Most ideas by comments',
+            weight: FontWeight.bold,
+          ),
         ],
       ),
     );

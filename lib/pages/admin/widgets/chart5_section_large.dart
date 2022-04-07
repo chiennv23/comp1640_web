@@ -1,20 +1,14 @@
-import 'dart:async';
-
 import 'package:comp1640_web/constant/style.dart';
-import 'package:comp1640_web/helpers/reponsive_pages.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
-import 'package:comp1640_web/modules/threads/controller/thread_controller.dart';
-import 'package:comp1640_web/pages/admin/widgets/circle_chart.dart';
+import 'package:comp1640_web/pages/admin/widgets/line_chart.dart';
 import 'package:comp1640_web/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import 'col_chart.dart';
 
-class Chart3SectionLarger extends StatelessWidget {
-  const Chart3SectionLarger({Key key}) : super(key: key);
+class Chart5SectionLarger extends StatelessWidget {
+  const Chart5SectionLarger({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +30,19 @@ class Chart3SectionLarger extends StatelessWidget {
       child: Column(
         children: [
           const CustomText(
-            text: 'All ideas - By years',
+            text: 'Ideas Created (7 days ago)',
             weight: FontWeight.bold,
           ),
           Container(
-              height: 300,
+              height: 350,
               child: Row(
                 children: [
                   Obx(
-                    () => Flexible(
+                        () => Flexible(
                         child: postController.isLoadingManage.value
-                            ? SimpleBarChart.withSampleData()
-                            : SimpleBarChart(
-                                postController.yearsAndPostsChart())),
+                            ? StackedAreaLineChart.withSampleData()
+                            : StackedAreaLineChart(
+                            postController.lineIdeasCreates())),
                   ),
                 ],
               ))

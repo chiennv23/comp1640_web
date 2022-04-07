@@ -177,30 +177,33 @@ class Chart2SectionSmall extends StatelessWidget {
                   height: 5,
                 ),
                 Flexible(
-                    child: postController.isLoadingChart.value
-                        ? Stack(
-                            alignment: AlignmentDirectional.center,
-                            fit: StackFit.loose,
-                            children: [
-                              PieOutsideLabelChart.withSampleData(),
-                              SpinKitFadingCircle(
-                                color: spaceColor,
-                              )
-                            ],
-                          )
-                        : postController.postListChartController.isEmpty
-                            ? Stack(
-                                alignment: AlignmentDirectional.center,
-                                fit: StackFit.loose,
-                                children: [
-                                  PieOutsideLabelChart.withSampleData(),
-                                  const CustomText(
-                                    text: 'No ideas in thread',
-                                  )
-                                ],
-                              )
-                            : PieOutsideLabelChart(
-                                postController.commentsAndPostsChart)),
+                  child: Container(
+                      padding: const EdgeInsets.all(25.0),
+                      child: postController.isLoadingChart.value
+                          ? Stack(
+                              alignment: AlignmentDirectional.center,
+                              fit: StackFit.loose,
+                              children: [
+                                PieOutsideLabelChart.withSampleData(),
+                                SpinKitFadingCircle(
+                                  color: spaceColor,
+                                )
+                              ],
+                            )
+                          : postController.postListChartController.isEmpty
+                              ? Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  fit: StackFit.loose,
+                                  children: [
+                                    PieOutsideLabelChart.withSampleData(),
+                                    const CustomText(
+                                      text: 'No ideas in thread',
+                                    )
+                                  ],
+                                )
+                              : PieOutsideLabelChart(
+                                  postController.commentsAndPostsChart)),
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,

@@ -7,6 +7,8 @@ import 'package:comp1640_web/modules/user/controller/user_manage_controller.dart
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart2_section_small.dart';
 import 'package:comp1640_web/pages/admin/widgets/chart3_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart4_section_large.dart';
+import 'package:comp1640_web/pages/admin/widgets/chart5_section_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/col_chart.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_large.dart';
 import 'package:comp1640_web/pages/admin/widgets/overview_cards_small.dart';
@@ -71,7 +73,9 @@ class _AdminHomeState extends State<AdminHome>
               Chart2SectionLarger()
             else
               Chart2SectionSmall(),
-            Chart3SectionLarger()
+            Chart3SectionLarger(),
+            Chart5SectionLarger(),
+            Chart4SectionLarger(),
           ],
         ))
       ],

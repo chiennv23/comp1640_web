@@ -15,12 +15,14 @@ class PostItem {
   List<Comment> comments;
   int createdAt;
   int updatedAt;
+  int mostPoint;
   bool anonymous;
   bool oneClickAction;
   bool checkComment;
 
   PostItem({
     this.indexSTT = 0,
+    this.mostPoint = 0,
     this.sId,
     this.thread,
     this.title,
@@ -65,6 +67,7 @@ class PostItem {
     anonymous = json['anonymous'];
     oneClickAction = true;
     checkComment = false;
+    mostPoint = upvotes.length - downvotes.length;
   }
 
   static List<PostItem> fromJsonToList(Object json) {
