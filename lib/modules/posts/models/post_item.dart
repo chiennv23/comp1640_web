@@ -91,8 +91,8 @@ class Comment {
   String sId;
   Creator author;
   String content;
-  List<String> upvotes;
-  List<String> downvotes;
+  List<VotesItem> upvotes;
+  List<VotesItem> downvotes;
   String slug;
   bool oneClickActionCmt;
   bool anonymous;
@@ -111,8 +111,18 @@ class Comment {
     sId = json['_id'];
     author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     content = json['content'];
-    upvotes = json['upvotes'].cast<String>();
-    downvotes = json['downvotes'].cast<String>();
+    if (json['upvotes'] != null) {
+      upvotes = [];
+      json['upvotes'].forEach((v) {
+        upvotes.add(VotesItem.fromJson(v));
+      });
+    }
+    if (json['downvotes'] != null) {
+      downvotes = [];
+      json['downvotes'].forEach((v) {
+        downvotes.add(VotesItem.fromJson(v));
+      });
+    }
     slug = json['slug'];
     anonymous = json['anonymous'] ?? false;
     oneClickActionCmt = true;

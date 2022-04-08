@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:comp1640_web/components/snackbar_messenger.dart';
 import 'package:comp1640_web/constant/style.dart';
+import 'package:comp1640_web/helpers/storageKeys_helper.dart';
 import 'package:comp1640_web/modules/comments/DA/comment_data.dart';
 import 'package:comp1640_web/modules/posts/controlls/post_controller.dart';
 import 'package:comp1640_web/modules/posts/models/post_item.dart';
@@ -63,6 +64,32 @@ class CommentController extends GetxController {
     }
   }
 
+  var nameSlug = SharedPreferencesHelper.instance.getString(key: 'nameSlug');
+
+  bool checkLiked(
+    String postSlug,
+    String cmtSlug,
+  ) {
+    var listVoteInIdea = postController.postListController
+        .firstWhere((element) => element.slug == postSlug)
+        .comments
+        .firstWhere((element) => element.slug == cmtSlug)
+        .upvotes;
+    return listVoteInIdea.any((element) => element.slug == nameSlug);
+  }
+
+  bool checkDisLiked(
+    String postSlug,
+      String cmtSlug,
+  ) {
+    var listVoteInIdea = postController.postListController
+        .firstWhere((element) => element.slug == postSlug)
+        .comments
+        .firstWhere((element) => element.slug == cmtSlug)
+        .downvotes;
+    return listVoteInIdea.any((element) => element.slug == nameSlug);
+  }
+
   chooseLikeCmt(
     String title,
     String content,
@@ -72,13 +99,30 @@ class CommentController extends GetxController {
     String cmtSlug,
   }) async {
     var listLike = postController.postListController
-        .firstWhere((element) => element.title == title && element.slug == postSlug)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .comments
         .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .upvotes;
-    listLike.add('like');
+    var disListLike = postController.postListController
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
+        .comments
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
+        .downvotes;
+    if (listLike.any((element) => element.slug == nameSlug)) {
+      listLike.removeWhere((element) => element.slug == nameSlug);
+    } else {
+      if (disListLike.any((element) => element.slug == nameSlug)) {
+        disListLike.removeWhere((element) => element.slug == nameSlug);
+      }
+      var obj =
+          VotesItem(sId: '', email: '', username: '', role: '', slug: nameSlug);
+      listLike.add(obj);
+    }
     postController.postListController
-        .firstWhere((element) => element.title == title&& element.slug == postSlug)
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
         .comments
         .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .oneClickActionCmt = false;
@@ -87,14 +131,16 @@ class CommentController extends GetxController {
     final data = await CommentData.likeComment(threadSlug, postSlug, cmtSlug);
     if (data.code != 200) {
       postController.postListController
-          .firstWhere((element) => element.title == title&& element.slug == postSlug)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .comments
           .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = true;
       if (listLike.isNotEmpty) listLike.removeLast();
     } else {
       postController.postListController
-          .firstWhere((element) => element.title == title&& element.slug == postSlug)
+          .firstWhere(
+              (element) => element.title == title && element.slug == postSlug)
           .comments
           .firstWhere((e) => e.content == content && e.slug == cmtSlug)
           .oneClickActionCmt = false;
@@ -116,7 +162,22 @@ class CommentController extends GetxController {
         .comments
         .firstWhere((e) => e.content == content && e.slug == cmtSlug)
         .downvotes;
-    disListLike.add('dislike');
+    var listLike = postController.postListController
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
+        .comments
+        .firstWhere((e) => e.content == content && e.slug == cmtSlug)
+        .upvotes;
+    if (disListLike.any((element) => element.slug == nameSlug)) {
+      disListLike.removeWhere((element) => element.slug == nameSlug);
+    } else {
+      if (listLike.any((element) => element.slug == nameSlug)) {
+        listLike.removeWhere((element) => element.slug == nameSlug);
+      }
+      var obj =
+          VotesItem(sId: '', email: '', username: '', role: '', slug: nameSlug);
+      disListLike.add(obj);
+    }
     print(disListLike.length);
     postController.postListController
         .firstWhere(

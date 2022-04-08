@@ -87,6 +87,10 @@ class _ShowCommentState extends State<ShowComment> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   IconButton(
+                                    color: commentController.checkLiked(
+                                            widget.postItem.slug, item.slug)
+                                        ? active
+                                        : null,
                                     iconSize:
                                         ResponsiveWidget.isSmallScreen(context)
                                             ? 7
@@ -135,6 +139,10 @@ class _ShowCommentState extends State<ShowComment> {
                                             : 24,
                                   ),
                                   IconButton(
+                                    color: commentController.checkDisLiked(
+                                            widget.postItem.slug, item.slug)
+                                        ? active
+                                        : null,
                                     iconSize:
                                         ResponsiveWidget.isSmallScreen(context)
                                             ? 7
