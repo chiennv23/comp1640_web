@@ -10,8 +10,8 @@ class PostItem {
   Creator author;
   String slug;
   List<Files> files;
-  List<String> upvotes;
-  List<String> downvotes;
+  List<VotesItem> upvotes;
+  List<VotesItem> downvotes;
   List<Comment> comments;
   int createdAt;
   int updatedAt;
@@ -54,8 +54,18 @@ class PostItem {
     }
     author = json['author'] != null ? Creator.fromJson(json['author']) : null;
     slug = json['slug'];
-    upvotes = json['upvotes'].cast<String>();
-    downvotes = json['downvotes'].cast<String>();
+    if (json['upvotes'] != null) {
+      upvotes = [];
+      json['upvotes'].forEach((v) {
+        upvotes.add(VotesItem.fromJson(v));
+      });
+    }
+    if (json['downvotes'] != null) {
+      downvotes = [];
+      json['downvotes'].forEach((v) {
+        downvotes.add(VotesItem.fromJson(v));
+      });
+    }
     if (json['comments'] != null) {
       comments = [];
       json['comments'].forEach((v) {
@@ -124,6 +134,24 @@ class Thread {
     description = json['description'];
     creator =
         json['creator'] != null ? Creator.fromJson(json['creator']) : null;
+    slug = json['slug'];
+  }
+}
+
+class VotesItem {
+  String sId;
+  String email;
+  String username;
+  String role;
+  String slug;
+
+  VotesItem({this.sId, this.email, this.username, this.role, this.slug});
+
+  VotesItem.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    email = json['email'];
+    username = json['username'];
+    role = json['role'];
     slug = json['slug'];
   }
 }

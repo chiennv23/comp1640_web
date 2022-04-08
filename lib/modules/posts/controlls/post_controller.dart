@@ -16,6 +16,7 @@ import 'package:comp1640_web/pages/admin/widgets/col_chart.dart';
 import 'package:comp1640_web/pages/admin/widgets/line_chart.dart';
 import 'package:comp1640_web/utils/pick_file.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
@@ -157,7 +158,6 @@ class PostController extends GetxController {
               .isSameDate(DateTime.fromMillisecondsSinceEpoch(day)));
       return listPostInDay.length;
     }
-
 
     final IDeas = [
       LinearDate(DateTime.fromMillisecondsSinceEpoch(nDayAgo6),
@@ -554,6 +554,26 @@ class PostController extends GetxController {
         );
   }
 
+  var nameSlug = SharedPreferencesHelper.instance.getString(key: 'nameSlug');
+
+  bool checkLiked(
+    String postSlug,
+  ) {
+    var listVoteInIdea = postListController
+        .firstWhere((element) => element.slug == postSlug)
+        .upvotes;
+    return listVoteInIdea.any((element) => element.slug == nameSlug);
+  }
+
+  bool checkDisLiked(
+    String postSlug,
+  ) {
+    var listVoteInIdea = postListController
+        .firstWhere((element) => element.slug == postSlug)
+        .downvotes;
+    return listVoteInIdea.any((element) => element.slug == nameSlug);
+  }
+
   chooseLike(
     String title,
     bool checkClickAction, {
@@ -564,7 +584,20 @@ class PostController extends GetxController {
         .firstWhere(
             (element) => element.title == title && element.slug == postSlug)
         .upvotes;
-    listLike.add('like');
+    var disListLike = postListController
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
+        .downvotes;
+    if (listLike.any((element) => element.slug == nameSlug)) {
+      listLike.removeWhere((element) => element.slug == nameSlug);
+    } else {
+      if (disListLike.any((element) => element.slug == nameSlug)) {
+        disListLike.removeWhere((element) => element.slug == nameSlug);
+      }
+      var obj =
+          VotesItem(sId: '', email: '', username: '', role: '', slug: nameSlug);
+      listLike.add(obj);
+    }
     postListController
         .firstWhere(
             (element) => element.title == title && element.slug == postSlug)
@@ -597,7 +630,20 @@ class PostController extends GetxController {
         .firstWhere(
             (element) => element.title == title && element.slug == postSlug)
         .downvotes;
-    disListLike.add('dislike');
+    var listLike = postListController
+        .firstWhere(
+            (element) => element.title == title && element.slug == postSlug)
+        .upvotes;
+    if (disListLike.any((element) => element.slug == nameSlug)) {
+      disListLike.removeWhere((element) => element.slug == nameSlug);
+    } else {
+      if (listLike.any((element) => element.slug == nameSlug)) {
+        listLike.removeWhere((element) => element.slug == nameSlug);
+      }
+      var obj =
+          VotesItem(sId: '', email: '', username: '', role: '', slug: nameSlug);
+      disListLike.add(obj);
+    }
     postListController
         .firstWhere(
             (element) => element.title == title && element.slug == postSlug)

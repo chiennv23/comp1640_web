@@ -566,6 +566,8 @@ class _HomeState extends State<Home> {
               child: Row(
                 children: [
                   IconButton(
+                    color:
+                    postController.checkLiked(item.slug) ? active : null,
                     icon: const Icon(
                       Icons.thumb_up,
                     ),
@@ -573,13 +575,13 @@ class _HomeState extends State<Home> {
                     onPressed: threadController.checkDeadlineCreateIdea
                         ? null
                         : item.oneClickAction
-                            ? () {
-                                postController.chooseLike(
-                                    item.title, item.oneClickAction,
-                                    threadSlug: threadSlug,
-                                    postSlug: item.slug);
-                              }
-                            : null,
+                        ? () {
+                      postController.chooseLike(
+                          item.title, item.oneClickAction,
+                          threadSlug: threadSlug,
+                          postSlug: item.slug);
+                    }
+                        : null,
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 8),
@@ -590,6 +592,9 @@ class _HomeState extends State<Home> {
                     width: 24,
                   ),
                   IconButton(
+                    color: postController.checkDisLiked(item.slug)
+                        ? active
+                        : null,
                     icon: const Icon(
                       Icons.thumb_down,
                     ),
@@ -597,13 +602,13 @@ class _HomeState extends State<Home> {
                     onPressed: threadController.checkDeadlineCreateIdea
                         ? null
                         : item.oneClickAction
-                            ? () {
-                                postController.chooseDisLike(
-                                    item.title, item.oneClickAction,
-                                    threadSlug: threadSlug,
-                                    postSlug: item.slug);
-                              }
-                            : null,
+                        ? () {
+                      postController.chooseDisLike(
+                          item.title, item.oneClickAction,
+                          threadSlug: threadSlug,
+                          postSlug: item.slug);
+                    }
+                        : null,
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 8),
