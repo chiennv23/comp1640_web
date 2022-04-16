@@ -258,18 +258,18 @@ class _MyThreadsState extends State<MyThreads> {
                                                     )),
                                               ),
                                             ),
-                                            Flexible(
-                                              child: Tooltip(
-                                                message: 'Edit',
-                                                child: IconButton(
-                                                    onPressed: () =>
-                                                        showEdit(item),
-                                                    icon: Icon(
-                                                      Icons.edit_rounded,
-                                                      color: primaryColor2,
-                                                    )),
-                                              ),
-                                            ),
+                                            // Flexible(
+                                            //   child: Tooltip(
+                                            //     message: 'Edit',
+                                            //     child: IconButton(
+                                            //         onPressed: () =>
+                                            //             showEdit(item),
+                                            //         icon: Icon(
+                                            //           Icons.edit_rounded,
+                                            //           color: primaryColor2,
+                                            //         )),
+                                            //   ),
+                                            // ),
                                             Flexible(
                                               child: Tooltip(
                                                 message: 'Delete',
@@ -360,7 +360,7 @@ class _MyThreadsState extends State<MyThreads> {
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        child: ThreadView(item),
+        child: ThreadView(item, checkEdit: false),
       ),
     );
     // Get.dialog(ThreadView());
@@ -413,17 +413,17 @@ class _MyThreadsState extends State<MyThreads> {
                       )),
                 ),
               ),
-              Flexible(
-                child: Tooltip(
-                  message: 'Edit',
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.edit_rounded,
-                        color: primaryColor2,
-                      )),
-                ),
-              ),
+              // Flexible(
+              //   child: Tooltip(
+              //     message: 'Edit',
+              //     child: IconButton(
+              //         onPressed: () {},
+              //         icon: Icon(
+              //           Icons.edit_rounded,
+              //           color: primaryColor2,
+              //         )),
+              //   ),
+              // ),
               Flexible(
                 child: Tooltip(
                   message: 'Delete',

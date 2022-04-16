@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 import 'edit_thread_manage.dart';
 
-Widget ThreadView(ThreadItem item, {bool checkStaff = false}) => Container(
+Widget ThreadView(ThreadItem item, {bool checkStaff = false,bool checkEdit = true,}) => Container(
       width: 500,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -120,6 +120,7 @@ Widget ThreadView(ThreadItem item, {bool checkStaff = false}) => Container(
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
+                if(checkEdit)
                 Tooltip(
                   message: 'Edit',
                   child: IconButton(
